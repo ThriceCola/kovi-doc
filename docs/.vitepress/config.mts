@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Kovi 文档",
   description: "Kovi 文档",
+  base: '/kovi-doc/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

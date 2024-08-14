@@ -4,18 +4,19 @@ layout: home
 
 hero:
   name: "Kovi"
-  tagline: Kovi 使用文档
+  tagline: Kovi 使用手册
   actions:
     - theme: brand
-      text: 快速上手
-      link: /fast
+      text: 开始 Kovi 之旅
+      link: /start/start
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: 关于
+      link: /about
 
 ---
 
 
-# 是一个 OneBot v11 插件开发框架
+# 简介
 
-使用 rust 开发
+使用 Rust 开发的 OneBot V11 机器人插件框架。上手及其简单。
+

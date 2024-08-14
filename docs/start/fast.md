@@ -1,14 +1,8 @@
-# 前置条件
-
-项目由 [Rust](#) 所写，插件也需用 [Rust](#) 写，请确保本地已安装。
-
-虽然 Kovi 上手非常简单，但是 Kovi 需要使用 Rust 进行开发，请确保你拥有 [Rust](#) 基础，至少需要掌握到多线程共享状态，才能较为轻松的开发 Kovi 插件。
-
 # 快速上手
 
-**注意⚠️，项目处于 Beta 状态，以下可能会变动**
+**注意⚠️，Kovi 处于 Beta 状态，以下可能会变动**
 
-**注意⚠️，项目目前只支持 OneBot V11 正向 WebSocket 协议**
+**注意⚠️，Kovi 目前只支持 OneBot V11 正向 WebSocket 协议**
 
 1. 创建基本rust项目，加入框架。
 
@@ -58,7 +52,7 @@ OneBot服务端的access_token是什么？ (默认值：空)
 [dependencies]
 略
 
-[workspace]
+[workspace] // [!code ++]  // [!code focus]
 ```
 
 接着
@@ -82,7 +76,6 @@ use kovi::PluginBuilder;
 #[kovi::plugin] //构造插件
 pub fn main(mut plugin: PluginBuilder) {
     // 必须要求main传入 PluginBuilder ，这是插件的基础。
-    
     plugin.on_msg(move |event| {
         // on_msg() 为监听消息，event 里面包含本次消息的所有信息。
         if event.borrow_text() == Some("Hi Bot") {
@@ -134,4 +127,4 @@ pub fn main(mut plugin: PluginBuilder) {
 
 向 `plugin.on_msg()` 传入的闭包，会在每一次接收消息时运行。
 
-Kovi 已封装所有可用 OneBot 标准 api ，拓展 api 你可以使用 `RuntimeBot` 的 `api_tx` 来自行发送 api。
+Kovi 已封装所有可用 OneBot 标准 api ，拓展 api 你可以使用 `RuntimeBot` 的 `send_api()` 来自行发送 api。

@@ -478,4 +478,26 @@
 
 ## 拓展 Api
 
-请查看[拓展 Api](/plugin/runtimebot#拓展-api)
+如果需要发送服务端的拓展Api，使用 `bot.send_api()` 和 `bot.send_api_return()` 发送api。
+
+一种是无需关注返回值的api，另一种是需要关注返回值的api
+
+如下
+```rust
+let bot = plugin.build_runtime_bot()
+let params = json!({
+    "some_user_id":123,
+    "some_group_id":123,
+});
+bot.send_api("some_api", params);
+```
+
+```rust
+let bot = plugin.build_runtime_bot()
+let params = json!({
+    "some_user_id":123,
+    "some_group_id":123,
+});
+let value = bot.send_api_return("some_api", params).expect("意外出错");
+```
+

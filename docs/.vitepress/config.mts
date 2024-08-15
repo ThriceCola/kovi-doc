@@ -47,7 +47,7 @@ export default defineConfig({
             collapsed: false,
             items: [
               { text: "RuntimeBot", link: "/plugin/runtimebot" },
-              { text: "Api 列表", link: "/plugin/apilist" },
+              { text: "Api 列表", link: "/plugin/api" },
             ],
           },
           { text: "生命周期", link: "/plugin/life" },

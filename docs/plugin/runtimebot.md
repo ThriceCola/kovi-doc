@@ -43,7 +43,7 @@ pub fn main(mut plugin: PluginBuilder) { // [!code focus]
 
 ## 拓展 Api
 
-请查看[拓展 Api](/plugin/apilist#拓展-api)
+请查看[拓展 Api](/plugin/api#拓展-api)
 
 
 

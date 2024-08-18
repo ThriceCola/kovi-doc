@@ -56,7 +56,7 @@ pub fn main(mut plugin: PluginBuilder) {
 }
 ```
 
-## plugin.on_all_request()
+## plugin.on_all_request() <Badge type="tip" text="^0.4.0" />
 
 添加 OneBot 的 `请求事件` 监听函数。
 

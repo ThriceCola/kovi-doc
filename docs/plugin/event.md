@@ -95,7 +95,6 @@ pub struct AllMsgEvent {
 
 具体可看 [OneBot v11 文档 Notion Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md)
 
-
 ```rust
 pub struct AllNoticeEvent {
     /// 事件发生的时间戳
@@ -114,10 +113,9 @@ pub struct AllNoticeEvent {
 }
 ```
 
-## AllRequestEvent
+## AllRequestEvent <Badge type="tip" text="^0.4.0" />
 
 具体可看 [OneBot v11 文档 Request Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/request.md)
-
 
 ```rust
 pub struct AllRequestEvent {

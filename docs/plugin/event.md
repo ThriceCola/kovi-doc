@@ -113,3 +113,26 @@ pub struct AllNoticeEvent {
     pub original_msg: String,
 }
 ```
+
+## AllRequestEvent
+
+具体可看 [OneBot v11 文档 Request Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/request.md)
+
+
+```rust
+pub struct AllRequestEvent {
+    /// 事件发生的时间戳
+    pub time: i64,
+    /// 收到事件的机器人 登陆号
+    pub self_id: i64,
+    /// 上报类型
+    pub post_type: String,
+    /// 请求类型
+    pub request_type: String,
+
+    /// 原始的onebot消息，已处理成json格式
+    pub original_json: Value,
+    /// 原始未处理的onebot消息，为json格式，使用需处理
+    pub original_msg: String,
+}
+```

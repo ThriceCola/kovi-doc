@@ -1,32 +1,57 @@
 # 快速上手
 
 > [!WARNING] 警告
-> `Kovi` 目前处于前期快速迭代期，以下内容可能已过期，请以实际情况为准。
+> `Kovi` 目前处于前期快速迭代期，请以实际情况为准。
 > 
-> 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入官方 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
+> 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
 
 > [!TIP] 提示
 > `Kovi` 目前只支持 OneBot V11 正向 WebSocket 协议。
 
+
+> [!TIP] 提示
+> `Kovi` 已拥有 `kovi-cli` 工具，使用 `kovi-cli` 工具可快速管理 `Kovi`
+>
+> ```bash
+> cargo install kovi-cli
+> ```
+
+
+
 ## 1. 创建一个基本 Rust 项目，添加 Kovi 依赖。
 
-```bash
-cargo new bot
-cd ./bot
+
+使用 `kovi-cli` 创建基本项目。
+
+::: code-group
+
+```bash [kovi-cli]
+cargo kovi new my-kovi-bot
+cd ./my-kovi-bot
+```
+
+```bash [cargo]
+cargo new my-kovi-bot
+cd ./my-kovi-bot
 cargo add Kovi
 ```
 
+::: 
+
 ## 2. 在 `src/main.rs` 创建 Bot 实例。
+
+> 如果是使用 `kovi-cli` 的话，已经看到在 `src/main.rs` 已经生成好bot实例。
 
 ```rust
 use kovi::build_bot;
+
 fn main() {
     let bot = build_bot!();
     bot.run()
 }
 ```
 
-如果是第一次启动，会提示输入一些信息以创建 `kovi.conf.json` 文件，这是 `Kovi` 运行所需的信息。
+第一次启动，会提示输入一些信息以创建 `kovi.conf.json` 文件，这是 `Kovi` 运行所需的信息。
 
 ```
 ✔ What is the IP of the OneBot server? · 127.0.0.1
@@ -42,31 +67,42 @@ OneBot 服务端的 access_token 是什么？ (默认值：空)
 管理员的 ID 是什么？ (无默认值)
 ```
 
-
 ## 插件开发
 
 ### 创建插件
 
 推荐的插件开发方法是创建新目录 `plugins` 储存插件。跟着下面来吧。
 
-首先创建 `Cargo` 工作区，在 `Cargo.toml` 写入 `[workspace]`
+首先创建 Cargo 工作区，在 `Cargo.toml` 写入 `[workspace]` 。
+
+> 如果是使用 `kovi-cli` 的话，此处已自动生成 `[workspace]` 。
 
 ```toml
 [package]
-略
+...
 [dependencies]
-略
+...
 
 [workspace] // [!code ++]  // [!code focus]
 ```
 
 接着
 
-```bash
+::: code-group
+
+```bash [kovi-cli]
+cargo kovi create hi
+```
+
+```bash [cargo]
 cargo new plugins/hi --lib
 ```
 
-`Cargo` 会帮你做好一切的。
+::: 
+
+`kovi-cli` 或者 `cargo` 会帮你做好一切的。
+
+可以看到创建了新的 `plugins/hi` 目录，这也是推荐的插件开发方法，有目录管理总会是好的。
 
 ### 编写插件
 
@@ -78,9 +114,9 @@ cargo new plugins/hi --lib
 // 导入插件构造结构体
 use kovi::PluginBuilder;
 
-#[kovi::plugin] //构造插件
+#[kovi::plugin] // 构造插件
 pub fn main(mut plugin: PluginBuilder) {
-    // 必须要求main传入 PluginBuilder ，这是插件的基础。
+    // 必须要求 main 传入 PluginBuilder ，这是插件的基础。
     plugin.on_msg(move |event| {
         // on_msg() 为监听消息，event 里面包含本次消息的所有信息。
         if event.borrow_text() == Some("Hi Bot") {
@@ -92,21 +128,31 @@ pub fn main(mut plugin: PluginBuilder) {
 
 `main` 函数写在 `lib.rs` 是因为等下要导出给 `Bot` 实例挂载。
 
-插件一般不需要 `main.rs`
+插件一般不需要 `main.rs` 。
 
 ### 挂载插件
 
-将插件导入到 `my-kovi-bot` 的 `main.rs`
+将依赖添加进根项目。
 
-```bash
+::: code-group
+
+```bash [kovi-cli]
+cargo kovi add hi
+```
+
+```bash [cargo]
 cargo add --path plugins/hi  
 ```
+
+::: 
+
+将插件导入到 `my-kovi-bot` 的 `main.rs` 。
 
 ```rust
 use kovi::build_bot;
 
 fn main() {
-    let bot = build_bot!(hi,hi2,plugin123);
+    let bot = build_bot!(hi, hi2, plugin123);
     bot.run()
 }
 ```
@@ -120,7 +166,7 @@ use kovi::PluginBuilder;
 
 #[kovi::plugin]
 pub fn main(mut plugin: PluginBuilder) {
-    // 构造RuntimeBot
+    // 构造 RuntimeBot
     let bot = plugin.build_runtime_bot();
     let user_id = bot.main_admin;
 

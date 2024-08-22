@@ -4,7 +4,7 @@
 
 ## Kovi 处理返回值的 API
 
-### bot.send_group_msg_return() 发送群组消息, 并返回消息 ID
+### `bot.send_group_msg_return()` 发送群组消息, 并返回消息 ID
 
 向指定的群组发送消息，并返回消息的 ID。
 
@@ -19,7 +19,7 @@
 
 ***
 
-### bot.send_private_msg_return() 发送私聊消息, 并返回消息 ID
+### `bot.send_private_msg_return()` 发送私聊消息, 并返回消息 ID
 
 向指定用户发送私聊消息，并返回消息的 ID。
 
@@ -34,7 +34,7 @@
 
 ***
 
-### bot.can_send_image() 是否能发送图片
+### `bot.can_send_image()` 是否能发送图片
 
 检查当前账号是否能够发送图片。
 
@@ -44,7 +44,7 @@
 
 ***
 
-### bot.can_send_record() 是否能发送语音
+### `bot.can_send_record()` 是否能发送语音
 
 检查当前账号是否能够发送语音消息。
 
@@ -54,7 +54,7 @@
 
 ***
 
-### bot.get_cookies() 获取 Cookies
+### `bot.get_cookies()` 获取 Cookies
 
 获取指定域名的 Cookies。
 
@@ -68,7 +68,7 @@
 
 ***
 
-### bot.get_csrf_token() 获取 CSRF Token
+### `bot.get_csrf_token()` 获取 CSRF Token
 
 获取 CSRF Token。
 
@@ -78,14 +78,14 @@
 
 ***
 
-### bot.get_record() 获取语音
+### `bot.get_record()` 获取语音
 
 获取并转换语音文件。
 
 #### 参数
 
 - `file`: 收到的语音文件名（消息段的 `file` 参数），例如 `0B38145AA44505000B38145AA4450500.silk`。
-- `out_format`: 要转换到的格式，目前支持 `mp3`、`amr`、`wma`、`m4a`、`spx`、`ogg`、`wav`、`flac`。
+- `out_format`: 要转换到的格式，支持 `mp3`、`amr`、`wma`、`m4a`、`spx`、`ogg`、`wav`、`flac`，具体请查看 OneBot 服务端。
 
 #### 返回
 
@@ -93,7 +93,7 @@
 
 ***
 
-### bot.get_image() 获取图片
+### `bot.get_image()` 获取图片
 
 获取指定的图片文件。
 
@@ -105,7 +105,7 @@
 
 ## 无返回值的 API
 
-### bot.send_group_msg() 发送群组消息
+### `bot.send_group_msg()` 发送群组消息
 
 发送群组消息。如果需要返回消息 ID，请使用 `send_group_msg_return()` 方法。
 
@@ -116,7 +116,7 @@
 
 ***
 
-### bot.send_private_msg() 发送私聊消息
+### `bot.send_private_msg()` 发送私聊消息
 
 发送私聊消息。如果需要返回消息 ID，请使用 `send_private_msg_return()` 方法。
 
@@ -127,7 +127,7 @@
 
 ***
 
-### bot.delete_msg() 撤回消息
+### `bot.delete_msg()` 撤回消息
 
 撤回指定的消息。
 
@@ -137,7 +137,7 @@
 
 ***
 
-### bot.send_like() 点赞
+### `bot.send_like()` 点赞
 
 对指定用户进行点赞。
 
@@ -148,7 +148,7 @@
 
 ***
 
-### bot.set_group_kick() 群组踢人
+### `bot.set_group_kick()` 群组踢人
 
 将指定用户从群组中踢出。
 
@@ -160,7 +160,7 @@
 
 ***
 
-### bot.set_group_ban() 群组单人禁言
+### `bot.set_group_ban()` 群组单人禁言
 
 对群组中的指定用户进行禁言或取消禁言。
 
@@ -172,7 +172,7 @@
 
 ***
 
-### bot.set_group_anonymous_ban_use_anonymous() 群组匿名用户禁言
+### `bot.set_group_anonymous_ban_use_anonymous()` 群组匿名用户禁言
 
 对群组中的匿名用户进行禁言或取消禁言。
 
@@ -185,7 +185,7 @@
 
 ***
 
-### bot.set_group_anonymous_ban_use_flag() 群组匿名用户禁言
+### `bot.set_group_anonymous_ban_use_flag()` 群组匿名用户禁言
 
 对群组中的匿名用户进行禁言或取消禁言。
 
@@ -198,7 +198,7 @@
 
 ***
 
-### bot.set_group_whole_ban() 群组全员禁言
+### `bot.set_group_whole_ban()` 群组全员禁言
 
 对群组中的所有成员进行禁言或取消禁言。
 
@@ -209,7 +209,7 @@
 
 ***
 
-### bot.set_group_admin() 群组设置管理员
+### `bot.set_group_admin()` 群组设置管理员
 
 设置或取消群组中的管理员权限。
 
@@ -221,7 +221,7 @@
 
 ***
 
-### bot.set_group_anonymous() 群组匿名
+### `bot.set_group_anonymous()` 群组匿名
 
 设置或取消群组中的匿名状态。
 
@@ -232,7 +232,7 @@
 
 ***
 
-### bot.set_group_card() 设置群名片（群备注）
+### `bot.set_group_card()` 设置群名片（群备注）
 
 设置或删除群组中的用户名片（群备注）。
 
@@ -244,7 +244,7 @@
 
 ***
 
-### bot.set_group_name() 设置群名
+### `bot.set_group_name()` 设置群名
 
 设置群组的新名称。
 
@@ -255,7 +255,7 @@
 
 ***
 
-### bot.set_group_leave() 退出群组
+### `bot.set_group_leave()` 退出群组
 
 退出指定的群组，或解散群组（如果权限允许）。
 
@@ -266,7 +266,7 @@
 
 ***
 
-### bot.set_group_special_title() 设置群组专属头衔
+### `bot.set_group_special_title()` 设置群组专属头衔
 
 设置或删除群组成员的专属头衔。
 
@@ -278,7 +278,7 @@
 
 ***
 
-### bot.set_friend_add_request() 处理加好友请求
+### `bot.set_friend_add_request()` 处理加好友请求
 
 处理收到的加好友请求。
 
@@ -290,7 +290,7 @@
 
 ***
 
-### bot.set_group_add_request() 处理加群请求／邀请
+### `bot.set_group_add_request()` 处理加群请求／邀请
 
 处理收到的加群请求或邀请。
 
@@ -303,7 +303,7 @@
 
 ***
 
-### bot.clean_cache() 清理缓存
+### `bot.clean_cache()` 清理缓存
 
 清理积攒的 **OneBot 服务端** 缓存文件。**并非是对于本框架清除**。
 
@@ -311,7 +311,7 @@
 
 **具体返回了什么值，请查看 [OneBot v11 文档](https://github.com/botuniverse/onebot-11/blob/master/api/public.md) 或者服务端文档**
 
-### bot.get_msg() 获取消息
+### `bot.get_msg()` 获取消息
 
 获取指定的消息内容。
 
@@ -325,7 +325,7 @@
 
 ***
 
-### bot.get_forward_msg() 获取合并转发消息
+### `bot.get_forward_msg()` 获取合并转发消息
 
 获取指定的合并转发消息内容。
 
@@ -339,7 +339,7 @@
 
 ***
 
-### bot.get_login_info() 获取登录号信息
+### `bot.get_login_info()` 获取登录号信息
 
 获取当前登录号的信息。
 
@@ -349,7 +349,7 @@
 
 ***
 
-### bot.get_stranger_info() 获取陌生人信息
+### `bot.get_stranger_info()` 获取陌生人信息
 
 获取指定陌生人的信息。
 
@@ -364,7 +364,7 @@
 
 ***
 
-### bot.get_friend_list() 获取好友列表
+### `bot.get_friend_list()` 获取好友列表
 
 获取当前登录号的好友列表。
 
@@ -374,7 +374,7 @@
 
 ***
 
-### bot.get_group_info() 获取群信息
+### `bot.get_group_info()` 获取群信息
 
 获取指定群组的信息。
 
@@ -389,7 +389,7 @@
 
 ***
 
-### bot.get_group_list() 获取群列表
+### `bot.get_group_list()` 获取群列表
 
 获取当前登录号所在的群组列表。
 
@@ -399,7 +399,7 @@
 
 ***
 
-### bot.get_group_member_info() 获取群成员信息
+### `bot.get_group_member_info()` 获取群成员信息
 
 获取指定群组中某个成员的信息。
 
@@ -415,7 +415,7 @@
 
 ***
 
-### bot.get_group_member_list() 获取群成员列表
+### `bot.get_group_member_list()` 获取群成员列表
 
 获取指定群组中的所有成员列表。
 
@@ -429,7 +429,7 @@
 
 ***
 
-### bot.get_group_honor_info() 获取群荣誉信息
+### `bot.get_group_honor_info()` 获取群荣誉信息
 
 获取指定群组的荣誉信息。
 
@@ -444,7 +444,7 @@
 
 ***
 
-### bot.get_credentials() 获取相关接口凭证
+### `bot.get_credentials()` 获取相关接口凭证
 
 获取合并后的接口凭证，包括 Cookies 和 CSRF Token。
 
@@ -458,7 +458,7 @@
 
 ***
 
-### bot.get_status() 获取运行状态
+### `bot.get_status()` 获取运行状态
 
 获取当前运行状态的信息。
 
@@ -468,7 +468,7 @@
 
 ***
 
-### bot.get_version_info() 获取版本信息
+### `bot.get_version_info()` 获取版本信息
 
 获取当前版本的信息。
 

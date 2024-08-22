@@ -57,37 +57,37 @@ pub struct AllMsgEvent {
 
 ## AllMsgEvent 方法
 
-#### event.reply()
+#### `event.reply()`
 
 快速回复消息，传入 Message 类型，因为字符串可以转换成Message类型，所以可以传入字符串
 
 ***
 
-#### event.reply_and_quote()
+#### `event.reply_and_quote()`
 
 快速回复消息，并且引用，传入 Message 类型，因为字符串可以转换成Message类型，所以可以传入字符串
 
 ***
 
-#### event.reply_text()
+#### `event.reply_text()`
 
 快速回复消息，并且不解析直接发送纯文本
 
 ***
 
-#### event.get_text()
+#### `event.get_text()`
 
 获取文本，如果没有文本则会返回空字符串，如果只需要借用，请使用 `borrow_text()`
 
 ***
 
-#### event.get_sender_nickname()
+#### `event.get_sender_nickname()`
 
 获取发送者昵称
 
 ***
 
-#### event.borrow_text()
+#### `event.borrow_text()`
 
 借用 event 的 text
 

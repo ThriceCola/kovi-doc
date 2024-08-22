@@ -12,7 +12,7 @@ pub struct RuntimeBot {
     pub admin: Vec<i64>, /// 副管理员，不包含主管理员
     pub host: IpAddr,
     pub port: u16,
-    pub api_tx: mpsc::Sender<ApiMpsc>, /// 可以发送api，请按照OneBot v11发送api，不然会失败
+    pub api_tx: mpsc::Sender<ApiMpsc>, /// 不推荐的 api 发送方式，请改用 bot.send_api() 发送api。
 }
 ```
 

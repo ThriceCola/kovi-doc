@@ -1,6 +1,6 @@
 # 监听事件
 
-通过 PluginBuilder 可以监听事件
+通过 `PluginBuilder` 可以监听事件
 
 [[toc]]
 
@@ -23,7 +23,7 @@ pub fn main(mut plugin: PluginBuilder) {
 
 ## plugin.on_admin_msg()
 
-添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，Kovi会帮你筛选消息。
+添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，`Kovi` 会帮你筛选消息。
 
 需传入一个闭包，闭包类型为 `Fn(&AllMsgEvent) + Send + Sync + 'static`
 
@@ -45,7 +45,7 @@ pub fn main(mut plugin: PluginBuilder) {
 
 需传入一个闭包，闭包类型为 `Fn(&AllNoticeEvent) + Send + Sync + 'static`
 
-关于 [AllNotionEvent](/plugin/event#allnotionevent) ，点击前往查看
+关于 [AllNotionEvent](/plugin/event#allnotionevent)，点击前往查看
 
 ```rust
 #[kovi::plugin]

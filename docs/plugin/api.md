@@ -1,8 +1,8 @@
-# Api 列表
+# API 列表
 
 [[toc]]
 
-## Kovi帮忙解析返回值的Api
+## Kovi 处理返回值的 API
 
 ### bot.send_group_msg_return() 发送群组消息, 并返回消息 ID
 
@@ -103,7 +103,7 @@
 
 此方法会返回图片文件的路径，类型为 `String`。
 
-## 无返回值的Api
+## 无返回值的 API
 
 ### bot.send_group_msg() 发送群组消息
 
@@ -307,9 +307,9 @@
 
 清理积攒的 **OneBot 服务端** 缓存文件。**并非是对于本框架清除**。
 
-## 需要返回值的 Api
+## 有返回值的 API
 
-**具体返回了什么值，请查看 [OneBot v11 文档](https://github.com/botuniverse/onebot-11/blob/master/api/public.md) 或者 服务端文档**
+**具体返回了什么值，请查看 [OneBot v11 文档](https://github.com/botuniverse/onebot-11/blob/master/api/public.md) 或者服务端文档**
 
 ### bot.get_msg() 获取消息
 
@@ -476,13 +476,14 @@
 
 - `Result<Value, ApiError>`: 如果操作成功，将返回版本信息的详细数据，类型为 `Value`。如果操作失败，将返回 `ApiError`。
 
-## 拓展 Api
+## 拓展 API
 
-如果需要发送服务端的拓展Api，使用 `bot.send_api()` 和 `bot.send_api_return()` 发送api。
+如果需要发送服务端的拓展 API，使用 `bot.send_api()` 和 `bot.send_api_return()` 实现。
 
-一种是无需关注返回值的api，另一种是需要关注返回值的api
+一种是无需关注返回值的 API，另一种是需要关注返回值的 API。
 
 如下
+
 ```rust
 let bot = plugin.build_runtime_bot()
 let params = json!({

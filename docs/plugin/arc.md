@@ -6,7 +6,7 @@
 
 多线程并发是 Rust 的基础知识之一，Rust 能对你的多线程保驾护航。因为 Kovi 框架监听消息是一定会用到闭包与多线程的，所以这里要提一嘴。
 
-还记得前文的生命周期吗，Kovi 会在启动时运行所有插件的 `main` 函数一遍。所有写在 `main` 函数里的[监听闭包](onevent)都是惰性的，只会在消息来的那一刻运行一次。而这时， `main` 函数可能早已运行结束。 `main` 所有变量，会在 `main` 结束的那一刻丢弃。
+还记得前文的生命周期吗，Kovi 会在启动时将所有插件的 `main()` 函数运行一遍。所有写在 `main()` 函数里的[监听闭包](onevent)都是惰性的，只会在消息来的那一刻运行一次。而这时， `main()` 函数可能早已运行结束。 `main()` 所有变量，会在 `main()` 结束的那一刻丢弃。
 
 > 关于更多无畏并发，你可以查看这个。
 >
@@ -29,6 +29,7 @@ pub fn main(mut p: PluginBuilder) {
     }) // [!code focus]
 }
 ```
+
 编译器报错
 
 ```
@@ -43,7 +44,6 @@ error[E0373]: closure may outlive the current function, but it borrows `bot`, wh
 note: function requires argument type to outlive `'static`
 ```
 
-
 你可以通过 `move` 关键字来捕获闭包外的变量。此变量便归此闭包所有。
 
 ```rust 
@@ -57,7 +57,6 @@ pub fn main(mut p: PluginBuilder) {
     }) // [!code focus]
 }
 ```
-
 
 ## Arc 共享状态
 

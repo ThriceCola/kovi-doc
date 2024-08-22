@@ -1,6 +1,6 @@
 # RuntimeBot
 
-通过 `plugin.build_runtime_bot()` 可以获取到 `RuntimeBot` 里面可以获取到 Bot 的信息，以及发送 Api。
+通过 `plugin.build_runtime_bot()` 可以获取到 `RuntimeBot` 里面可以获取到 `Bot` 的信息，以及发送 API。
 
 [[toc]]
 
@@ -25,7 +25,7 @@ pub fn main(mut plugin: PluginBuilder) { // [!code focus]
 }
 ```
 
-如何在多个监听闭包中使用 RuntimeBot
+如何在多个监听闭包中使用 `RuntimeBot`
 
 ```rust
 #[kovi::plugin]
@@ -34,16 +34,16 @@ pub fn main(mut plugin: PluginBuilder) { // [!code focus]
 }
 ```
 
-## 封装了什么Api
+## 封装了什么 API
 
-所有的标准 OneBot v11 Api 都已经封装在 RuntimeBot 里。
+所有的标准 OneBot v11 API 都已经封装在 `RuntimeBot` 里。
 
-标准 Api 查看 [api列表](/plugin/api)
+标准 API 查看 [API 列表](/plugin/api)
 
 
-## 拓展 Api
+## 拓展 API
 
-请查看[拓展 Api](/plugin/api#拓展-api)
+请查看 [拓展 API](/plugin/api#拓展-api)
 
 
 

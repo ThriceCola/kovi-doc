@@ -3,7 +3,7 @@
 > [!WARNING] 警告
 > `Kovi` 目前处于前期快速迭代期，以下内容可能已过期，请以实际情况为准。
 > 
-> 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入官方 QQ 交流群 `715877167`。
+> 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入官方 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
 
 > [!TIP] 提示
 > `Kovi` 目前只支持 OneBot V11 正向 WebSocket 协议。

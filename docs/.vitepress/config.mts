@@ -39,7 +39,7 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     {
-                        text: "基础知识",
+                        text: "入门知识",
                         collapsed: false,
                         items: [
                             { text: "基础", link: "/plugin/basics" },

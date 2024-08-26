@@ -38,21 +38,32 @@ export default defineConfig({
                 text: "开发插件",
                 collapsed: false,
                 items: [
-                    { text: "基础", link: "/plugin/basics" },
-                    { text: "监听事件", link: "/plugin/onevent" },
-                    { text: "事件 Event", link: "/plugin/event" },
-                    { text: "Message", link: "/plugin/message" },
                     {
-                        text: "RuntimeBot 与 Api",
+                        text: "基础知识",
                         collapsed: false,
                         items: [
-                            { text: "RuntimeBot", link: "/plugin/runtimebot" },
-                            { text: "Api 列表", link: "/plugin/api" },
+                            { text: "基础", link: "/plugin/basics" },
+                            { text: "监听事件", link: "/plugin/onevent" },
+                            { text: "事件 Event", link: "/plugin/event" },
+                            { text: "Message", link: "/plugin/message" },
+                            {
+                                text: "RuntimeBot 与 Api",
+                                collapsed: false,
+                                items: [
+                                    {
+                                        text: "RuntimeBot",
+                                        link: "/plugin/runtimebot",
+                                    },
+                                    { text: "Api 列表", link: "/plugin/api" },
+                                ],
+                            },
+                            { text: "工具", link: "/plugin/utils" },
+                            { text: "更好的开发体验", link: "/plugin/better" },
+                            { text: "生命周期", link: "/plugin/life" },
                         ],
                     },
-                    { text: "生命周期", link: "/plugin/life" },
                     {
-                        text: "高级技巧",
+                        text: "进阶技巧",
                         collapsed: false,
                         items: [
                             {

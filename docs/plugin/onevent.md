@@ -72,3 +72,44 @@ pub fn main(mut plugin: PluginBuilder) {
     }); // [!code focus]
 }
 ```
+
+## plugin.drop() <Badge type="tip" text="^0.6.0" />
+
+添加 程序退出 监听函数。
+
+需传入一个闭包，闭包类型为 `Fn() + Send + Sync + 'static`
+
+如果你需要在程序结束时，运行一些代码，可以使用此监听来监听程序退出。
+
+
+> [!CAUTION]
+> 
+> 本函数运行起来非常复杂，对于主线程意外 panic! (这取决于 Kovi 开发有没有 Bug ) ，本函数不会触发。
+>
+> 只会在监听到系统退出信号时或者断开OneBot连接时，才会运行传入的闭包。
+
+```rust
+#[kovi::plugin]
+pub fn main(mut plugin: PluginBuilder) {
+    plugin.drop(|| { // [!code focus]
+        println!("{}", event.request_type); // [!code focus]
+    }); // [!code focus]
+}
+```
+
+## 异步
+
+以上所有监听都可以在 后面加上 `_async` 变成异步函数。
+
+```rust
+use kovi::{tokio, PluginBuilder};
+use std::time::Duration;
+
+#[kovi::plugin]
+pub fn main(mut p: PluginBuilder) {
+    p.on_admin_msg_async(|e| async move {
+        tokio::time::sleep(Duration::from_secs(2)).await;
+        e.reply("两秒后");
+    });
+}
+```

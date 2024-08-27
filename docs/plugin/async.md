@@ -6,13 +6,13 @@ Rust 提供了两种并发模型：多线程和异步。
 
 如果你的插件里面有很高的 IO 并发，或者想要使用 `tokio` 的生态，Kovi 可以提供 `tokio` 运行时。
 
-# tokio
+## 大名鼎鼎的异步运行时 `tokio`
 
 Kovi 帮忙导出了 `tokio` 。
 
 在插件的依赖里面不需要写 `tokio` 了，应该使用 ```use kovi::tokio;```
 
-# 插件上的异步
+## 插件上的异步
 
 关于如何在 `Kovi` 的插件上使用异步，直接在插件的main函数上使用 `async` 关键字即可。
 
@@ -50,3 +50,7 @@ let bot = build_bot!(async(async_aaa, async_bbb) & sync_ccc, sync_ddd);
 ```rust
 let bot = build_bot!(sync_aaa, sync_bbb & async(async_ccc, async_ddd));
 ```
+
+## 监听闭包里面的异步
+
+请看 [监听事件-异步](onevent#异步)

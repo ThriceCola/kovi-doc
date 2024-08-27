@@ -57,7 +57,6 @@ export default defineConfig({
                                     { text: "Api 列表", link: "/plugin/api" },
                                 ],
                             },
-                            { text: "工具", link: "/plugin/utils" },
                             { text: "更好的开发体验", link: "/plugin/better" },
                             { text: "生命周期", link: "/plugin/life" },
                         ],

@@ -2,6 +2,17 @@
 
 [[toc]]
 
+## ApiReturn 结构体
+
+```rust
+pub struct ApiReturn {
+    pub status: String,
+    pub retcode: i32,
+    pub data: Value,
+    pub echo: String,
+}
+```
+
 ## Kovi 处理返回值的 API
 
 ### `bot.send_group_msg_return()` 发送群组消息, 并返回消息 ID
@@ -15,7 +26,7 @@
 
 #### 返回
 
-- `Result<i32, ApiError>`: 如果操作成功，将返回消息的 ID，类型为 `i32`。如果操作失败，将返回 `ApiError`。
+- `Result<i32, ApiReturn>`: 如果操作成功，将返回消息的 ID，类型为 `i32`。如果操作失败，将返回 `ApiReturn`。
 
 ***
 
@@ -30,7 +41,7 @@
 
 #### 返回
 
-- `Result<i32, ApiError>`: 如果操作成功，将返回消息的 ID，类型为 `i32`。如果操作失败，将返回 `ApiError`。
+- `Result<i32, ApiReturn>`: 如果操作成功，将返回消息的 ID，类型为 `i32`。如果操作失败，将返回 `ApiReturn`。
 
 ***
 
@@ -40,7 +51,7 @@
 
 #### 返回
 
-- `Result<bool, ApiError>`: 如果操作成功，将返回 `bool` 类型的结果，`true` 表示可以发送图片，`false` 表示不能发送图片。如果操作失败，将返回 `ApiError`。
+- `Result<bool, ApiReturn>`: 如果操作成功，将返回 `bool` 类型的结果，`true` 表示可以发送图片，`false` 表示不能发送图片。如果操作失败，将返回 `ApiReturn`。
 
 ***
 
@@ -50,58 +61,8 @@
 
 #### 返回
 
-- `Result<bool, ApiError>`: 如果操作成功，将返回 `bool` 类型的结果，`true` 表示可以发送语音，`false` 表示不能发送语音。如果操作失败，将返回 `ApiError`。
+- `Result<bool, ApiReturn>`: 如果操作成功，将返回 `bool` 类型的结果，`true` 表示可以发送语音，`false` 表示不能发送语音。如果操作失败，将返回 `ApiReturn`。
 
-***
-
-### `bot.get_cookies()` 获取 Cookies
-
-获取指定域名的 Cookies。
-
-#### 参数
-
-- `domain`: 需要获取 Cookies 的域名。
-
-#### 返回
-
-此方法会返回一个 `String` 类型的 Cookies 值。
-
-***
-
-### `bot.get_csrf_token()` 获取 CSRF Token
-
-获取 CSRF Token。
-
-#### 返回
-
-此方法会返回一个 `i32` 类型的 CSRF Token。
-
-***
-
-### `bot.get_record()` 获取语音
-
-获取并转换语音文件。
-
-#### 参数
-
-- `file`: 收到的语音文件名（消息段的 `file` 参数），例如 `0B38145AA44505000B38145AA4450500.silk`。
-- `out_format`: 要转换到的格式，支持 `mp3`、`amr`、`wma`、`m4a`、`spx`、`ogg`、`wav`、`flac`，具体请查看 OneBot 服务端。
-
-#### 返回
-
-此方法会返回转换后的语音文件路径，类型为 `String`。
-
-***
-
-### `bot.get_image()` 获取图片
-
-获取指定的图片文件。
-
-#### 参数
-
-- `file`: 收到的图片文件名（消息段的 `file` 参数），例如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`。
-
-此方法会返回图片文件的路径，类型为 `String`。
 
 ## 无返回值的 API
 
@@ -139,7 +100,7 @@
 
 ### `bot.send_like()` 点赞
 
-对指定用户进行点赞。
+对指定用户进行点赞。有些服务端会返回点赞失败，所以需要返回值的话请使用 send_like_return()
 
 #### 参数
 
@@ -309,6 +270,8 @@
 
 ## 有返回值的 API
 
+有返回值的 Api ，Kovi 会帮忙简单判断一下返回的 "status" 是不是 "ok", 如果不是，将会返回 Err(ApiReturn)
+
 **具体返回了什么值，请查看 [OneBot v11 文档](https://github.com/botuniverse/onebot-11/blob/master/api/public.md) 或者服务端文档**
 
 ### `bot.get_msg()` 获取消息
@@ -321,7 +284,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回消息的内容，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -335,7 +298,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回合并转发消息的内容，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -345,7 +308,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回当前登录号的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -360,7 +323,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回陌生人的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -370,7 +333,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回好友列表，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -385,7 +348,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回群组的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -395,7 +358,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回群组列表，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -411,7 +374,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回群成员的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -425,7 +388,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回群成员列表，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -440,7 +403,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回群荣誉的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -454,7 +417,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回合并后的凭证信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -464,7 +427,7 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回运行状态的详细信息，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
 
 ***
 
@@ -474,7 +437,58 @@
 
 #### 返回
 
-- `Result<Value, ApiError>`: 如果操作成功，将返回版本信息的详细数据，类型为 `Value`。如果操作失败，将返回 `ApiError`。
+- `Result<ApiReturn, ApiReturn>`
+
+***
+
+### `bot.get_cookies()` 获取 Cookies
+
+获取指定域名的 Cookies。
+
+#### 参数
+
+- `domain`: 需要获取 Cookies 的域名。
+
+#### 返回
+
+- `Result<ApiReturn, ApiReturn>`
+
+***
+
+### `bot.get_csrf_token()` 获取 CSRF Token
+
+获取 CSRF Token。
+
+#### 返回
+
+- `Result<ApiReturn, ApiReturn>`
+
+***
+
+### `bot.get_record()` 获取语音
+
+获取并转换语音文件。
+
+#### 参数
+
+- `file`: 收到的语音文件名（消息段的 `file` 参数），例如 `0B38145AA44505000B38145AA4450500.silk`。
+- `out_format`: 要转换到的格式，支持 `mp3`、`amr`、`wma`、`m4a`、`spx`、`ogg`、`wav`、`flac`，具体请查看 OneBot 服务端。
+
+#### 返回
+
+- `Result<ApiReturn, ApiReturn>`
+
+***
+
+### `bot.get_image()` 获取图片
+
+获取指定的图片文件。
+
+#### 参数
+
+- `file`: 收到的图片文件名（消息段的 `file` 参数），例如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`。
+
+- `Result<ApiReturn, ApiReturn>`
 
 ## 拓展 API
 
@@ -499,6 +513,6 @@ let params = json!({
     "some_user_id":123,
     "some_group_id":123,
 });
-let value = bot.send_api_return("some_api", params).expect("意外出错");
+let api_return = bot.send_api_return("some_api", params).expect("意外出错");
 ```
 

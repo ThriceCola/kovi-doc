@@ -2,15 +2,15 @@
 
 在开发的时候总是会遇到一些事情要写一大串代码。
 
-为此，Kovi 包装了一些常用的函数。
-
-首先请打开 `utils` feature。目前这是默认打开的。
-
-都储存在 `kovi::utils` 里。
+为此，Kovi 包装了一些常用的函数和库。
 
 [[toc]]
 
 ## 保存读取数据
+
+首先请打开 `utils` feature。目前这是默认打开的。
+
+都储存在 `kovi::utils` 里。
 
 ### `load_json_data()` 加载本地json数据
 
@@ -81,7 +81,7 @@ let default_config = toml! {
 save_toml_data(&default_config, config_path).unwrap();
 ```
 
-### 帮忙导出一些常用依赖
+## 帮忙导出一些常用依赖
 
 介于有些写 bot 的依赖过于常用，Kovi 帮忙导出了。（因为 Kovi 框架里面也在用，所以顺便导出一下）
 

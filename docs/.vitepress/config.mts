@@ -59,18 +59,16 @@ export default defineConfig({
                             },
                             { text: "更好的开发体验", link: "/plugin/better" },
                             { text: "生命周期", link: "/plugin/life" },
+                            {
+                                text: "无畏并发-闭包间共享状态",
+                                link: "/plugin/arc",
+                            },
                         ],
                     },
                     {
                         text: "进阶技巧",
                         collapsed: false,
-                        items: [
-                            {
-                                text: "无畏并发-闭包间共享状态",
-                                link: "/plugin/arc",
-                            },
-                            { text: "异步", link: "/plugin/async" },
-                        ],
+                        items: [{ text: "异步", link: "/plugin/async" }],
                     },
                 ],
             },

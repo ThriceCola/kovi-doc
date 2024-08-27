@@ -8,14 +8,22 @@ export default defineConfig({
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [
-            { text: "Home", link: "/" },
-            { text: "About", link: "/about" },
+            { text: "主页", link: "/" },
+            { text: "关于", link: "/about" },
             {
                 text: "GitHub",
                 items: [
                     {
                         text: "Kovi",
                         link: "https://github.com/Threkork/Kovi/",
+                    },
+                    {
+                        text: "Kovi-cli",
+                        link: "https://github.com/Threkork/kovi-cli/",
+                    },
+                    {
+                        text: "Kovi-plugin",
+                        link: "https://github.com/Threkork/kovi-plugin/",
                     },
                     {
                         text: "Kovi-doc",
@@ -32,6 +40,8 @@ export default defineConfig({
                 items: [
                     { text: "准备", link: "/start/start" },
                     { text: "快速上手", link: "/start/fast" },
+                    { text: "kovi-cli", link: "/start/cli" },
+                    { text: "插件", link: "/start/plugins" },
                 ],
             },
             {

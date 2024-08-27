@@ -67,9 +67,9 @@ OneBot 服务端的 access_token 是什么？ (默认值：空)
 管理员的 ID 是什么？ (无默认值)
 ```
 
-## 插件开发
+## 3. 插件开发
 
-### 创建插件
+### 1. 创建插件
 
 推荐的插件开发方法是创建新目录 `plugins` 储存插件。跟着下面来吧。
 
@@ -104,7 +104,7 @@ cargo new plugins/hi --lib
 
 可以看到创建了新的 `plugins/hi` 目录，这也是推荐的插件开发方法，有目录管理总会是好的。
 
-### 编写插件
+### 2. 编写插件
 
 编写我们新创建的插件 `plugins/hi/src/lib.rs`
 
@@ -130,9 +130,13 @@ pub fn main(mut plugin: PluginBuilder) {
 
 插件一般不需要 `main.rs` 。
 
-### 挂载插件
+### 3. 挂载插件
 
 将依赖添加进根项目。
+
+> 如果你的 `kovi-cli` 是最新版，在创建插件时，就已经帮你 add 好了插件。
+> 
+> 不再需要使用 `cargo kovi add hi` 。
 
 ::: code-group
 

@@ -89,16 +89,18 @@ onMounted(fetchPlugins);
         <div v-if="loading">加载中...</div>
         <div v-else class="plugin-list">
             <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card" @mouseover="plugin.showCopyBox = true"
-                @mouseleave="plugin.showCopyBox = false" @click="goToLink(plugin.name)">
-                <div class="plugin-card-box">
-                    <div class="plugin-header">
-                        <div class="plugins-h2">{{ formatPluginName(plugin.name) }}</div>
-                        <div>
-                            <span class="badge" v-if="authorIsAuthor(plugin.author)">官方插件</span>
-                            <span class="version">{{ plugin.max_stable_version }}</span>
+                @mouseleave="plugin.showCopyBox = false">
+                <div @click="goToLink(plugin.name)">
+                    <div class="plugin-card-box">
+                        <div class="plugin-header">
+                            <div class="plugins-h2">{{ formatPluginName(plugin.name) }}</div>
+                            <div>
+                                <span class="badge" v-if="authorIsAuthor(plugin.author)">官方插件</span>
+                                <span class="version">{{ plugin.max_stable_version }}</span>
+                            </div>
                         </div>
+                        <p class="description">{{ formatPluginDescription(plugin.description) }}</p>
                     </div>
-                    <p class="description">{{ formatPluginDescription(plugin.description) }}</p>
                     <div class="card-footer">
                         <p class="last-updated">{{ formatDate(plugin.updated_at) }}</p>
                         <div style="display: flex; align-items: center;">
@@ -109,7 +111,6 @@ onMounted(fetchPlugins);
                         </div>
                     </div>
                 </div>
-
                 <Transition name="copy-box">
                     <div v-show="plugin.showCopyBox" class="copy-box">
                         <p>cargo kovi add {{ formatPluginName(plugin.name) }}</p>
@@ -162,9 +163,10 @@ onMounted(fetchPlugins);
     position: relative;
     background-color: #fff;
     border-radius: 12px;
-    padding: 16px;
     box-sizing: border-box;
     border: 1px solid var(--vp-c-divider);
+    min-height: 184px;
+    min-width: 345px;
     transition: all 0.3s;
 }
 
@@ -180,12 +182,14 @@ onMounted(fetchPlugins);
 }
 
 .plugin-card-box {
-    min-width: 280px;
-    height: 150px;
+    padding: 16px;
+    width: 100%;
+    height: 100%;
     top: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .plugin-header {
@@ -216,12 +220,13 @@ onMounted(fetchPlugins);
 }
 
 .description {
-    min-height: 50px;
+    min-height: 100px;
     margin: 0;
     color: #515151;
 }
 
 .card-footer {
+    margin: 0 16px 6px 16px;
     color: #c5c5c5;
     position: absolute;
     font-size: 14px;
@@ -229,7 +234,7 @@ onMounted(fetchPlugins);
     justify-content: space-between;
     align-items: center;
     bottom: 0;
-    width: 100%;
+    width: calc(100% - 32px)
 }
 
 .avatar {

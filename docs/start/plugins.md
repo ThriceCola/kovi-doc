@@ -12,9 +12,7 @@ import KoviPluginList from '../../components/KoviPluginList.vue'
 
 直接添加进依赖，即可以使用。
 
-## `crates.io 插件` 列表
-
-
+## `crates.io 插件列表`
 
 <KoviPluginList />
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, Transition } from 'vue';
 import axios from 'axios';
 
 const plugins = ref([]);
@@ -61,6 +61,26 @@ const authorIsAuthor = (author) => {
     return author == '三瓶可乐不过岗';
 };
 
+const copyToClipboard = (text, plugin) => {
+    navigator.clipboard.writeText(text).then(() => {
+        plugin.copyStatus = 'copied';
+
+        if (plugin.copyTimeout) {
+            clearTimeout(plugin.copyTimeout);
+        }
+        plugin.copyTimeout = setTimeout(() => {
+            plugin.copyStatus = 'default';
+        }, 3000);
+    });
+};
+
+const goToLink = (name) => {
+    if (name) {
+        const link = `https://crates.io/crates/${name}`
+        window.open(link, '_blank');
+    }
+}
+
 onMounted(fetchPlugins);
 </script>
 
@@ -68,7 +88,8 @@ onMounted(fetchPlugins);
     <div class="plugins-main">
         <div v-if="loading">加载中...</div>
         <div v-else class="plugin-list">
-            <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card">
+            <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card" @mouseover="plugin.showCopyBox = true"
+                @mouseleave="plugin.showCopyBox = false" @click="goToLink(plugin.name)">
                 <div class="plugin-card-box">
                     <div class="plugin-header">
                         <div class="plugins-h2">{{ formatPluginName(plugin.name) }}</div>
@@ -82,13 +103,21 @@ onMounted(fetchPlugins);
                         <p class="last-updated">{{ formatDate(plugin.updated_at) }}</p>
                         <div style="display: flex; align-items: center;">
                             <img v-if="plugin.avatar" :src="plugin.avatar" class="avatar" />
-                            <img v-else src="https://ga.viki.moe/avatar/85b811971305432e0c5c7e858b214ead?d=mp"
-                                class="avatar" />
+                            <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
                             <p class="author" v-if="plugin.author">{{ plugin.author }}</p>
                             <p class="author" v-else>Unknown Author</p>
                         </div>
                     </div>
                 </div>
+
+                <Transition name="copy-box">
+                    <div v-show="plugin.showCopyBox" class="copy-box">
+                        <p>cargo kovi add {{ formatPluginName(plugin.name) }}</p>
+                        <button @click="copyToClipboard(`cargo kovi add ${formatPluginName(plugin.name)}`, plugin)">
+                            {{ plugin.copyStatus === 'copied' ? '已复制' : '复制' }}
+                        </button>
+                    </div>
+                </Transition>
             </div>
         </div>
     </div>
@@ -97,6 +126,16 @@ onMounted(fetchPlugins);
 
 
 <style>
+.copy-box-enter-active,
+.copy-box-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.copy-box-enter-from,
+.copy-box-leave-to {
+    opacity: 0;
+}
+
 .plugins-h2 {
     font-weight: 700;
     font-size: 25px;
@@ -106,11 +145,8 @@ onMounted(fetchPlugins);
 .plugins-main {
     display: flex;
     flex-direction: column;
-    /* 将容器的主轴方向设置为垂直方向 */
     justify-content: center;
-    /* 水平方向居中 */
     align-items: center;
-    /* 垂直方向居中 */
 }
 
 .plugin-list {
@@ -124,12 +160,23 @@ onMounted(fetchPlugins);
 
 .plugin-card {
     position: relative;
-    background-color: #fefefe;
+    background-color: #fff;
     border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 16px;
-
     box-sizing: border-box;
+    border: 1px solid var(--vp-c-divider);
+    transition: all 0.3s;
+}
+
+.plugin-card:hover {
+    border: 1px solid var(--vp-c-brand-1);
+}
+
+.plugin-card p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+
 }
 
 .plugin-card-box {
@@ -139,7 +186,6 @@ onMounted(fetchPlugins);
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .plugin-header {
@@ -169,21 +215,21 @@ onMounted(fetchPlugins);
     font-size: 14px;
 }
 
-.plugin-card p {
-    margin: 8px 0;
-    font-size: 15px;
-}
-
 .description {
-    font-size: 14px;
     min-height: 50px;
+    margin: 0;
+    color: #515151;
 }
 
 .card-footer {
+    color: #c5c5c5;
+    position: absolute;
     font-size: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    bottom: 0;
+    width: 100%;
 }
 
 .avatar {
@@ -199,5 +245,48 @@ onMounted(fetchPlugins);
 
 .last-updated {
     color: #999;
+}
+
+.copy-box {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.473);
+    backdrop-filter: blur(6px);
+    color: #000000;
+
+    padding: 5px 16px 5px 16px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+.copy-box p {
+    margin: 0;
+    font-weight: 500;
+    font-size: 16px;
+    color: #515151;
+}
+
+.copy-box button {
+    background-color: #ffffff;
+    border: none;
+    padding: 4px 8px;
+    border: 1px solid #eeeeee;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--vp-c-brand-1);
+    font-weight: 500;
+    font-size: 14px;
+    width: 70px;
+}
+
+.copy-box button:hover {
+    border: 1px solid var(--vp-c-brand-1);
+    background-color: #fff;
+    transition: all 0.3s;
 }
 </style>

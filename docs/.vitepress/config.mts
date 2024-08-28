@@ -47,39 +47,40 @@ export default defineConfig({
             {
                 text: "开发插件",
                 collapsed: false,
+
                 items: [
+                    { text: "基础", link: "/plugin/basics" },
+                    { text: "监听事件", link: "/plugin/onevent" },
+                    { text: "事件 Event", link: "/plugin/event" },
+                    { text: "Message", link: "/plugin/message" },
                     {
-                        text: "入门知识",
+                        text: "RuntimeBot 与 Api",
                         collapsed: false,
                         items: [
-                            { text: "基础", link: "/plugin/basics" },
-                            { text: "监听事件", link: "/plugin/onevent" },
-                            { text: "事件 Event", link: "/plugin/event" },
-                            { text: "Message", link: "/plugin/message" },
                             {
-                                text: "RuntimeBot 与 Api",
-                                collapsed: false,
-                                items: [
-                                    {
-                                        text: "RuntimeBot",
-                                        link: "/plugin/runtimebot",
-                                    },
-                                    { text: "Api 列表", link: "/plugin/api" },
-                                ],
+                                text: "RuntimeBot",
+                                link: "/plugin/runtimebot",
                             },
-                            { text: "更好的开发体验", link: "/plugin/better" },
-                            { text: "生命周期", link: "/plugin/life" },
-                            {
-                                text: "无畏并发-闭包间共享状态",
-                                link: "/plugin/arc",
-                            },
+                            { text: "Api 列表", link: "/plugin/api" },
                         ],
                     },
+
                     {
-                        text: "进阶技巧",
-                        collapsed: false,
-                        items: [{ text: "异步", link: "/plugin/async" }],
+                        text: "数据存储",
+                        link: "/plugin/data",
                     },
+                    {
+                        text: "更好的开发体验",
+                        link: "/plugin/better",
+                    },
+
+                    { text: "生命周期", link: "/plugin/life" },
+                    {
+                        text: "无畏并发-闭包间共享状态",
+                        link: "/plugin/arc",
+                    },
+
+                    { text: "异步", link: "/plugin/async" },
                 ],
             },
         ],

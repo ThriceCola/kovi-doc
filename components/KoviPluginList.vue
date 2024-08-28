@@ -3,6 +3,33 @@ import { ref, onMounted, Transition } from 'vue';
 import axios from 'axios';
 
 const plugins = ref([]);
+
+//测试用
+// const plugins = ref([
+//     {
+//         name: 'kovi-plugin-1',
+//         description: 'This is a test plugin 1',
+//         updated_at: '2023-01-01T00:00:00Z',
+//         downloads: 100,
+//         version: '1.0.0',
+//         documentation: 'https://example.com/plugin1',
+//         homepage: 'https://example.com/plugin1',
+//         repository: 'https://github.com/example/plugin1',
+//         author: 'Author 1',
+//     },
+//     {
+//         name: 'kovi-plugin-2',
+//         description: 'This is a test plugin 2',
+//         updated_at: '2023-01-02T00:00:00Z',
+//         downloads: 200,
+//         version: '2.0.0',
+//         documentation: 'https://example.com/plugin2',
+//         homepage: 'https://example.com/plugin2',
+//         repository: 'https://github.com/example/plugin2',
+//         author: 'Author 2',
+//     },
+// ])
+
 const loading = ref(true);
 
 const fetchPluginAuthor = async (pluginName) => {
@@ -48,8 +75,8 @@ const formatPluginName = (name) => {
     return name.replace(/^kovi-plugin-/, '');
 };
 
-const formatPluginDescription = (description) => {
-    return description.length > 50 ? description.slice(0, 50) + '...' : description;
+const formatTextLen = (description, len) => {
+    return description.length > len ? description.slice(0, len) + '...' : description;
 };
 
 const formatDate = (dateString) => {
@@ -99,7 +126,7 @@ onMounted(fetchPlugins);
                                 <span class="version">{{ plugin.max_stable_version }}</span>
                             </div>
                         </div>
-                        <p class="description">{{ formatPluginDescription(plugin.description) }}</p>
+                        <p class="description">{{ formatTextLen(plugin.description, 50) }}</p>
                     </div>
                     <div class="card-footer">
                         <p class="last-updated">{{ formatDate(plugin.updated_at) }}</p>
@@ -165,8 +192,8 @@ onMounted(fetchPlugins);
     border-radius: 12px;
     box-sizing: border-box;
     border: 1px solid var(--vp-c-divider);
-    min-height: 184px;
-    min-width: 345px;
+    min-height: 150px;
+    min-width: 300px;
     transition: all 0.3s;
 }
 
@@ -227,7 +254,7 @@ onMounted(fetchPlugins);
 
 .card-footer {
     margin: 0 16px 6px 16px;
-    color: #c5c5c5;
+    color: #858585;
     position: absolute;
     font-size: 14px;
     display: flex;
@@ -241,15 +268,15 @@ onMounted(fetchPlugins);
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    margin-right: 8px;
+    margin: 0 8px 0 8px;
 }
 
 .author {
-    color: #999;
-}
-
-.last-updated {
-    color: #999;
+    max-width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #6b6b6b;
 }
 
 .copy-box {

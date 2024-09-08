@@ -25,7 +25,7 @@ pub fn main(p: PluginBuilder) {
 
 ### `load_json_data()` 加载本地json数据
 
-如果本地保存过数据，config会是本地的数据，如果没有本地数据，则返回默认的数据，并且保存一份数据到路经。
+如果本地保存过数据，返回的会是本地的数据，如果没有本地数据，则返回传入的默认的数据，并且保存一份数据到路经。
 
 ```rust
 use serde_json::{json, Value};

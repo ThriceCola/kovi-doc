@@ -65,10 +65,6 @@ export default defineConfig({
                     },
 
                     { text: "生命周期", link: "/plugin/life" },
-                    {
-                        text: "无畏并发-闭包间共享状态",
-                        link: "/plugin/arc",
-                    },
                 ],
             },
             {

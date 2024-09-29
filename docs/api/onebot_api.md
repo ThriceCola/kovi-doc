@@ -1,4 +1,4 @@
-# API 列表
+# OneBot API 列表
 
 [[toc]]
 
@@ -258,7 +258,7 @@ pub struct ApiReturn {
 #### 参数
 
 - `flag`: 加群请求的标识（需从上报的数据中获得）。
-- `sub_type`: 请求类型，`add` 或 `invite`。需与上报消息中的 `sub_type` 字段一致。
+- `type`: add 或 invite，请求类型（需要和上报消息中的 sub_type 或 type 字段相符），由于不同服务端实现不一样，Kovi 提供一个枚举，使用需注意服务端要求是 sub_type 还是 type 。
 - `approve`: 是否同意请求或邀请。传入 `true` 表示同意，`false` 表示拒绝。
 - `reason`: 拒绝理由。仅在拒绝时有效。可以为空字符串。
 
@@ -489,30 +489,4 @@ pub struct ApiReturn {
 - `file`: 收到的图片文件名（消息段的 `file` 参数），例如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`。
 
 - `Result<ApiReturn, ApiReturn>`
-
-## 拓展 API
-
-如果需要发送服务端的拓展 API，使用 `bot.send_api()` 和 `bot.send_api_return()` 实现。
-
-一种是无需关注返回值的 API，另一种是需要关注返回值的 API。
-
-如下
-
-```rust
-let bot = plugin.build_runtime_bot()
-let params = json!({
-    "some_user_id":123,
-    "some_group_id":123,
-});
-bot.send_api("some_api", params);
-```
-
-```rust
-let bot = plugin.build_runtime_bot()
-let params = json!({
-    "some_user_id":123,
-    "some_group_id":123,
-});
-let api_return = bot.send_api_return("some_api", params).expect("意外出错");
-```
 

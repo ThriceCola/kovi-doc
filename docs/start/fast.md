@@ -112,12 +112,11 @@ cargo new plugins/hi --lib
 
 ```rust
 // 导入插件构造结构体
-use kovi::PluginBuilder;
+use kovi::PluginBuilder as plugin;
 
 #[kovi::plugin] // 构造插件
-pub fn main(mut plugin: PluginBuilder) {
-    // 必须要求 main 传入 PluginBuilder ，这是插件的基础。
-    plugin.on_msg(move |event| {
+async fn my_plugin_main() {
+    plugin::on_msg(|event| async move {
         // on_msg() 为监听消息，event 里面包含本次消息的所有信息。
         if event.borrow_text() == Some("Hi Bot") {
             event.reply("Hi!") //快捷回复
@@ -166,12 +165,12 @@ fn main() {
 #### bot 主动发言
 
 ```rust
-use kovi::PluginBuilder;
+use kovi::PluginBuilder as plugin;
 
 #[kovi::plugin]
-pub fn main(mut plugin: PluginBuilder) {
+async fn my_plugin_main() {
     // 构造 RuntimeBot
-    let bot = plugin.build_runtime_bot();
+    let bot = plugin::get_runtime_bot();
     let user_id = bot.main_admin;
 
     bot.send_private_msg(user_id, "bot online")
@@ -180,6 +179,6 @@ pub fn main(mut plugin: PluginBuilder) {
 
 `main()` 函数 只会在 `Kovi` 启动时运行一次。
 
-向 `plugin.on_msg()` 传入的闭包，会在每一次接收消息时运行。
+向 `plugin::on_msg()` 传入的闭包，会在每一次接收消息时运行。
 
 `Kovi` 已封装所有可用 `OneBot` 标准 API，拓展 API 你可以使用 `RuntimeBot` 的 `send_api()` 来自行发送 API。

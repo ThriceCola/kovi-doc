@@ -53,17 +53,7 @@ export default defineConfig({
                     { text: "监听事件", link: "/plugin/onevent" },
                     { text: "事件 Event", link: "/plugin/event" },
                     { text: "Message", link: "/plugin/message" },
-                    {
-                        text: "RuntimeBot 与 Api",
-                        collapsed: false,
-                        items: [
-                            {
-                                text: "RuntimeBot",
-                                link: "/plugin/runtimebot",
-                            },
-                            { text: "Api 列表", link: "/plugin/api" },
-                        ],
-                    },
+                    { text: "RuntimeBot 与 Api", link: "/plugin/runtimebot" },
 
                     {
                         text: "数据存储",
@@ -79,9 +69,13 @@ export default defineConfig({
                         text: "无畏并发-闭包间共享状态",
                         link: "/plugin/arc",
                     },
-
-                    { text: "异步", link: "/plugin/async" },
                 ],
+            },
+            {
+                text: "附录",
+                collapsed: false,
+
+                items: [{ text: "OneBot Api", link: "/api/onebot_api" }],
             },
         ],
 

@@ -32,11 +32,48 @@ fn main() {
 
 :::
 
+当然，也可以自己创建 Bot 实例，但是这需要你手动做很多事情。
+
+```rust
+use kovi::bot::{KoviConf, Server};
+use std::{
+    net::{IpAddr, Ipv4Addr},
+    sync::Arc,
+};
+fn main() {
+    let conf_a: KoviConf = kovi::bot::Bot::load_local_conf();
+
+    let conf_b: KoviConf = KoviConf::new(
+        10000,
+        None,
+        Server {
+            host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
+            port: 8081,
+            access_token: "".to_string(),
+        },
+        false,
+    );
+
+    kovi::logger::try_set_logger();
+
+    let mut bot = kovi::Bot::build(conf_b);
+
+    bot.mount_main(
+        "plugin_name",
+        "0.1.0",
+        Arc::new(testkovi::__kovi_run_async_plugin),
+    );
+
+    bot.run();
+}
+```
+
+
 ## 运行 Bot
 
 运行 Bot 很简单 ，就是拥有了一个 Bot 实例后，直接 `bot.run()` 即可。
 
-`bot.run()` 是阻塞的，程序不会运行写在 `bot.run()` 后的代码。但是你可以在 `build_bot!()` 与 `bot.run()` 之间做你想要做的事情。
+`bot.run()` 是阻塞的，并且接管了整个程序，程序不会运行写在 `bot.run()` 后的任何代码。但是你可以在 `build_bot!()` 与 `bot.run()` 之间做你想要做的事情。
 
 ```rust
 use kovi::build_bot;
@@ -53,15 +90,36 @@ fn main() {
 
 通过 `kovi-cli` 或者 `cargo` 可以很好的去构建插件， cargo 的工作区可以使插件开发更加便捷。具体可看[快速上手#插件开发](/start/fast#插件开发)。
 
-通过在 `main()` 里要求传入 `plugin: PluginBuilder` 使得插件 crate 可以使用 `plugin` 的各种功能。比如 `plugin.on_msg` 监听消息事件。
+通过 `PluginBuilder` 使得插件 crate 可以使用 `plugin` 的各种功能。比如 `PluginBuilder::on_msg` 监听消息事件。
 
 ```rust
 use kovi::PluginBuilder;
 
 #[kovi::plugin]
-pub fn main(mut plugin: PluginBuilder) {
+async fn my_plugin_main() {
 }
 ```
+
+> [!CAUTION]
+> 
+> PluginBuilder 只能在插件入口函数中使用。如果在其他地方使用，会导致运行时出错，出错原因是没有 PluginBuilder 实例。
+>
+> 以下代码会在运行时出错。
+> 
+> ```rust
+> use kovi::{log::info, PluginBuilder as plugin};
+> 
+> #[kovi::plugin]
+> async fn main() {
+>     plugin::on_msg(|event| async move {
+>         plugin::cron("* * * * *", || async move { // 这里会出错
+>             info!("我会出错");
+>         })
+>         .unwrap();
+>     });
+> }
+> ```
+>
 
 ::: tip 你可能想要知道的
 
@@ -69,6 +127,6 @@ pub fn main(mut plugin: PluginBuilder) {
 
 它展开后，会创建一个公开函数，通过这个函数，可以获取到插件 crate 的 `name` 和 `version`。这是 `build_bot!()` 所需的信息。
 
-如果插件是异步函数，它会帮你做一些额外操作，以便于 `Kovi` 去运行。
+因为插件是异步函数，所以它会帮你做一些额外操作，以便于 `Kovi` 去运行。
 
 :::

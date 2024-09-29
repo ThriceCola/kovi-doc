@@ -44,6 +44,3 @@ cargo kovi add like
 创建 Kovi 插件。
 
 在 Kovi 工作区下，会自动创建一个 插件 crate 。并将此本地插件加入进根 crate 下的 `Cargo.toml` 依赖中。
-
-
-<KoviPluginList />

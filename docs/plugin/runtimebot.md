@@ -1,6 +1,6 @@
 # RuntimeBot
 
-通过 `plugin.build_runtime_bot()` 可以获取到 `RuntimeBot` 里面可以获取到 `Bot` 的信息，以及发送 API。
+通过 `PluginBuilder::get_runtime_bot()` 可以获取到 `RuntimeBot` ，里面可以获取到 `Bot` 的信息，以及发送 API。
 
 [[toc]]
 
@@ -12,7 +12,7 @@ pub struct RuntimeBot {
     pub admin: Vec<i64>, /// 副管理员，不包含主管理员
     pub host: IpAddr,
     pub port: u16,
-    pub api_tx: mpsc::Sender<ApiMpsc>, /// 不推荐的 api 发送方式，请改用 bot.send_api() 发送api。
+    pub api_tx: mpsc::Sender<ApiOneshot>, /// 不推荐的 api 发送方式，请改用 bot.send_api() 发送api。
 }
 ```
 
@@ -20,17 +20,8 @@ pub struct RuntimeBot {
 
 ```rust
 #[kovi::plugin]
-pub fn main(mut plugin: PluginBuilder) { // [!code focus]
-    let bot = plugin.build_runtime_bot(); // [!code focus]
-}
-```
-
-如何在多个监听闭包中使用 `RuntimeBot`
-
-```rust
-#[kovi::plugin]
-pub fn main(mut plugin: PluginBuilder) { // [!code focus]
-    let bot = Arc::new(plugin.build_runtime_bot()); // [!code focus]
+async fn main() { 
+    let bot = PluginBuilder::get_runtime_bot(); // [!code focus]
 }
 ```
 
@@ -38,12 +29,37 @@ pub fn main(mut plugin: PluginBuilder) { // [!code focus]
 
 所有的标准 OneBot v11 API 都已经封装在 `RuntimeBot` 里。
 
-标准 API 查看 [API 列表](/plugin/api)
+在 0.8.0 版本，可以通过 `use kovi::expand::lagrange`
+
+标准 API 查看 [API 列表](/api/onebot_api)
 
 
 ## 拓展 API
 
-请查看 [拓展 API](/plugin/api#拓展-api)
+如果需要发送服务端的拓展 API，使用 `bot.send_api()` 和 `bot.send_api_return()` 实现。
+
+一种是无需关注返回值的 API，另一种是需要关注返回值的 API。
+
+如下
+
+```rust
+let bot = PluginBuilder::get_runtime_bot()
+let params = json!({
+    "some_user_id":123,
+    "some_group_id":123,
+});
+bot.send_api("some_api", params);
+```
+
+```rust
+let bot = PluginBuilder::get_runtime_bot()
+let params = json!({
+    "some_user_id":123,
+    "some_group_id":123,
+});
+let api_return = bot.send_api_return("some_api", params).expect("意外出错");
+```
+
 
 
 

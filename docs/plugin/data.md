@@ -6,22 +6,19 @@ Kovi 希望开发者能有统一的规范。这包括数据存储在何处。
 
 如何便捷的取得属于自己插件的路径呢？
 
-在 `PluginBuilder` 有个方法 `get_data_path()` 可以获取到属于自己插件的路径。
+在 `RuntimeBot` 有个方法 `get_data_path()` 可以获取到属于自己插件的路径。
 
 ```rust
 #[kovi::plugin]
-pub fn main(p: PluginBuilder) {
-    let data_path = p.get_data_path();
+async fn main() {
+    let bot = PluginBuilder::get_runtime_bot();
+    let data_path = bot.get_data_path();
     let config_json_path = data_path.join("config.json");
     let config_toml_path = data_path.join("config.toml");
 }
 ```
 
 ## 保存读取数据
-
-首先请打开 `utils` feature。目前这是默认打开的。
-
-都储存在 `kovi::utils` 里。
 
 ### `load_json_data()` 加载本地json数据
 
@@ -30,11 +27,12 @@ pub fn main(p: PluginBuilder) {
 ```rust
 use serde_json::{json, Value};
 use kovi::utils::load_json_data;
-use kovi::PluginBuilder;
+use kovi::PluginBuilder as p;
 
 #[kovi::plugin]
-pub fn main(p: PluginBuilder) {
-    let data_path = p.get_data_path();
+async fn main() {
+    let bot = p::get_runtime_bot();
+    let data_path = bot.get_data_path();
     let config_path = data_path.join("config.json");
     let default_config: Value = json!({
         "id": "123456",
@@ -64,11 +62,12 @@ let config = load_toml_data(default_config, config_path).unwrap();
 ```rust
 use serde_json::{json, Value};
 use kovi::utils::save_json_data;
-use kovi::PluginBuilder;
+use kovi::PluginBuilder as p;
 
 #[kovi::plugin]
-pub fn main(p: PluginBuilder) {
-    let data_path = p.get_data_path();
+async fn main() {
+    let bot = p::get_runtime_bot();
+    let data_path = bot.get_data_path();
     let config_path = data_path.join("config.json");
     let default_config: Value = json!({
         "id": "123"

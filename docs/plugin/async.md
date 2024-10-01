@@ -95,6 +95,6 @@ async fn main() {
 
 ## 问题二：异步中，不要在.await时持有锁。
 
-详细可看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#restructure-your-code-to-not-hold-the-lock-across-an-await)
+详细可看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#holding-a-mutexguard-across-an-await)
 
 

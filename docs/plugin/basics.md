@@ -93,10 +93,13 @@ fn main() {
 通过 `PluginBuilder` 使得插件 crate 可以使用 `plugin` 的各种功能。比如 `PluginBuilder::on_msg` 监听消息事件。
 
 ```rust
-use kovi::PluginBuilder;
+use kovi::PluginBuilder as plugin;
 
 #[kovi::plugin]
 async fn my_plugin_main() {
+    plugin::on_msg(|event| async move {
+        todo!();
+    })
 }
 ```
 
@@ -119,6 +122,8 @@ async fn my_plugin_main() {
 >     });
 > }
 > ```
+> 
+> 这防止了一些逻辑错误，谁知道会不会有人写出，来一次消息，注册一次监听事件呢？
 >
 
 ::: tip 你可能想要知道的

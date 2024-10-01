@@ -68,6 +68,15 @@ export default defineConfig({
                 ],
             },
             {
+                text: "学习与提升",
+                collapsed: false,
+
+                items: [
+                    { text: "无畏并发-闭包间共享状态", link: "/plugin/arc" },
+                    { text: "异步", link: "/plugin/async" },
+                ],
+            },
+            {
                 text: "附录",
                 collapsed: false,
 

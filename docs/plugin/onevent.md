@@ -41,7 +41,7 @@ async fn main() {
 添加好友私聊消息监听函数。
 
 
-关于 [PrivateMsgEvent](/plugin/event#privatemggevent) ，点击前往查看
+关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -57,7 +57,7 @@ async fn main() {
 添加群消息监听函数。
 
 
-关于 [GroupMsgEvent](/plugin/event#groupmsgevent) ，点击前往查看
+关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]

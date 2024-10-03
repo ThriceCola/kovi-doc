@@ -31,9 +31,7 @@ async fn main() {
 
 标准 API 查看 [API 列表](/api/onebot_api)
 
-在 0.8.0 版本，可以通过 `use kovi::expand::lagrange` 里面的几个 trait 来实现 `lagrange` 的封装。
-
-
+可以通过 crates.io 的一些插件来提供更多服务端的 Api 拓展，如 `kovi-plugin-expand-lagrange` 的 `lagrange` 的拓展。
 
 
 ## 拓展 API

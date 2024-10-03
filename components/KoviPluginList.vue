@@ -126,19 +126,19 @@ onMounted(fetchPlugins);
             >
                 <div @click="goToLink(plugin.name)">
                     <div class="plugin-card-box">
+                        <div class="label">
+                            <span
+                                class="badge"
+                                v-if="authorIsAuthor(plugin.author)"
+                                >官方插件</span
+                            >
+                            <span class="version">{{
+                                plugin.max_stable_version
+                            }}</span>
+                        </div>
                         <div class="plugin-header">
                             <div class="plugins-h2">
                                 {{ formatPluginName(plugin.name) }}
-                            </div>
-                            <div class="label">
-                                <span
-                                    class="badge"
-                                    v-if="authorIsAuthor(plugin.author)"
-                                    >官方插件</span
-                                >
-                                <span class="version">{{
-                                    plugin.max_stable_version
-                                }}</span>
                             </div>
                         </div>
                         <p class="description">
@@ -208,7 +208,7 @@ onMounted(fetchPlugins);
 
 .plugins-h2 {
     font-weight: 700;
-    font-size: 25px;
+    font-size: 24px;
     color: #232323;
 }
 
@@ -234,9 +234,10 @@ onMounted(fetchPlugins);
     border-radius: 12px;
     box-sizing: border-box;
     border: 1px solid var(--vp-c-divider);
-    min-height: 150px;
-    max-width: 330px;
+    height: 165px;
+    width: 330px;
     transition: all 0.3s;
+    word-break: break-all;
 }
 
 .plugin-card:hover {
@@ -253,7 +254,6 @@ onMounted(fetchPlugins);
     padding: 16px;
     width: 100%;
     height: 100%;
-    top: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -265,34 +265,35 @@ onMounted(fetchPlugins);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-}
-
-.plugin-header h2 {
-    margin-bottom: 10px;
-    font-size: 22px;
+    max-width: 190px;
 }
 
 .label {
+    position: absolute;
+    right: 0%;
     /* 必须横向布局 */
     display: flex;
     align-items: center;
     justify-content: center;
     min-width: 120px;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 8px;
 }
 
 .badge {
-    background-color: #97e9b4;
+    background-color: #ffcfcf;
     border-radius: 4px;
     padding: 2px 6px;
-    font-size: 14px;
     margin-right: 4px;
+    max-height: 26px;
 }
 
 .version {
-    background-color: #ffb656;
+    background-color: #eff0f3;
     border-radius: 4px;
     padding: 2px 6px;
-    font-size: 14px;
+    max-height: 26px;
 }
 
 .description {

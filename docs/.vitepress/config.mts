@@ -80,10 +80,7 @@ export default defineConfig({
                 text: "附录",
                 collapsed: false,
 
-                items: [
-                    { text: "OneBot Api", link: "/api/onebot_api" },
-                    { text: "Lagrange Api", link: "/api/lagrange_api" },
-                ],
+                items: [{ text: "OneBot Api", link: "/api/onebot_api" }],
             },
         ],
 

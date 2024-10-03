@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, Transition } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, Transition } from "vue";
+import axios from "axios";
 
 const plugins = ref([]);
 
@@ -39,12 +39,12 @@ const fetchPluginAuthor = async (pluginName) => {
         );
 
         return {
-            author: response.data.users[0]?.name || 'Unknown Author',
+            author: response.data.users[0]?.name || "Unknown Author",
             avatar: response.data.users[0]?.avatar || null,
         };
     } catch (error) {
         console.error(`Failed to fetch author for ${pluginName}:`, error);
-        return { author: 'Unknown Author', avatar: null };
+        return { author: "Unknown Author", avatar: null };
     }
 };
 
@@ -65,48 +65,50 @@ const fetchPlugins = async () => {
 
         plugins.value = pluginsWithAuthors;
     } catch (error) {
-        console.error('Failed to fetch plugins:', error);
+        console.error("Failed to fetch plugins:", error);
     } finally {
         loading.value = false;
     }
 };
 
 const formatPluginName = (name) => {
-    return name.replace(/^kovi-plugin-/, '');
+    return name.replace(/^kovi-plugin-/, "");
 };
 
 const formatTextLen = (description, len) => {
-    return description.length > len ? description.slice(0, len) + '...' : description;
+    return description.length > len
+        ? description.slice(0, len) + "..."
+        : description;
 };
 
 const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 const authorIsAuthor = (author) => {
-    return author == '三瓶可乐不过岗';
+    return author == "三瓶可乐不过岗";
 };
 
 const copyToClipboard = (text, plugin) => {
     navigator.clipboard.writeText(text).then(() => {
-        plugin.copyStatus = 'copied';
+        plugin.copyStatus = "copied";
 
         if (plugin.copyTimeout) {
             clearTimeout(plugin.copyTimeout);
         }
         plugin.copyTimeout = setTimeout(() => {
-            plugin.copyStatus = 'default';
+            plugin.copyStatus = "default";
         }, 3000);
     });
 };
 
 const goToLink = (name) => {
     if (name) {
-        const link = `https://crates.io/crates/${name}`
-        window.open(link, '_blank');
+        const link = `https://crates.io/crates/${name}`;
+        window.open(link, "_blank");
     }
-}
+};
 
 onMounted(fetchPlugins);
 </script>
@@ -115,34 +117,76 @@ onMounted(fetchPlugins);
     <div class="plugins-main">
         <div v-if="loading">加载中...</div>
         <div v-else class="plugin-list">
-            <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card" @mouseover="plugin.showCopyBox = true"
-                @mouseleave="plugin.showCopyBox = false">
+            <div
+                v-for="plugin in plugins"
+                :key="plugin.id"
+                class="plugin-card"
+                @mouseover="plugin.showCopyBox = true"
+                @mouseleave="plugin.showCopyBox = false"
+            >
                 <div @click="goToLink(plugin.name)">
                     <div class="plugin-card-box">
                         <div class="plugin-header">
-                            <div class="plugins-h2">{{ formatPluginName(plugin.name) }}</div>
-                            <div>
-                                <span class="badge" v-if="authorIsAuthor(plugin.author)">官方插件</span>
-                                <span class="version">{{ plugin.max_stable_version }}</span>
+                            <div class="plugins-h2">
+                                {{ formatPluginName(plugin.name) }}
+                            </div>
+                            <div class="label">
+                                <span
+                                    class="badge"
+                                    v-if="authorIsAuthor(plugin.author)"
+                                    >官方插件</span
+                                >
+                                <span class="version">{{
+                                    plugin.max_stable_version
+                                }}</span>
                             </div>
                         </div>
-                        <p class="description">{{ formatTextLen(plugin.description, 50) }}</p>
+                        <p class="description">
+                            {{ formatTextLen(plugin.description, 50) }}
+                        </p>
                     </div>
                     <div class="card-footer">
-                        <p class="last-updated">{{ formatDate(plugin.updated_at) }}</p>
-                        <div style="display: flex; align-items: center;">
-                            <img v-if="plugin.avatar" :src="plugin.avatar" class="avatar" />
-                            <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
-                            <p class="author" v-if="plugin.author">{{ plugin.author }}</p>
+                        <p class="last-updated">
+                            {{ formatDate(plugin.updated_at) }}
+                        </p>
+                        <div style="display: flex; align-items: center">
+                            <img
+                                v-if="plugin.avatar"
+                                :src="plugin.avatar"
+                                class="avatar"
+                            />
+                            <img
+                                v-else
+                                src="https://ga.viki.moe/avatar/?d=mp"
+                                class="avatar"
+                            />
+                            <p class="author" v-if="plugin.author">
+                                {{ plugin.author }}
+                            </p>
                             <p class="author" v-else>Unknown Author</p>
                         </div>
                     </div>
                 </div>
                 <Transition name="copy-box">
                     <div v-show="plugin.showCopyBox" class="copy-box">
-                        <p>cargo kovi add {{ formatPluginName(plugin.name) }}</p>
-                        <button @click="copyToClipboard(`cargo kovi add ${formatPluginName(plugin.name)}`, plugin)">
-                            {{ plugin.copyStatus === 'copied' ? '已复制' : '复制' }}
+                        <p>
+                            cargo kovi add {{ formatPluginName(plugin.name) }}
+                        </p>
+                        <button
+                            @click="
+                                copyToClipboard(
+                                    `cargo kovi add ${formatPluginName(
+                                        plugin.name
+                                    )}`,
+                                    plugin
+                                )
+                            "
+                        >
+                            {{
+                                plugin.copyStatus === "copied"
+                                    ? "已复制"
+                                    : "复制"
+                            }}
                         </button>
                     </div>
                 </Transition>
@@ -150,8 +194,6 @@ onMounted(fetchPlugins);
         </div>
     </div>
 </template>
-
-
 
 <style>
 .copy-box-enter-active,
@@ -183,7 +225,7 @@ onMounted(fetchPlugins);
     flex-direction: row;
     justify-content: center;
     gap: 16px;
-    row-gap: 16px
+    row-gap: 16px;
 }
 
 .plugin-card {
@@ -193,7 +235,7 @@ onMounted(fetchPlugins);
     box-sizing: border-box;
     border: 1px solid var(--vp-c-divider);
     min-height: 150px;
-    min-width: 300px;
+    max-width: 330px;
     transition: all 0.3s;
 }
 
@@ -205,7 +247,6 @@ onMounted(fetchPlugins);
     margin: 0;
     font-weight: 500;
     font-size: 16px;
-
 }
 
 .plugin-card-box {
@@ -229,6 +270,14 @@ onMounted(fetchPlugins);
 .plugin-header h2 {
     margin-bottom: 10px;
     font-size: 22px;
+}
+
+.label {
+    /* 必须横向布局 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
 }
 
 .badge {
@@ -261,7 +310,7 @@ onMounted(fetchPlugins);
     justify-content: space-between;
     align-items: center;
     bottom: 0;
-    width: calc(100% - 32px)
+    width: calc(100% - 32px);
 }
 
 .avatar {
@@ -294,7 +343,6 @@ onMounted(fetchPlugins);
     align-items: center;
     width: 100%;
 }
-
 
 .copy-box p {
     margin: 0;

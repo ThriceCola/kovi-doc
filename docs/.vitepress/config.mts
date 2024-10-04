@@ -41,7 +41,7 @@ export default defineConfig({
                     { text: "准备", link: "/start/start" },
                     { text: "快速上手", link: "/start/fast" },
                     { text: "kovi-cli", link: "/start/cli" },
-                    { text: "插件", link: "/start/plugins" },
+                    { text: "插件市场", link: "/start/plugins" },
                 ],
             },
             {

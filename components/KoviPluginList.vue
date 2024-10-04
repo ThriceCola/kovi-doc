@@ -265,7 +265,7 @@ onMounted(fetchPlugins);
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    max-width: 190px;
+    max-width: 180px;
 }
 
 .label {
@@ -278,7 +278,7 @@ onMounted(fetchPlugins);
     min-width: 120px;
     text-align: center;
     font-size: 14px;
-    margin-right: 8px;
+    margin-right: 10px;
 }
 
 .badge {
@@ -350,6 +350,8 @@ onMounted(fetchPlugins);
     font-weight: 500;
     font-size: 16px;
     color: #515151;
+    line-height: 20px;
+    word-break: keep-all;
 }
 
 .copy-box button {

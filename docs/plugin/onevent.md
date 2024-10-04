@@ -4,7 +4,7 @@
 
 [[toc]]
 
-## PluginBuilder::on_msg()
+## on_msg()
 
 添加消息监听函数, 包括好友私聊、群消息以及讨论组消息
 
@@ -20,7 +20,7 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::on_admin_msg()
+## on_admin_msg()
 
 添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，`Kovi` 会帮你筛选消息。
 
@@ -36,7 +36,7 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::on_private_msg()
+## on_private_msg()
 
 添加好友私聊消息监听函数。
 
@@ -52,7 +52,7 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::on_group_msg()
+## on_group_msg()
 
 添加群消息监听函数。
 
@@ -68,7 +68,7 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::on_all_notice()
+## on_all_notice()
 
 添加 OneBot 的 `通知事件` 监听函数。
 
@@ -84,7 +84,7 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::on_all_request()
+## on_all_request()
 
 添加 OneBot 的 `请求事件` 监听函数。
 
@@ -100,12 +100,47 @@ async fn main() {
 }
 ```
 
-## PluginBuilder::drop() 
+
+## cron() 和 cron_use_croner()
+
+添加一个定时任务。
+
+传入的 cron 会使用 `croner` 进行解析。
+
+```rust
+use kovi::croner;
+use kovi::{log::info, PluginBuilder as p};
+
+#[kovi::plugin]
+async fn main() {
+    // 每天00:00
+    p::cron("0 0 * * *", || async {
+        info!("00:00");
+    })
+    .unwrap();
+
+    // 每一秒
+    p::cron("* * * * * *", || async {
+        info!("每一秒");
+    })
+    .unwrap();
+
+    let cron = croner::Cron::new("0 0 * * *").parse().unwrap();
+    p::cron_use_croner(cron, || async {
+        info!("00:00");
+    });
+}
+```
+
+
+
+## drop() 
 
 添加 程序退出 监听函数。
 
 如果你需要在程序结束时，运行一些代码，可以使用此监听来监听程序退出。
 
+为了提高用户侧退出体验，程序在接收到第二次退出信号的时候，会强制退出程序。
 
 > [!CAUTION]
 > 
@@ -116,7 +151,7 @@ async fn main() {
 ```rust
 #[kovi::plugin]
 async fn main() {
-    PluginBuilder::drop(|| async move { // [!code focus]
+    PluginBuilder::drop(|| async { // [!code focus]
         println!("正在退出程序"); // [!code focus]
     }); // [!code focus]
 }

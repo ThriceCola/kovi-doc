@@ -120,7 +120,7 @@ onMounted(fetchPlugins);
             <div
                 v-for="plugin in plugins"
                 :key="plugin.id"
-                class="plugin-card"
+                class="plugin-card brackground"
                 @mouseover="plugin.showCopyBox = true"
                 @mouseleave="plugin.showCopyBox = false"
             >
@@ -173,6 +173,7 @@ onMounted(fetchPlugins);
                             cargo kovi add {{ formatPluginName(plugin.name) }}
                         </p>
                         <button
+                            class="brackground"
                             @click="
                                 copyToClipboard(
                                     `cargo kovi add ${formatPluginName(
@@ -209,7 +210,7 @@ onMounted(fetchPlugins);
 .plugins-h2 {
     font-weight: 700;
     font-size: 24px;
-    color: #232323;
+    color: var(--vp-c-text-1);
 }
 
 .plugins-main {
@@ -230,7 +231,6 @@ onMounted(fetchPlugins);
 
 .plugin-card {
     position: relative;
-    background-color: #fff;
     border-radius: 12px;
     box-sizing: border-box;
     border: 1px solid var(--vp-c-divider);
@@ -248,6 +248,7 @@ onMounted(fetchPlugins);
     margin: 0;
     font-weight: 500;
     font-size: 16px;
+    color: var(--vp-c-text-1);
 }
 
 .plugin-card-box {
@@ -278,21 +279,70 @@ onMounted(fetchPlugins);
     min-width: 120px;
     text-align: center;
     font-size: 14px;
-    margin-right: 10px;
+    margin-right: 15px;
+    color: var(--vp-c-text-1);
 }
 
 .badge {
+    display: flex;
+    align-items: center;
     background-color: #ffcfcf;
     border-radius: 4px;
-    padding: 2px 6px;
+    padding: 2px 8px;
     margin-right: 4px;
     max-height: 26px;
 }
 
+:root.dark .badge {
+    background-color: #383d53;
+    color: var(--vp-code-color);
+}
+
 .version {
+    display: flex;
+    align-items: center;
     background-color: #eff0f3;
     border-radius: 4px;
-    padding: 2px 6px;
+    padding: 2px 8px;
+    max-height: 26px;
+}
+
+:root.dark .version {
+    background-color: #272a2f;
+    color: var(--vp-code-color);
+}
+
+.version {
+    display: flex;
+    align-items: center;
+    background-color: #eff0f3;
+    border-radius: 4px;
+    padding: 2px 8px;
+    max-height: 26px;
+}
+
+.description {
+    min-height: 100px;
+    margin: 0;
+    color: #515151;
+}
+
+.card-footer {
+    margin: 0 16px 6px 16px;
+    color: #858585;
+    position: absolute;
+}
+
+:root.dark .version {
+    background-color: #313131;
+}
+
+.version {
+    display: flex;
+    align-items: center;
+    background-color: #eff0f3;
+    border-radius: 4px;
+    padding: 2px 8px;
     max-height: 26px;
 }
 
@@ -326,7 +376,7 @@ onMounted(fetchPlugins);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #6b6b6b;
+    color: #858585;
 }
 
 .copy-box {
@@ -335,7 +385,7 @@ onMounted(fetchPlugins);
     left: 0;
     background-color: rgba(255, 255, 255, 0.473);
     backdrop-filter: blur(6px);
-    color: #000000;
+    color: var(--vp-c-text-1);
 
     padding: 5px 16px 5px 16px;
     border-radius: 12px;
@@ -343,6 +393,12 @@ onMounted(fetchPlugins);
     justify-content: space-between;
     align-items: center;
     width: 100%;
+}
+
+:root.dark .copy-box {
+    background-color: rgba(27, 27, 31, 0.473);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
 }
 
 .copy-box p {
@@ -354,8 +410,11 @@ onMounted(fetchPlugins);
     word-break: keep-all;
 }
 
+:root.dark .copy-box p {
+    color: var(--vp-c-text-1);
+}
+
 .copy-box button {
-    background-color: #ffffff;
     border: none;
     padding: 4px 8px;
     border: 1px solid #eeeeee;
@@ -369,7 +428,22 @@ onMounted(fetchPlugins);
 
 .copy-box button:hover {
     border: 1px solid var(--vp-c-brand-1);
-    background-color: #fff;
     transition: all 0.3s;
+}
+
+:root.dark .copy-box button {
+    border: 1px solid #2e2e32;
+}
+
+:root.dark .copy-box button:hover {
+    border: 1px solid var(--vp-c-brand-1);
+    transition: all 0.3s;
+}
+
+:root.dark .brackground {
+    background-color: #1b1b1f;
+}
+.brackground {
+    background-color: #fff;
 }
 </style>

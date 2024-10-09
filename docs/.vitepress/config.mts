@@ -4,7 +4,7 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
     title: "Kovi",
     description: "基于 Rust 和 OneBot 的 Bot 开发框架",
-    base: "/kovi-doc/",
+    base: "/",
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         nav: [

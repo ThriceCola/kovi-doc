@@ -4,13 +4,11 @@ Kovi 在 0.8.0 版本后已经全面改成异步，这带来的性能的提升�
 
 ## 问题一：目前Rust不支持异步闭包。
 
-AsyncFn 将会在 Rust 2024 版本推出。但在现在的 Rust 版本中，我们没有这个东西。
+AsyncFn 将会在 Rust 2024 版本推出（为什么2024版要2025年出？）。但在现在的 Rust 版本中，我们没有这个东西。
 
 闭包和异步用起来是及其繁琐的。如果需要在闭包与异步块中共享内存，那么你得传递两次 Arc 。不这样的话，会遇到变量不能 move 的问题。这无疑增加了开发难度。
 
-有两个解决方法。
-
-让我们看看有多丑陋。
+先让我们看看有多丑陋。
 
 ```rust
 use kovi::{log::info, PluginBuilder as p};
@@ -41,6 +39,8 @@ async fn main() {
     });
 }
 ```
+
+接下来，有两个方法可以让代码没那么丑。
 
 ### 1.将逻辑写在单独的 async fn 里面。
 
@@ -96,5 +96,4 @@ async fn main() {
 ## 问题二：异步中，不要在.await时持有锁。
 
 详细可看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#holding-a-mutexguard-across-an-await)
-
 

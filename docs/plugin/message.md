@@ -250,6 +250,26 @@ event.reply(msg);
 
 `Message` 解析成人类可读字符串, 会将里面的 `segment` 转换成 `[type]` 字符串，如： `image` segment 会转换成 `[image]` 字符串，不要靠此函数做判断，可能不同版本会改变内容。
 
+### `msg.push_text()` 消息末尾加上文字
+
+同 `msg.add_text()` 
+
+### `msg.push_at()` 消息末尾加上 @
+
+同 `msg.add_at()` 
+
+### `msg.push_reply()` 消息末尾加上引用
+
+同 `msg.add_reply()` 
+
+### `msg.push_face()` 消息末尾加上表情
+
+同 `msg.add_face()` 
+
+### `msg.push_image()` 消息末尾加上图片
+
+同 `msg.add_image()` 
+
 ## `CQMessage`
 
 `CQMessage` 是 Kovi 给 cqstring 提供的封装。使用需打开 feature `cqstring`。此时，Kovi 向 服务端 发送消息会用 cqstring，而不会使用 array。

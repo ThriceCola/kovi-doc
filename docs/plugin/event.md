@@ -4,8 +4,8 @@
 
 ```rust
 #[kovi::plugin] 
-pub fn main(mut plugin: PluginBuilder) {
-    plugin.on_msg(move |event| {// [!code focus]
+pub fn main() {
+    plugin.on_msg( |event| async move{// [!code focus]
         event.reply("Hi!") // [!code focus]
     });
 }
@@ -71,7 +71,9 @@ pub struct AllMsgEvent {
 
 #### `event.reply_text()`
 
-快速回复消息，并且不解析直接发送纯文本
+这个函数需开启 cqstring 特性
+
+快速回复消息，并且kovi不进行解析，直接发送字符串
 
 ***
 

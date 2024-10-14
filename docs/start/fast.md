@@ -104,6 +104,17 @@ cargo new plugins/hi --lib
 
 可以看到创建了新的 `plugins/hi` 目录，这也是推荐的插件开发方法，有目录管理总会是好的。
 
+```
+.
+├── plugins // [!code ++] 
+│   └── hi // [!code ++] 
+│       └── src // [!code ++] 
+│           └── lib.rs // [!code ++] 
+├── src
+│   └── main.rs
+│
+```
+
 ### 2. 编写插件
 
 编写我们新创建的插件 `plugins/hi/src/lib.rs`

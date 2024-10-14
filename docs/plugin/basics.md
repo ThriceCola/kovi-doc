@@ -40,6 +40,7 @@ use std::{
     net::{IpAddr, Ipv4Addr},
     sync::Arc,
 };
+
 fn main() {
     let conf_a: KoviConf = kovi::bot::Bot::load_local_conf();
 
@@ -58,9 +59,11 @@ fn main() {
 
     let mut bot = kovi::Bot::build(conf_b);
 
+    let (plugin_name, plugin_version) = testkovi::__kovi_get_plugin_info();
+
     bot.mount_main(
-        "plugin_name",
-        "0.1.0",
+        plugin_name,
+        plugin_version,
         Arc::new(testkovi::__kovi_run_async_plugin),
     );
 

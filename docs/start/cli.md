@@ -8,12 +8,12 @@ Kovi 拥有一个 Cli 工具，便于开发者管理 KoviBot 项目。
 cargo install kovi-cli
 ```
 
-| 命令              |      简化      |      功能      |     选项          |
-| :-----------:     | :-----------: | :-----------: | :-------:        |
-| cargo kovi new    | cargo kovi n  | 创建 Kovi 项目 | None             |
-| cargo kovi create | cargo kovi c  | 创建 Kovi 插件 | -s 创建简化代码模板 |
-| cargo kovi add    | cargo kovi a  | 添加 Kovi 插件 | None             |
-| crago kovi update | None          | 升级 Kovi Cli | None              |
+|       命令        |     简化     |      功能      |        选项         |
+| :---------------: | :----------: | :------------: | :-----------------: |
+|  cargo kovi new   | cargo kovi n | 创建 Kovi 项目 |        None         |
+| cargo kovi create | cargo kovi c | 创建 Kovi 插件 | -s 创建简化代码模板 |
+|  cargo kovi add   | cargo kovi a | 添加 Kovi 插件 |        None         |
+| cargo kovi update |     None     | 升级 Kovi Cli  |        None         |
 
 下面是一些解释。
 

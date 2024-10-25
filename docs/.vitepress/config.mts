@@ -50,6 +50,7 @@ export default defineConfig({
 
                 items: [
                     { text: "基础", link: "/plugin/basics" },
+                    { text: "注意事项", link: "/plugin/take-care" },
                     { text: "监听事件", link: "/plugin/onevent" },
                     { text: "事件 Event", link: "/plugin/event" },
                     { text: "Message", link: "/plugin/message" },

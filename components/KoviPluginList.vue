@@ -1,11 +1,47 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
-// import * as TOML from "@iarna/toml";
 import TOML from "@ltd/j-toml";
 import { defineComponent } from "vue";
 defineComponent({
     name: "FxemojiDocumenttextpicture",
+});
+
+const loadingTexts = [
+    "加载中...",
+    "请耐心等待...",
+    "让我找找看...",
+    "或许需要一点时间...",
+    "马上就好...",
+    "插件在哪里呢...",
+    "或许真的出了什么事？",
+    "或许真的出了什么事？刷新一下吧？",
+];
+
+const currentLoadingText = ref(loadingTexts[0]);
+
+const rotateLoadingText = () => {
+    let currentIndex = 0;
+    return setInterval(() => {
+        if (currentIndex < loadingTexts.length - 1) {
+            currentIndex++;
+            currentLoadingText.value = loadingTexts[currentIndex];
+        }
+    }, 8000);
+};
+
+let loadingInterval: NodeJS.Timeout;
+
+onMounted(() => {
+    // 开始轮换loading文本
+    loadingInterval = rotateLoadingText();
+});
+
+onUnmounted(() => {
+    // 清理interval
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
 });
 
 const isMobile = ref(false);
@@ -29,31 +65,31 @@ const toggleCopyBox = (plugin: Plugin) => {
     }
 };
 
-interface PluginAuthor {
-    name: string;
-    author_url?: string;
-    avatar_url?: string;
-}
-
 interface TomlGitPlugin {
     type: "git";
+    shop_name?: string;
     plugin_type: "normal" | "expand";
-    name: string;
+    package_name: string;
     description: string;
     git_url: string;
     repository: string;
     documentation?: string;
-    author: PluginAuthor;
+    author_name: string;
+    author_url?: string;
+    avatar_url?: string;
 }
 
 interface TomlCratesIoPlugin {
     type: "crates.io";
+    shop_name?: string;
     plugin_type: "normal" | "expand";
-    name: string;
+    package_name: string;
     description: string;
     repository?: string;
     documentation?: string;
-    author?: PluginAuthor;
+    author_name?: string;
+    author_url?: string;
+    avatar_url?: string;
 }
 
 interface TomlGitPluginMap {
@@ -69,12 +105,16 @@ interface Plugins {
 
 interface TempPlugin {
     type: "git" | "crates.io";
-    name: string;
+    shop_name?: string;
+    plugin_type: "normal" | "expand";
+    package_name: string;
     description?: string;
     git_url?: string;
     repository?: string;
     documentation?: string;
-    author?: PluginAuthor;
+    author_name?: string;
+    author_url?: string;
+    avatar_url?: string;
 }
 
 interface TempPluginMap {
@@ -97,8 +137,7 @@ const loadTomlfile = async (): Promise<Plugins> => {
             if (plugin.type === "git") {
                 pluginList.git[key] = plugin as TomlGitPlugin;
             } else if (plugin.type === "crates.io") {
-                pluginList.crates_io[key] =
-                    plugin as unknown as TomlCratesIoPlugin;
+                pluginList.crates_io[key] = plugin as TomlCratesIoPlugin;
             }
         }
     } catch (error) {
@@ -111,15 +150,21 @@ const loadTomlfile = async (): Promise<Plugins> => {
 const checkAndInitCratesIoPlugins = async (
     plugins: Plugins
 ): Promise<Plugins> => {
-    for (const [key, plugin] of Object.entries(plugins.crates_io)) {
-        if (!plugin.author) {
-            const { name, url, avatar } = await fetchPluginAuthor(plugin.name);
-            if (name) {
-                plugins.crates_io[key].author = {
-                    name: name.toString(),
-                    author_url: url ? url.toString() : undefined,
-                    avatar_url: avatar ? avatar.toString() : undefined,
-                };
+    for (const [_, plugin] of Object.entries(plugins.crates_io)) {
+        if (!plugin.author_name) {
+            const { name, url, avatar } = await fetchPluginAuthor(
+                plugin.package_name
+            );
+            if (!plugin.author_name) {
+                plugin.author_name = name;
+            }
+
+            if (!plugin.author_url) {
+                plugin.author_url = url;
+            }
+
+            if (!plugin.avatar_url) {
+                plugin.avatar_url = avatar;
             }
         }
     }
@@ -127,16 +172,19 @@ const checkAndInitCratesIoPlugins = async (
 };
 
 interface Plugin {
-    name: string;
-    package_name: string;
+    id: string;
     type: "crates.io" | "git";
+    shop_name: string;
     plugin_type: "normal" | "expand";
+    package_name: string;
+
     git_url?: string;
     description: string;
     repository?: string;
     documentation?: string;
-    author: PluginAuthor;
-
+    author_name?: string;
+    author_url?: string;
+    avatar_url?: string;
     showCopyBox: boolean;
     copyStatus: "default" | "copied";
     copyTimeout?: number;
@@ -150,30 +198,37 @@ const init = async () => {
     const pluginsWithAuthors = await checkAndInitCratesIoPlugins(tomlPlugins);
     const pluginArray: Plugin[] = [
         ...Object.entries(pluginsWithAuthors.git).map(
-            ([name, plugin]): Plugin => ({
+            ([id, plugin]): Plugin => ({
+                id,
                 type: plugin.type,
-                package_name: plugin.name,
+                shop_name: plugin.shop_name ? plugin.shop_name : id,
                 plugin_type: plugin.plugin_type,
-                name,
-                description: plugin.description,
+                package_name: plugin.package_name,
                 git_url: plugin.git_url,
+                description: plugin.description,
                 repository: plugin.repository,
                 documentation: plugin.documentation,
-                author: plugin.author,
+                author_name: plugin.author_name,
+                author_url: plugin.author_url,
+                avatar_url: plugin.avatar_url,
                 showCopyBox: false,
                 copyStatus: "default",
             })
         ),
         ...Object.entries(pluginsWithAuthors.crates_io).map(
-            ([name, plugin]): Plugin => ({
+            ([id, plugin]): Plugin => ({
+                id,
                 type: plugin.type,
-                package_name: plugin.name,
+                shop_name: plugin.shop_name ? plugin.shop_name : id,
                 plugin_type: plugin.plugin_type,
-                name: name,
+                package_name: plugin.package_name,
+
                 description: plugin.description,
                 repository: plugin.repository,
                 documentation: plugin.documentation,
-                author: plugin.author!,
+                author_name: plugin.author_name,
+                author_url: plugin.author_url,
+                avatar_url: plugin.avatar_url,
                 showCopyBox: false,
                 copyStatus: "default",
             })
@@ -182,11 +237,11 @@ const init = async () => {
 
     //官方
     const officialPlugins = pluginArray.filter((plugin) =>
-        authorIsAuthor(plugin.author)
+        authorIsAuthor(plugin.author_name)
     );
     //非官方
     const nonOfficialPlugins = pluginArray.filter(
-        (plugin) => !authorIsAuthor(plugin.author)
+        (plugin) => !authorIsAuthor(plugin.author_name)
     );
 
     // 随机打乱
@@ -210,15 +265,20 @@ const init = async () => {
     // 合并
     plugins.value = [...officialPlugins, ...nonOfficialPlugins];
 
+    //清理时间计时器;
+    if (loadingInterval) {
+        clearInterval(loadingInterval);
+    }
+    //停止加载画面
     loading.value = false;
 };
 
 const fetchPluginAuthor = async (
     pluginName: string
 ): Promise<{
-    name: string | null;
-    url: string | null;
-    avatar: string | null;
+    name: string | undefined;
+    url: string | undefined;
+    avatar: string | undefined;
 }> => {
     try {
         const response = await axios.get(
@@ -226,13 +286,13 @@ const fetchPluginAuthor = async (
         );
 
         return {
-            name: response.data.users[0]?.name || null,
-            url: response.data.users[0]?.url || null,
-            avatar: response.data.users[0]?.avatar || null,
+            name: response.data.users[0]?.name || undefined,
+            url: response.data.users[0]?.url || undefined,
+            avatar: response.data.users[0]?.avatar || undefined,
         };
     } catch (error) {
         console.error(`Failed to fetch author for ${pluginName}:`, error);
-        return { name: null, url: null, avatar: null };
+        return { name: undefined, url: undefined, avatar: undefined };
     }
 };
 
@@ -255,11 +315,12 @@ const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const authorIsAuthor = (author: PluginAuthor): boolean => {
-    return (
-        author.name === "三瓶可乐不过岗" ||
-        author.name.toLowerCase() === "threkork"
-    );
+const authorIsAuthor = (name: string | undefined): boolean => {
+    if (name === undefined) {
+        return false;
+    }
+
+    return name === "三瓶可乐不过岗" || name.toLowerCase() === "threkork";
 };
 
 const copyToClipboard = (plugin: Plugin): void => {
@@ -286,8 +347,8 @@ const copyToClipboard = (plugin: Plugin): void => {
 };
 
 const goCratesIoToLink = (plugin: Plugin): void => {
-    if (plugin.name) {
-        const link = `https://crates.io/crates/${plugin.name}`;
+    if (plugin.package_name) {
+        const link = `https://crates.io/crates/${plugin.package_name}`;
         window.open(link, "_blank");
     }
 };
@@ -304,11 +365,15 @@ onMounted(init);
 
 <template>
     <div class="plugins-main">
-        <div v-if="loading">加载中...</div>
+        <div v-if="loading" class="loading-container">
+            <Transition>
+                <h3>{{ currentLoadingText }}</h3>
+            </Transition>
+        </div>
         <div v-else class="plugin-list">
             <div
                 v-for="plugin in plugins"
-                :key="plugin.name"
+                :key="plugin.id"
                 class="plugin-card brackground"
                 @mouseover="!isMobile && (plugin.showCopyBox = true)"
                 @mouseleave="!isMobile && (plugin.showCopyBox = false)"
@@ -318,7 +383,7 @@ onMounted(init);
                     <div class="plugin-card-box">
                         <div class="plugin-header">
                             <div class="plugins-h2">
-                                {{ plugin.name }}
+                                {{ plugin.shop_name }}
                             </div>
                         </div>
                         <p class="description">
@@ -329,7 +394,7 @@ onMounted(init);
                         <div class="label">
                             <span
                                 class="badge"
-                                v-if="authorIsAuthor(plugin.author)"
+                                v-if="authorIsAuthor(plugin.author_name)"
                                 >官方</span
                             >
                             <span class="plugin-type">{{ plugin.type }}</span>
@@ -337,8 +402,8 @@ onMounted(init);
 
                         <div style="display: flex; align-items: center">
                             <img
-                                v-if="plugin.author.avatar_url"
-                                :src="plugin.author.avatar_url"
+                                v-if="plugin.avatar_url"
+                                :src="plugin.avatar_url"
                                 class="avatar"
                             />
                             <img
@@ -346,8 +411,8 @@ onMounted(init);
                                 src="https://ga.viki.moe/avatar/?d=mp"
                                 class="avatar"
                             />
-                            <p class="author" v-if="plugin.author.name">
-                                {{ plugin.author.name }}
+                            <p class="author" v-if="plugin.author_name">
+                                {{ plugin.author_name }}
                             </p>
                             <p class="author" v-else>Unknown Author</p>
                         </div>
@@ -366,7 +431,7 @@ onMounted(init);
                     >
                         <div class="plugin-header">
                             <div class="plugins-h2">
-                                {{ plugin.name }}
+                                {{ plugin.shop_name }}
                             </div>
                         </div>
                         <div class="link-button">
@@ -433,12 +498,12 @@ onMounted(init);
                             </button>
 
                             <button
-                                v-if="plugin.author"
-                                @click.stop="goToLink(plugin.author.author_url)"
+                                v-if="plugin.author_url"
+                                @click.stop="goToLink(plugin.author_url)"
                             >
                                 <img
-                                    v-if="plugin.author.avatar_url"
-                                    :src="plugin.author.avatar_url"
+                                    v-if="plugin.avatar_url"
+                                    :src="plugin.avatar_url"
                                     class="avatar"
                                 />
                                 <img
@@ -446,8 +511,8 @@ onMounted(init);
                                     src="https://ga.viki.moe/avatar/?d=mp"
                                     class="avatar"
                                 />
-                                <p v-if="plugin.author.name">
-                                    {{ plugin.author.name }}
+                                <p v-if="plugin.author_name">
+                                    {{ plugin.author_name }}
                                 </p>
                                 <p v-else>Unknown Author</p>
                             </button>
@@ -462,6 +527,15 @@ onMounted(init);
 </template>
 
 <style>
+.loading-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-container h3 {
+    transition: opacity 0.3s ease;
+}
+
 .copy-box-enter-active,
 .copy-box-leave-active {
     transition: opacity 0.3s ease;

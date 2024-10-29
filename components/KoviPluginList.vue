@@ -3,6 +3,10 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 // import * as TOML from "@iarna/toml";
 import TOML from "@ltd/j-toml";
+import { defineComponent } from "vue";
+defineComponent({
+    name: "FxemojiDocumenttextpicture",
+});
 
 interface PluginAuthor {
     name: string;
@@ -164,7 +168,16 @@ const init = async () => {
         (plugin) => !authorIsAuthor(plugin.author)
     );
 
-    // 随机打乱非官方插件
+    // 随机打乱
+    for (let i = officialPlugins.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [officialPlugins[i], officialPlugins[j]] = [
+            officialPlugins[j],
+            officialPlugins[i],
+        ];
+    }
+
+    // 随机打乱
     for (let i = nonOfficialPlugins.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [nonOfficialPlugins[i], nonOfficialPlugins[j]] = [
@@ -173,7 +186,7 @@ const init = async () => {
         ];
     }
 
-    // 合并官方插件和打乱后的非官方插件
+    // 合并
     plugins.value = [...officialPlugins, ...nonOfficialPlugins];
 
     loading.value = false;
@@ -329,6 +342,16 @@ onMounted(init);
                         </div>
                         <div class="link-button">
                             <button
+                                class="brackground"
+                                @click="copyToClipboard(plugin)"
+                            >
+                                {{
+                                    plugin.copyStatus === "copied"
+                                        ? "已复制"
+                                        : "复制添加命令"
+                                }}
+                            </button>
+                            <button
                                 v-if="plugin.type === 'crates.io'"
                                 @click="goCratesIoToLink(plugin)"
                             >
@@ -351,6 +374,36 @@ onMounted(init);
                             </button>
 
                             <button
+                                v-if="plugin.documentation"
+                                @click="goToLink(plugin.documentation)"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="1em"
+                                    height="1em"
+                                    viewBox="0 0 512 512"
+                                >
+                                    <path
+                                        fill="#dce2e2"
+                                        d="M433.694 507.594H78.306c-11.929 0-21.6-9.671-21.6-21.6V25.317c0-11.929 9.671-21.6 21.6-21.6h263.026l113.961 112.739v369.538c.001 11.929-9.67 21.6-21.599 21.6"
+                                    />
+                                    <path
+                                        fill="#96a9b2"
+                                        d="M298.976 79.728h-74.642a7.904 7.904 0 0 1 0-15.808h74.642a7.904 7.904 0 0 1 0 15.808m-20.594 46.49a7.904 7.904 0 0 0-7.904-7.904h-46.144a7.904 7.904 0 0 0 0 15.808h46.144a7.904 7.904 0 0 0 7.904-7.904m116.577 54.394a7.904 7.904 0 0 0-7.904-7.904H224.333a7.904 7.904 0 0 0 0 15.808h162.721a7.905 7.905 0 0 0 7.905-7.904m-17.603 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h262.896a7.903 7.903 0 0 0 7.903-7.904M271.69 289.399a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h157.229a7.903 7.903 0 0 0 7.904-7.904m123.269 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904"
+                                    />
+                                    <path
+                                        fill="#b9c5c6"
+                                        d="m341.333 3.717l112.739 112.739h-88.776c-13.235 0-23.963-10.729-23.963-23.963z"
+                                    />
+                                    <path
+                                        fill="#00b1ff"
+                                        d="M106.207 64.821h84.582a8.13 8.13 0 0 1 8.127 8.127v106.54a8.13 8.13 0 0 1-8.127 8.127h-84.582a8.13 8.13 0 0 1-8.127-8.127V72.948a8.13 8.13 0 0 1 8.127-8.127"
+                                    />
+                                </svg>
+                                <p>文档</p>
+                            </button>
+
+                            <button
                                 v-if="plugin.author"
                                 @click="goToLink(plugin.author.author_url)"
                             >
@@ -369,19 +422,9 @@ onMounted(init);
                                 </p>
                                 <p v-else>Unknown Author</p>
                             </button>
-                            <button
-                                class="brackground"
-                                @click="copyToClipboard(plugin)"
-                            >
-                                {{
-                                    plugin.copyStatus === "copied"
-                                        ? "已复制"
-                                        : "复制添加命令"
-                                }}
-                            </button>
                         </div>
 
-                        <div class="copy-box-footer"></div>
+                        <!-- <div class="copy-box-footer"></div> -->
                     </div>
                 </Transition>
             </div>
@@ -567,12 +610,14 @@ onMounted(init);
     background-color: rgb(255, 255, 255);
 
     color: var(--vp-c-text-1);
-
     padding: 16px;
     border-radius: 12px;
-
     height: 100%;
     width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 隐藏溢出内容 */
 }
 /*
     display: flex;
@@ -628,13 +673,18 @@ onMounted(init);
 }
 
 .link-button {
+    padding: 0px 8px 0px 8px;
     transform: translateY(8px);
     width: 100%;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     row-gap: 8px;
-    column-gap: 16px;
+    justify-content: space-between;
+
+    overflow-y: auto;
+    max-height: calc(100% - 30px);
+    padding-right: 12px;
 }
 
 .link-button button {
@@ -654,6 +704,13 @@ onMounted(init);
     margin: 0;
 }
 
+.link-button button svg {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin: 0;
+}
+
 .link-button button p {
     white-space: nowrap;
     overflow: hidden;
@@ -664,6 +721,9 @@ onMounted(init);
     color: var(--vp-c-brand-1);
     font-weight: 500;
     font-size: 14px;
+}
+:root.dark .link-button button p {
+    color: var(--vp-c-text-1);
 }
 
 :root.dark .copy-box button {

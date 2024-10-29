@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 // import * as TOML from "@iarna/toml";
 import TOML from "@ltd/j-toml";
@@ -7,6 +7,27 @@ import { defineComponent } from "vue";
 defineComponent({
     name: "FxemojiDocumenttextpicture",
 });
+
+const isMobile = ref(false);
+
+onMounted(() => {
+    const checkMobile = () => {
+        isMobile.value = window.innerWidth <= 768;
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    onUnmounted(() => {
+        window.removeEventListener("resize", checkMobile);
+    });
+});
+
+const toggleCopyBox = (plugin: Plugin) => {
+    if (isMobile.value) {
+        plugin.showCopyBox = !plugin.showCopyBox;
+    }
+};
 
 interface PluginAuthor {
     name: string;
@@ -289,8 +310,9 @@ onMounted(init);
                 v-for="plugin in plugins"
                 :key="plugin.name"
                 class="plugin-card brackground"
-                @mouseover="plugin.showCopyBox = true"
-                @mouseleave="plugin.showCopyBox = false"
+                @mouseover="!isMobile && (plugin.showCopyBox = true)"
+                @mouseleave="!isMobile && (plugin.showCopyBox = false)"
+                @click="toggleCopyBox(plugin)"
             >
                 <div>
                     <div class="plugin-card-box">
@@ -333,8 +355,15 @@ onMounted(init);
                 </div>
 
                 <!-- @click="goToLink(plugin)" -->
-                <Transition name="copy-box">
-                    <div v-show="plugin.showCopyBox" class="copy-box">
+                <Transition
+                    name="copy-box"
+                    @click="isMobile && toggleCopyBox(plugin)"
+                >
+                    <div
+                        v-show="plugin.showCopyBox"
+                        class="copy-box"
+                        @click.stop
+                    >
                         <div class="plugin-header">
                             <div class="plugins-h2">
                                 {{ plugin.name }}
@@ -343,7 +372,7 @@ onMounted(init);
                         <div class="link-button">
                             <button
                                 class="brackground"
-                                @click="copyToClipboard(plugin)"
+                                @click.stop="copyToClipboard(plugin)"
                             >
                                 {{
                                     plugin.copyStatus === "copied"
@@ -353,7 +382,7 @@ onMounted(init);
                             </button>
                             <button
                                 v-if="plugin.type === 'crates.io'"
-                                @click="goCratesIoToLink(plugin)"
+                                @click.stop="goCratesIoToLink(plugin)"
                             >
                                 <img
                                     src="https://crates.io/assets/cargo.png"
@@ -364,7 +393,7 @@ onMounted(init);
 
                             <button
                                 v-if="plugin.repository"
-                                @click="goToLink(plugin.repository)"
+                                @click.stop="goToLink(plugin.repository)"
                             >
                                 <img
                                     src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
@@ -375,7 +404,7 @@ onMounted(init);
 
                             <button
                                 v-if="plugin.documentation"
-                                @click="goToLink(plugin.documentation)"
+                                @click.stop="goToLink(plugin.documentation)"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -405,7 +434,7 @@ onMounted(init);
 
                             <button
                                 v-if="plugin.author"
-                                @click="goToLink(plugin.author.author_url)"
+                                @click.stop="goToLink(plugin.author.author_url)"
                             >
                                 <img
                                     v-if="plugin.author.avatar_url"

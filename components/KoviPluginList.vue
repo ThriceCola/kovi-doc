@@ -628,6 +628,7 @@ onMounted(init);
 }
 
 .link-button {
+    transform: translateY(8px);
     width: 100%;
     display: flex;
     align-items: center;

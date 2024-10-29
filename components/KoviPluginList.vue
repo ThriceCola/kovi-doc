@@ -4,11 +4,6 @@ import axios from "axios";
 // import * as TOML from "@iarna/toml";
 import TOML from "@ltd/j-toml";
 
-enum PluginType {
-    normal,
-    expand,
-}
-
 interface PluginAuthor {
     name: string;
     author_url?: string;
@@ -17,7 +12,7 @@ interface PluginAuthor {
 
 interface TomlGitPlugin {
     type: "git";
-    plugin_type: PluginType;
+    plugin_type: "normal" | "expand";
     name: string;
     description: string;
     git_url: string;
@@ -28,7 +23,7 @@ interface TomlGitPlugin {
 
 interface TomlCratesIoPlugin {
     type: "crates.io";
-    plugin_type: PluginType;
+    plugin_type: "normal" | "expand";
     name: string;
     description: string;
     repository?: string;
@@ -109,7 +104,7 @@ const checkAndInitCratesIoPlugins = async (
 interface Plugin {
     name: string;
     type: "crates.io" | "git";
-    plugin_type: PluginType;
+    plugin_type: "normal" | "expand";
     git_url?: string;
     description: string;
     repository?: string;
@@ -227,15 +222,9 @@ const copyToClipboard__ = (text: string, plugin: Plugin): void => {
 const copyToClipboard = (plugin: Plugin): void => {
     let cmd: string;
 
-    if (
-        plugin.type === "crates.io" &&
-        plugin.plugin_type === PluginType.normal
-    ) {
+    if (plugin.type === "crates.io" && plugin.plugin_type === "normal") {
         cmd = `cargo kovi add ${formatPluginName(plugin.name)}`;
-    } else if (
-        plugin.type === "crates.io" &&
-        plugin.plugin_type === PluginType.expand
-    ) {
+    } else if (plugin.type === "crates.io" && plugin.plugin_type === "expand") {
         cmd = `cargo kovi add ${formatPluginName(plugin.name)} -p `;
     } else {
         cmd = `cargo add --git ${plugin.git_url} ${plugin.name}`;

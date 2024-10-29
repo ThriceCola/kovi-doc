@@ -1,116 +1,273 @@
-<script setup>
-import { ref, onMounted, Transition } from "vue";
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
 import axios from "axios";
+// import * as TOML from "@iarna/toml";
+import TOML from "@ltd/j-toml";
 
-const plugins = ref([]);
+enum PluginType {
+    normal,
+    expand,
+}
 
-//测试用
-// const plugins = ref([
-//     {
-//         name: 'kovi-plugin-1',
-//         description: 'This is a test plugin 1',
-//         updated_at: '2023-01-01T00:00:00Z',
-//         downloads: 100,
-//         version: '1.0.0',
-//         documentation: 'https://example.com/plugin1',
-//         homepage: 'https://example.com/plugin1',
-//         repository: 'https://github.com/example/plugin1',
-//         author: 'Author 1',
-//     },
-//     {
-//         name: 'kovi-plugin-2',
-//         description: 'This is a test plugin 2',
-//         updated_at: '2023-01-02T00:00:00Z',
-//         downloads: 200,
-//         version: '2.0.0',
-//         documentation: 'https://example.com/plugin2',
-//         homepage: 'https://example.com/plugin2',
-//         repository: 'https://github.com/example/plugin2',
-//         author: 'Author 2',
-//     },
-// ])
+interface PluginAuthor {
+    name: string;
+    author_url?: string;
+    avatar_url?: string;
+}
 
-const loading = ref(true);
+interface TomlGitPlugin {
+    type: "git";
+    plugin_type: PluginType;
+    name: string;
+    description: string;
+    git_url: string;
+    repository: string;
+    documentation?: string;
+    author: PluginAuthor;
+}
 
-const fetchPluginAuthor = async (pluginName) => {
+interface TomlCratesIoPlugin {
+    type: "crates.io";
+    plugin_type: PluginType;
+    name: string;
+    description: string;
+    repository?: string;
+    documentation?: string;
+    author?: PluginAuthor;
+}
+
+interface TomlGitPluginMap {
+    [key: string]: TomlGitPlugin;
+}
+interface TomlCratesIoPluginMap {
+    [key: string]: TomlCratesIoPlugin;
+}
+interface Plugins {
+    git: TomlGitPluginMap;
+    crates_io: TomlCratesIoPluginMap;
+}
+
+interface TempPlugin {
+    type: "git" | "crates.io";
+    name: string;
+    description?: string;
+    git_url?: string;
+    repository?: string;
+    documentation?: string;
+    author?: PluginAuthor;
+}
+
+interface TempPluginMap {
+    [key: string]: TempPlugin;
+}
+
+const loadTomlfile = async (): Promise<Plugins> => {
+    const pluginList: Plugins = {
+        git: {} as TomlGitPluginMap,
+        crates_io: {} as TomlCratesIoPluginMap,
+    };
+
+    try {
+        const response = await fetch("/plugin_list.toml");
+        const text = await response.text();
+
+        const jsomMapList = TOML.parse(text) as unknown as TempPluginMap;
+
+        for (const [key, plugin] of Object.entries(jsomMapList)) {
+            if (plugin.type === "git") {
+                pluginList.git[key] = plugin as TomlGitPlugin;
+            } else if (plugin.type === "crates.io") {
+                pluginList.crates_io[key] =
+                    plugin as unknown as TomlCratesIoPlugin;
+            }
+        }
+    } catch (error) {
+        console.error("Failed to fetch plugins:", error);
+    }
+
+    return pluginList;
+};
+
+const checkAndInitCratesIoPlugins = async (
+    plugins: Plugins
+): Promise<Plugins> => {
+    for (const [key, plugin] of Object.entries(plugins.crates_io)) {
+        if (!plugin.author) {
+            const { name, url, avatar } = await fetchPluginAuthor(plugin.name);
+            if (name) {
+                plugins.crates_io[key].author = {
+                    name: name.toString(),
+                    author_url: url ? url.toString() : undefined,
+                    avatar_url: avatar ? avatar.toString() : undefined,
+                };
+            }
+        }
+    }
+    return plugins;
+};
+
+interface Plugin {
+    name: string;
+    type: "crates.io" | "git";
+    plugin_type: PluginType;
+    git_url?: string;
+    description: string;
+    repository?: string;
+    documentation?: string;
+    author: PluginAuthor;
+
+    showCopyBox: boolean;
+    copyStatus: "default" | "copied";
+    copyTimeout?: number;
+}
+
+const plugins = ref<Plugin[]>([]);
+const loading = ref<boolean>(true);
+
+const init = async () => {
+    const tomlPlugins = await loadTomlfile();
+    const pluginsWithAuthors = await checkAndInitCratesIoPlugins(tomlPlugins);
+    const pluginArray: Plugin[] = [
+        ...Object.entries(pluginsWithAuthors.git).map(
+            ([_, plugin]): Plugin => ({
+                type: plugin.type,
+                plugin_type: plugin.plugin_type,
+                name: plugin.name,
+                description: plugin.description,
+                git_url: plugin.git_url,
+                repository: plugin.repository,
+                documentation: plugin.documentation,
+                author: plugin.author,
+                showCopyBox: false,
+                copyStatus: "default",
+            })
+        ),
+        ...Object.entries(pluginsWithAuthors.crates_io).map(
+            ([_, plugin]): Plugin => ({
+                type: plugin.type,
+                plugin_type: plugin.plugin_type,
+                name: plugin.name,
+                description: plugin.description,
+                repository: plugin.repository,
+                documentation: plugin.documentation,
+                author: plugin.author!,
+                showCopyBox: false,
+                copyStatus: "default",
+            })
+        ),
+    ];
+
+    plugins.value = pluginArray;
+
+    loading.value = false;
+};
+
+const fetchPluginAuthor = async (
+    pluginName: string
+): Promise<{
+    name: string | null;
+    url: string | null;
+    avatar: string | null;
+}> => {
     try {
         const response = await axios.get(
             `https://crates.io/api/v1/crates/${pluginName}/owner_user`
         );
 
         return {
-            author: response.data.users[0]?.name || "Unknown Author",
+            name: response.data.users[0]?.name || null,
+            url: response.data.users[0]?.url || null,
             avatar: response.data.users[0]?.avatar || null,
         };
     } catch (error) {
         console.error(`Failed to fetch author for ${pluginName}:`, error);
-        return { author: "Unknown Author", avatar: null };
+        return { name: null, url: null, avatar: null };
     }
 };
 
-const fetchPlugins = async () => {
-    try {
-        const response = await axios.get(
-            `https://crates.io/api/v1/crates?keyword=kovi-plugin`
-        );
-
-        const pluginData = response.data.crates;
-
-        const pluginsWithAuthors = await Promise.all(
-            pluginData.map(async (plugin) => {
-                const { author, avatar } = await fetchPluginAuthor(plugin.name);
-                return { ...plugin, author, avatar };
-            })
-        );
-
-        plugins.value = pluginsWithAuthors;
-    } catch (error) {
-        console.error("Failed to fetch plugins:", error);
-    } finally {
-        loading.value = false;
-    }
-};
-
-const formatPluginName = (name) => {
+const formatPluginName = (name: string): string => {
     return name.replace(/^kovi-plugin-/, "");
 };
 
-const formatTextLen = (description, len) => {
+const formatTextLen = (description: string, len: number): string => {
     return description.length > len
         ? description.slice(0, len) + "..."
         : description;
 };
 
-const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+const formatDate = (dateString: string): string => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
-const authorIsAuthor = (author) => {
-    return author == "三瓶可乐不过岗";
+const authorIsAuthor = (author: PluginAuthor): boolean => {
+    return (
+        author.name === "三瓶可乐不过岗" ||
+        author.name.toLowerCase() === "threkork"
+    );
 };
 
-const copyToClipboard = (text, plugin) => {
+const copyToClipboard__ = (text: string, plugin: Plugin): void => {
     navigator.clipboard.writeText(text).then(() => {
         plugin.copyStatus = "copied";
 
         if (plugin.copyTimeout) {
             clearTimeout(plugin.copyTimeout);
         }
-        plugin.copyTimeout = setTimeout(() => {
+        plugin.copyTimeout = window.setTimeout(() => {
             plugin.copyStatus = "default";
         }, 3000);
     });
 };
 
-const goToLink = (name) => {
-    if (name) {
-        const link = `https://crates.io/crates/${name}`;
+const copyToClipboard = (plugin: Plugin): void => {
+    let cmd: string;
+
+    if (
+        plugin.type === "crates.io" &&
+        plugin.plugin_type === PluginType.normal
+    ) {
+        cmd = `cargo kovi add ${formatPluginName(plugin.name)}`;
+    } else if (
+        plugin.type === "crates.io" &&
+        plugin.plugin_type === PluginType.expand
+    ) {
+        cmd = `cargo kovi add ${formatPluginName(plugin.name)} -p `;
+    } else {
+        cmd = `cargo add --git ${plugin.git_url} ${plugin.name}`;
+    }
+
+    navigator.clipboard.writeText(cmd).then(() => {
+        plugin.copyStatus = "copied";
+
+        if (plugin.copyTimeout) {
+            clearTimeout(plugin.copyTimeout);
+        }
+        plugin.copyTimeout = window.setTimeout(() => {
+            plugin.copyStatus = "default";
+        }, 3000);
+    });
+};
+
+const goCratesIoToLink = (plugin: Plugin): void => {
+    if (plugin.name) {
+        const link = `https://crates.io/crates/${plugin.name}`;
         window.open(link, "_blank");
     }
 };
 
-onMounted(fetchPlugins);
+const goToLink = (url: any): void => {
+    if (!url) {
+        return;
+    }
+    window.open(url, "_blank");
+};
+
+onMounted(init);
 </script>
 
 <template>
@@ -119,23 +276,13 @@ onMounted(fetchPlugins);
         <div v-else class="plugin-list">
             <div
                 v-for="plugin in plugins"
-                :key="plugin.id"
+                :key="plugin.name"
                 class="plugin-card brackground"
                 @mouseover="plugin.showCopyBox = true"
                 @mouseleave="plugin.showCopyBox = false"
             >
-                <div @click="goToLink(plugin.name)">
+                <div>
                     <div class="plugin-card-box">
-                        <div class="label">
-                            <span
-                                class="badge"
-                                v-if="authorIsAuthor(plugin.author)"
-                                >官方插件</span
-                            >
-                            <span class="version">{{
-                                plugin.max_stable_version
-                            }}</span>
-                        </div>
                         <div class="plugin-header">
                             <div class="plugins-h2">
                                 {{ formatPluginName(plugin.name) }}
@@ -146,13 +293,19 @@ onMounted(fetchPlugins);
                         </p>
                     </div>
                     <div class="card-footer">
-                        <p class="last-updated">
-                            {{ formatDate(plugin.updated_at) }}
-                        </p>
+                        <div class="label">
+                            <span
+                                class="badge"
+                                v-if="authorIsAuthor(plugin.author)"
+                                >官方</span
+                            >
+                            <span class="plugin-type">{{ plugin.type }}</span>
+                        </div>
+
                         <div style="display: flex; align-items: center">
                             <img
-                                v-if="plugin.avatar"
-                                :src="plugin.avatar"
+                                v-if="plugin.author.avatar_url"
+                                :src="plugin.author.avatar_url"
                                 class="avatar"
                             />
                             <img
@@ -160,35 +313,77 @@ onMounted(fetchPlugins);
                                 src="https://ga.viki.moe/avatar/?d=mp"
                                 class="avatar"
                             />
-                            <p class="author" v-if="plugin.author">
-                                {{ plugin.author }}
+                            <p class="author" v-if="plugin.author.name">
+                                {{ plugin.author.name }}
                             </p>
                             <p class="author" v-else>Unknown Author</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- @click="goToLink(plugin)" -->
                 <Transition name="copy-box">
                     <div v-show="plugin.showCopyBox" class="copy-box">
-                        <p>
-                            cargo kovi add {{ formatPluginName(plugin.name) }}
-                        </p>
-                        <button
-                            class="brackground"
-                            @click="
-                                copyToClipboard(
-                                    `cargo kovi add ${formatPluginName(
-                                        plugin.name
-                                    )}`,
-                                    plugin
-                                )
-                            "
-                        >
-                            {{
-                                plugin.copyStatus === "copied"
-                                    ? "已复制"
-                                    : "复制"
-                            }}
-                        </button>
+                        <div class="plugin-header">
+                            <div class="plugins-h2">
+                                {{ formatPluginName(plugin.name) }}
+                            </div>
+                        </div>
+                        <div class="link-button">
+                            <button
+                                v-if="plugin.type === 'crates.io'"
+                                @click="goCratesIoToLink(plugin)"
+                            >
+                                <img
+                                    src="https://crates.io/assets/cargo.png"
+                                    alt="crates.io"
+                                />
+                                <p>crates.io</p>
+                            </button>
+
+                            <button
+                                v-if="plugin.repository"
+                                @click="goToLink(plugin.repository)"
+                            >
+                                <img
+                                    src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
+                                    alt="git"
+                                />
+                                <p>仓库</p>
+                            </button>
+
+                            <button
+                                v-if="plugin.author"
+                                @click="goToLink(plugin.author.author_url)"
+                            >
+                                <img
+                                    v-if="plugin.author.avatar_url"
+                                    :src="plugin.author.avatar_url"
+                                    class="avatar"
+                                />
+                                <img
+                                    v-else
+                                    src="https://ga.viki.moe/avatar/?d=mp"
+                                    class="avatar"
+                                />
+                                <p v-if="plugin.author.name">
+                                    {{ plugin.author.name }}
+                                </p>
+                                <p v-else>Unknown Author</p>
+                            </button>
+                            <button
+                                class="brackground"
+                                @click="copyToClipboard(plugin)"
+                            >
+                                {{
+                                    plugin.copyStatus === "copied"
+                                        ? "已复制"
+                                        : "复制添加命令"
+                                }}
+                            </button>
+                        </div>
+
+                        <div class="copy-box-footer"></div>
                     </div>
                 </Transition>
             </div>
@@ -226,7 +421,6 @@ onMounted(fetchPlugins);
     flex-direction: row;
     justify-content: center;
     gap: 16px;
-    row-gap: 16px;
 }
 
 .plugin-card {
@@ -262,29 +456,28 @@ onMounted(fetchPlugins);
 }
 
 .plugin-header {
+    padding: 0;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
-    max-width: 180px;
+    word-break: break-all;
 }
 
 .label {
-    position: absolute;
-    right: 0%;
-    /* 必须横向布局 */
+    position: static; /* 改为static而不是absolute */
     display: flex;
     align-items: center;
-    justify-content: center;
-    min-width: 120px;
-    text-align: center;
+    flex-direction: row;
+    min-width: 0; /* 移除最小宽度限制 */
+    text-align: left; /* 左对齐文本 */
     font-size: 14px;
-    margin-right: 15px;
     color: var(--vp-c-text-1);
 }
 
 .badge {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     background-color: #ffcfcf;
     border-radius: 4px;
@@ -298,8 +491,8 @@ onMounted(fetchPlugins);
     color: var(--vp-code-color);
 }
 
-.version {
-    display: flex;
+.plugin-type {
+    display: inline-flex;
     align-items: center;
     background-color: #eff0f3;
     border-radius: 4px;
@@ -307,18 +500,9 @@ onMounted(fetchPlugins);
     max-height: 26px;
 }
 
-:root.dark .version {
+:root.dark .plugin-type {
     background-color: #272a2f;
     color: var(--vp-code-color);
-}
-
-.version {
-    display: flex;
-    align-items: center;
-    background-color: #eff0f3;
-    border-radius: 4px;
-    padding: 2px 8px;
-    max-height: 26px;
 }
 
 .description {
@@ -331,19 +515,18 @@ onMounted(fetchPlugins);
     margin: 0 16px 6px 16px;
     color: #858585;
     position: absolute;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between; /* 这确保了子元素之间的最大间距 */
+    align-items: center;
+    bottom: 0;
+    width: calc(100% - 32px);
 }
 
-:root.dark .version {
-    background-color: #313131;
-}
-
-.version {
+.card-footer > div:last-child {
     display: flex;
     align-items: center;
-    background-color: #eff0f3;
-    border-radius: 4px;
-    padding: 2px 8px;
-    max-height: 26px;
+    justify-content: flex-end; /* 确保右对齐 */
 }
 
 .description {
@@ -381,24 +564,39 @@ onMounted(fetchPlugins);
 
 .copy-box {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.473);
-    backdrop-filter: blur(6px);
+    background-color: rgb(255, 255, 255);
+
     color: var(--vp-c-text-1);
 
-    padding: 5px 16px 5px 16px;
+    padding: 16px;
     border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+
+    height: 100%;
     width: 100%;
 }
+/*
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+*/
 
 :root.dark .copy-box {
-    background-color: rgba(27, 27, 31, 0.473);
-    backdrop-filter: blur(6px);
+    background-color: rgb(27, 27, 31);
     color: #ffffff;
+}
+
+.copy-box-footer {
+    position: absolute;
+    bottom: 12px;
+    width: calc(100% - 32px);
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+}
+.copy-box-footer button {
+    pointer-events: auto;
 }
 
 .copy-box p {
@@ -429,6 +627,44 @@ onMounted(fetchPlugins);
 .copy-box button:hover {
     border: 1px solid var(--vp-c-brand-1);
     transition: all 0.3s;
+}
+
+.link-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    column-gap: 16px;
+}
+
+.link-button button {
+    width: 130px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 12px;
+}
+
+.link-button button img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin: 0;
+}
+
+.link-button button p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform: translateY(-1px);
+    width: 60px;
+    text-align: left;
+    color: var(--vp-c-brand-1);
+    font-weight: 500;
+    font-size: 14px;
 }
 
 :root.dark .copy-box button {

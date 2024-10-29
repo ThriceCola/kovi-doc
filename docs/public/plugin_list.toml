@@ -1,0 +1,64 @@
+# git 示例
+[title]
+# 类型
+type = "git"
+# 插件类型（可选，默认为normal）
+plugin_type = "normal"
+# 包的名称
+name = "kovi-plugin-title"
+# 插件描述
+description = "kovi 的头衔插件。"
+# git 地址
+git_url = "https://github.com/Threkork/kovi-plugin-title.git"
+# 插件仓库地址
+repository = "https://github.com/Threkork/kovi-plugin-title"
+# 文档地址（可选）
+documentation = "https://github.com/Threkork/kovi-plugin-title"
+[title.author]
+# 作者 
+name = "三瓶可乐不过岗"
+# 作者链接（可选） 
+author_url = "https://github.com/Threkork"
+# 作者头像链接（可选）
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+
+# crates.io 示例
+[like]
+# 类型
+type = "crates.io"
+# 插件类型（可选，默认为normal）
+plugin_type = "normal"
+# 包的名称
+name = "kovi-plugin-like"
+# 插件描述
+description = "kovi 的点赞插件，可在config.json里配置。"
+# 插件仓库地址（可选）
+repository = "https://github.com/Threkork/kovi-plugin"
+# 文档地址（可选）
+documentation = "https://github.com/Threkork/kovi-plugin"
+# 作者（可选，不写则获取crates.io的数据）
+[like.author]
+# 作者 （如果.author选择了，则此处必须写）
+name = "三瓶可乐不过岗"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+
+[expand-lagrange]
+type = "crates.io"
+plugin_type = "expand"
+name = "kovi-plugin-expand-lagrange"
+description = "kovi 的 lagrange Api 拓展。"
+[expand-lagrange.author]
+name = "三瓶可乐不过岗"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+[expand-napcat]
+type = "crates.io"
+plugin_type = "expand"
+name = "kovi-plugin-expand-napcat"
+description = "kovi 的 napcat Api 拓展。"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"

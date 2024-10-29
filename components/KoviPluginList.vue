@@ -103,6 +103,7 @@ const checkAndInitCratesIoPlugins = async (
 
 interface Plugin {
     name: string;
+    package_name: string;
     type: "crates.io" | "git";
     plugin_type: "normal" | "expand";
     git_url?: string;
@@ -124,10 +125,11 @@ const init = async () => {
     const pluginsWithAuthors = await checkAndInitCratesIoPlugins(tomlPlugins);
     const pluginArray: Plugin[] = [
         ...Object.entries(pluginsWithAuthors.git).map(
-            ([_, plugin]): Plugin => ({
+            ([name, plugin]): Plugin => ({
                 type: plugin.type,
+                package_name: plugin.name,
                 plugin_type: plugin.plugin_type,
-                name: plugin.name,
+                name,
                 description: plugin.description,
                 git_url: plugin.git_url,
                 repository: plugin.repository,
@@ -138,10 +140,11 @@ const init = async () => {
             })
         ),
         ...Object.entries(pluginsWithAuthors.crates_io).map(
-            ([_, plugin]): Plugin => ({
+            ([name, plugin]): Plugin => ({
                 type: plugin.type,
+                package_name: plugin.name,
                 plugin_type: plugin.plugin_type,
-                name: plugin.name,
+                name: name,
                 description: plugin.description,
                 repository: plugin.repository,
                 documentation: plugin.documentation,
@@ -152,7 +155,26 @@ const init = async () => {
         ),
     ];
 
-    plugins.value = pluginArray;
+    //官方
+    const officialPlugins = pluginArray.filter((plugin) =>
+        authorIsAuthor(plugin.author)
+    );
+    //非官方
+    const nonOfficialPlugins = pluginArray.filter(
+        (plugin) => !authorIsAuthor(plugin.author)
+    );
+
+    // 随机打乱非官方插件
+    for (let i = nonOfficialPlugins.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [nonOfficialPlugins[i], nonOfficialPlugins[j]] = [
+            nonOfficialPlugins[j],
+            nonOfficialPlugins[i],
+        ];
+    }
+
+    // 合并官方插件和打乱后的非官方插件
+    plugins.value = [...officialPlugins, ...nonOfficialPlugins];
 
     loading.value = false;
 };
@@ -206,28 +228,15 @@ const authorIsAuthor = (author: PluginAuthor): boolean => {
     );
 };
 
-const copyToClipboard__ = (text: string, plugin: Plugin): void => {
-    navigator.clipboard.writeText(text).then(() => {
-        plugin.copyStatus = "copied";
-
-        if (plugin.copyTimeout) {
-            clearTimeout(plugin.copyTimeout);
-        }
-        plugin.copyTimeout = window.setTimeout(() => {
-            plugin.copyStatus = "default";
-        }, 3000);
-    });
-};
-
 const copyToClipboard = (plugin: Plugin): void => {
     let cmd: string;
 
     if (plugin.type === "crates.io" && plugin.plugin_type === "normal") {
-        cmd = `cargo kovi add ${formatPluginName(plugin.name)}`;
+        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)}`;
     } else if (plugin.type === "crates.io" && plugin.plugin_type === "expand") {
-        cmd = `cargo kovi add ${formatPluginName(plugin.name)} -p `;
+        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)} -p `;
     } else {
-        cmd = `cargo add --git ${plugin.git_url} ${plugin.name}`;
+        cmd = `cargo add --git ${plugin.git_url} ${plugin.package_name}`;
     }
 
     navigator.clipboard.writeText(cmd).then(() => {
@@ -274,7 +283,7 @@ onMounted(init);
                     <div class="plugin-card-box">
                         <div class="plugin-header">
                             <div class="plugins-h2">
-                                {{ formatPluginName(plugin.name) }}
+                                {{ plugin.name }}
                             </div>
                         </div>
                         <p class="description">
@@ -315,7 +324,7 @@ onMounted(init);
                     <div v-show="plugin.showCopyBox" class="copy-box">
                         <div class="plugin-header">
                             <div class="plugins-h2">
-                                {{ formatPluginName(plugin.name) }}
+                                {{ plugin.name }}
                             </div>
                         </div>
                         <div class="link-button">

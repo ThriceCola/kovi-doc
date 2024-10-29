@@ -62,3 +62,34 @@ name = "kovi-plugin-expand-napcat"
 description = "kovi 的 napcat Api 拓展。"
 author_url = "https://github.com/Threkork"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+
+[au]
+type = "crates.io"
+plugin_type = "expand"
+name = "kovi-plugin-expand-lagrange"
+description = "kovi 的 lagrange Api 拓展。"
+[au.author]
+name = "三瓶可乐"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+[12]
+type = "crates.io"
+plugin_type = "expand"
+name = "kovi-plugin-expand-lagrange"
+description = "kovi 的 lagrange Api 拓展。"
+[12.author]
+name = "三瓶可乐"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+[e354]
+type = "crates.io"
+plugin_type = "expand"
+name = "kovi-plugin-expand-lagrange"
+description = "kovi 的 lagrange Api 拓展。"
+[e354.author]
+name = "三瓶可乐"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"

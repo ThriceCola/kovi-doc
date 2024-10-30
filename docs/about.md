@@ -68,6 +68,7 @@ const thinks = [
 
   <VPTeamPageSection>
     <template #title>赞助💕</template>
+    <template #lead>还有一些匿名的小伙伴快来认领</template>
     <template #members>
         <VPTeamMembers size="small" :members="thinks" />
     </template>

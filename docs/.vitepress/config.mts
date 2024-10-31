@@ -65,7 +65,7 @@ export default defineConfig({
                         link: "/plugin/better",
                     },
 
-                    { text: "生命周期", link: "/plugin/life" },
+                    { text: "生命周期与运行时管理插件", link: "/plugin/life" },
                 ],
             },
             {

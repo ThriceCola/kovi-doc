@@ -106,7 +106,7 @@ interface Plugins {
 interface TempPlugin {
     type: "git" | "crates.io";
     shop_name?: string;
-    plugin_type: "normal" | "expand";
+    plugin_type?: "normal" | "expand";
     package_name: string;
     description?: string;
     git_url?: string;
@@ -135,8 +135,14 @@ const loadTomlfile = async (): Promise<Plugins> => {
 
         for (const [key, plugin] of Object.entries(jsomMapList)) {
             if (plugin.type === "git") {
+                if (!plugin.plugin_type) {
+                    plugin.plugin_type = "normal";
+                }
                 pluginList.git[key] = plugin as TomlGitPlugin;
             } else if (plugin.type === "crates.io") {
+                if (!plugin.plugin_type) {
+                    plugin.plugin_type = "normal";
+                }
                 pluginList.crates_io[key] = plugin as TomlCratesIoPlugin;
             }
         }
@@ -326,12 +332,12 @@ const authorIsAuthor = (name: string | undefined): boolean => {
 const copyToClipboard = (plugin: Plugin): void => {
     let cmd: string;
 
-    if (plugin.type === "crates.io" && plugin.plugin_type === "normal") {
-        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)}`;
+    if (plugin.type === "git") {
+        cmd = `cargo add --git ${plugin.git_url} ${plugin.package_name}`;
     } else if (plugin.type === "crates.io" && plugin.plugin_type === "expand") {
         cmd = `cargo kovi add ${formatPluginName(plugin.package_name)} -p `;
     } else {
-        cmd = `cargo add --git ${plugin.git_url} ${plugin.package_name}`;
+        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)}`;
     }
 
     navigator.clipboard.writeText(cmd).then(() => {

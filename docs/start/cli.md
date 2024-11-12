@@ -8,16 +8,17 @@ Kovi 拥有一个 Cli 工具，便于开发者管理 KoviBot 项目。
 cargo install kovi-cli
 ```
 
-|       命令        |     简化     |      功能      |        选项         |
-| :---------------: | :----------: | :------------: | :-----------------: |
-|  cargo kovi new   | cargo kovi n | 创建 Kovi 项目 |        None         |
-| cargo kovi create | cargo kovi c | 创建 Kovi 插件 | -s 创建简化代码模板 |
-|  cargo kovi add   | cargo kovi a | 添加 Kovi 插件 |        None         |
-| cargo kovi update |     None     | 升级 Kovi Cli  |        None         |
+|       命令        |     简化     |      功能      |                             选项                              |
+| :---------------: | :----------: | :------------: | :-----------------------------------------------------------: |
+|  cargo kovi new   | cargo kovi n | 创建 Kovi 项目 |                             None                              |
+| cargo kovi create | cargo kovi c | 创建 Kovi 插件 | -s 创建简化代码模板 <br> -p 给插件名称前面增加 `kovi-plugin-` |
+|  cargo kovi add   | cargo kovi a | 添加 Kovi 插件 |                  -p 为工作区某一 crate 添加                   |
+| cargo kovi update |     None     | 升级 Kovi Cli  |                             None                              |
 
-下面是一些解释。
 
-## ```cargo kovi add [NAME]``` 添加 Kovi 插件。
+## 一些额外解释
+
+`cargo kovi add [NAME]` 添加 Kovi 插件。
 
 添加 Kovi 插件。
 
@@ -37,12 +38,3 @@ cargo kovi add like
 
 
 > `cargo kovi add like` 等同于 `cargo kovi add kovi-plugin-like`
-
-
-## ```cargo kovi create [NAME]``` 创建 Kovi 插件。
-
-创建 Kovi 插件。
-
-在 Kovi 工作区下，会自动创建一个 插件 crate 。并将此本地插件加入进根 crate 下的 `Cargo.toml` 依赖中。
-
-选项 -s 可以生成简化代码模板。

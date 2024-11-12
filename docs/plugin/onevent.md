@@ -156,3 +156,21 @@ async fn main() {
     }); // [!code focus]
 }
 ```
+
+
+## on_msg_send()
+
+添加自身消息发送监听函数。
+
+需打开 `message_sent` feature。
+
+还要注意服务端是否有这一个功能。
+
+```rust
+#[kovi::plugin]
+async fn main() {
+    PluginBuilder::on_msg_sent(|_event| async move {// [!code focus]
+        info!("我自己发了消息"); // [!code focus]
+    });// [!code focus]
+}
+```

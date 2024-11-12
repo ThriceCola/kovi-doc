@@ -54,17 +54,23 @@ fn main() {
 第一次启动，会提示输入一些信息以创建 `kovi.conf.json` 文件，这是 `Kovi` 运行所需的信息。
 
 ```
+✔ What is the type of the host of the OneBot server? · IPv4
+OneBot 服务端的类型是什么？ (默认值：IPv4)
+
 ✔ What is the IP of the OneBot server? · 127.0.0.1
 OneBot 服务端的 IP 是什么？ (默认值：127.0.0.1)
 
 ✔ What is the port of the OneBot server? · 8081
 OneBot 服务端的端口是什么？ (默认值：8081)
 
-✔ What is the access_token of the OneBot server? · 
+✔ What is the access_token of the OneBot server? (Optional) 
 OneBot 服务端的 access_token 是什么？ (默认值：空)
 
-✔ What is the ID of the main administrator? 
+✔ What is the ID of the main administrator? (Not used yet)
 管理员的 ID 是什么？ (无默认值)
+
+✔ Do you want to view more optional options? · No
+是否需要查看更多可选选项？ (默认值：否)
 ```
 
 ## 3. 插件开发

@@ -1,6 +1,6 @@
 # event
 
-通过 `plugin.on` 监听，传入的闭包要求接受一个 `event`，此 `event` 便是事件。
+通过 `PluginBuilder::on` 监听，传入的闭包要求接受一个 `event`，此 `event` 便是事件。
 
 ```rust
 #[kovi::plugin] 

@@ -89,7 +89,7 @@ OneBot 服务端的 access_token 是什么？ (默认值：空)
 [dependencies]
 ...
 
-[workspace] // [!code ++]  // [!code focus]
+[workspace] // [!code focus] // [!code ++] 
 ```
 
 接着

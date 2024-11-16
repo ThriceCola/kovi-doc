@@ -21,7 +21,7 @@
 ## 1. 创建一个基本 Rust 项目，添加 Kovi 依赖。
 
 
-使用 `kovi-cli` 创建基本项目。
+使用 `kovi-cli` 或者 `cargo` 创建基本项目。
 
 ::: code-group
 

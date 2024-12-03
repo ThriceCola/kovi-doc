@@ -31,14 +31,13 @@ async fn main() {
 
 标准 API 查看 [API 列表](/api/onebot_api)
 
-可以通过 Kovi 的一些拓展插件来提供更多服务端的 Api 。
+## 拓展 API
+
+拓展 Api 可以通过 Kovi 的一些拓展插件来获取。
 
 如：使用 [kovi-plugin-expand-napcat](https://crates.io/crates/kovi-plugin-expand-napcat) 获取 [NapCat](https://github.com/NapNeko/NapCatQQ) 的拓展。
 
-
-## 拓展 API
-
-如果需要发送服务端的拓展 API，使用 `bot.send_api()` 和 `bot.send_api_return()` 实现。
+如果需要自行发送服务端的拓展 API，使用 `bot.send_api()` 和 `bot.send_api_return()` 实现。
 
 一种是无需关注返回值的 API，另一种是需要关注返回值的 API。
 

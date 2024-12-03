@@ -57,6 +57,7 @@ export default defineConfig({
                     { text: "监听事件", link: "/plugin/onevent" },
                     { text: "事件 Event", link: "/plugin/event" },
                     { text: "Message", link: "/plugin/message" },
+                    { text: "Message 方法", link: "/plugin/message_impl" },
                     { text: "RuntimeBot 与 Api", link: "/plugin/runtimebot" },
 
                     {

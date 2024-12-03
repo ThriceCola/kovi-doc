@@ -73,7 +73,7 @@ async fn on_msg(_e: Arc<AllMsgEvent>, arc: Arc<String>) {
 
 ### 2.使用 Kovi 提供的 async_move! 宏。
 
-async_move! 宏会隐式的帮你写好两次拷贝两次 move。这会非常的简洁，但是有个缺点，使用 rust-analyzer 时，宏内会无法格式化。
+async_move! 宏会隐式的帮你写好两次拷贝两次 move。这会非常的简洁，但是有个缺点，使用 rust-analyzer 或 cargo fmt 时，宏内会无法格式化。
 
 ```rust
 use kovi::{async_move, log::info, PluginBuilder as p};
@@ -93,7 +93,14 @@ async fn main() {
 }
 ```
 
-## 问题二：不要在.await时持有锁。
+## 问题二：不要在 .await 时持有锁。
 
-详细可看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#holding-a-mutexguard-across-an-await)
+Rust 标准库的锁调用的是操作系统的锁，是将整个线程给阻塞等待，如果在持有同步锁时去 .await 就会导致在 .await 期间这个线程一直被锁住，这与异步设计相违背。
+
+所以不要在 .await 时持有同步锁。
+
+事实上，Rust 在编写持有同步锁的异步代码时，就会让这段代码失去 Send 特征。这时，因为 Tokio 和 Kovi 都在函数里要求传入的 Future 具备 Send ，所以编译器会报错。
+
+解决方案和详细解释可以查看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#holding-a-mutexguard-across-an-await)
+
 

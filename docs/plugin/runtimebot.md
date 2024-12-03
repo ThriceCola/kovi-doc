@@ -31,7 +31,9 @@ async fn main() {
 
 标准 API 查看 [API 列表](/api/onebot_api)
 
-可以通过 crates.io 的一些插件来提供更多服务端的 Api 拓展，如 `kovi-plugin-expand-lagrange` 的 `lagrange` 的拓展。
+可以通过 Kovi 的一些拓展插件来提供更多服务端的 Api 。
+
+如：使用 [kovi-plugin-expand-napcat](https://crates.io/crates/kovi-plugin-expand-napcat) 获取 [NapCat](https://github.com/NapNeko/NapCatQQ) 的拓展。
 
 
 ## 拓展 API

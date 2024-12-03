@@ -16,25 +16,14 @@ cargo install kovi-cli
 | cargo kovi update |     None     | 升级 Kovi Cli  |                             None                              |
 
 
-## 一些额外解释
-
-`cargo kovi add [NAME]` 添加 Kovi 插件。
-
-添加 Kovi 插件。
-
-可以增加 Kovi 本地插件，或者存在于 [crates.io](https://crates.io) 上面的插件。
-
-优先会搜索本地目录下的插件，搜索不到会向 [crates.io](https://crates.io) 搜索。
-
-如
-
-```bash
-cargo kovi add like
-```
-
-如果你本地的 `plugins` 目录下有 `like` 这一插件。会将此本地插件添加进 根 crate 的依赖中。
-
-如果没有，会将 [crates.io](https://crates.io) 上的 [`kovi-plugin-like`](https://crates.io/crates/kovi-plugin-like) 添加进 根 crate 的依赖中。
-
-
-> `cargo kovi add like` 等同于 `cargo kovi add kovi-plugin-like`
+> ## 一些额外解释
+> 
+> `cargo kovi add` 会优先会搜索本地目录下的插件，搜索不到才会向 [crates.io](https://crates.io) 搜索。
+> 
+> 如：输入命令 `cargo kovi add like`
+> 
+> 如果你本地的 `plugins` 目录下有 `like` 这一插件。会直接将此本地插件添加进 根 crate 的依赖中。
+> 
+> 如果没有，才会将 [crates.io](https://crates.io) 上的 [`kovi-plugin-like`](https://crates.io/crates/kovi-plugin-like) 添加进 根 crate 的依赖中。
+> 
+> `cargo kovi add like` 等同于 `cargo kovi add kovi-plugin-like` 。

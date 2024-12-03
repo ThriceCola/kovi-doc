@@ -3,9 +3,11 @@
 通过 `PluginBuilder::on` 监听，传入的闭包要求接受一个 `event`，此 `event` 便是事件。
 
 ```rust
+use kovi::PluginBuilder as P;
+
 #[kovi::plugin] 
 pub fn main() {
-    plugin.on_msg( |event| async move{// [!code focus]
+    P::on_msg(|event| async move{// [!code focus]
         event.reply("Hi!") // [!code focus]
     });
 }

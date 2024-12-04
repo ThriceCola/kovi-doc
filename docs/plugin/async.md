@@ -4,6 +4,8 @@ Kovi 在 0.8.0 版本后已经全面改成异步，这带来的性能的提升�
 
 ## 问题一：目前Rust不支持异步闭包。
 
+[异步闭包相关 PR](https://github.com/rust-lang/rust/pull/132706)
+
 AsyncFn 将会在 Rust 2024 版本推出（为什么2024版要2025年出？）。但在现在的 Rust 版本中，我们没有这个东西。
 
 闭包和异步用起来是及其繁琐的。如果需要在闭包与异步块中共享内存，那么你得传递两次 Arc 。不这样的话，会遇到变量不能 move 的问题。这无疑增加了开发难度。
@@ -102,5 +104,3 @@ Rust 标准库的锁调用的是操作系统的锁，是将整个线程给阻塞
 事实上，Rust 在编写持有同步锁的异步代码时，就会让这段代码失去 Send 特征。这时，因为 Tokio 和 Kovi 都在函数里要求传入的 Future 具备 Send ，所以编译器会报错。
 
 解决方案和详细解释可以查看 tokio 的文档：[tokio](https://tokio.rs/tokio/tutorial/shared-state#holding-a-mutexguard-across-an-await)
-
-

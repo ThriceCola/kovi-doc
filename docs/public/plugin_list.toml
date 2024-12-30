@@ -130,6 +130,7 @@ avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 [local-chat-model]
 type = "git"
 shop_name = "机器人芸汐"
+package_name = "kovi-plugin-local-chat-model"
 description = "基于ollama的本地大模型插件"
 git_url = "git@github.com:yunshenOwO/local-chat-model.git"
 repository = "https://github.com/yunshenOwO/local-chat-model"

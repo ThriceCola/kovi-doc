@@ -91,7 +91,7 @@ fn main() {
 
 拥有结构管理是非常好的习惯，所以推荐的插件开发方法是创建新目录 `plugins` 储存插件。
 
-通过 `kovi-cli` 或者 `cargo` 可以很好的去构建插件， cargo 的工作区可以使插件开发更加便捷。具体可看[快速上手#插件开发](/start/fast#插件开发)。
+通过 `kovi-cli` 或者 `cargo` 可以很好的去构建插件， cargo 的工作区可以使插件开发更加便捷。具体可看[快速上手#插件开发](/start/fast#_3-插件开发)。
 
 通过 `PluginBuilder` 使得插件 crate 可以使用 `plugin` 的各种功能。比如 `PluginBuilder::on_msg` 监听消息事件。
 

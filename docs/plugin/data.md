@@ -27,11 +27,11 @@ async fn main() {
 ```rust
 use serde_json::{json, Value};
 use kovi::utils::load_json_data;
-use kovi::PluginBuilder as p;
+use kovi::PluginBuilder as P;
 
 #[kovi::plugin]
 async fn main() {
-    let bot = p::get_runtime_bot();
+    let bot = P::get_runtime_bot();
     let data_path = bot.get_data_path();
     let config_path = data_path.join("config.json");
     let default_config: Value = json!({
@@ -62,11 +62,11 @@ let config = load_toml_data(default_config, config_path).unwrap();
 ```rust
 use serde_json::{json, Value};
 use kovi::utils::save_json_data;
-use kovi::PluginBuilder as p;
+use kovi::PluginBuilder as P;
 
 #[kovi::plugin]
 async fn main() {
-    let bot = p::get_runtime_bot();
+    let bot = P::get_runtime_bot();
     let data_path = bot.get_data_path();
     let config_path = data_path.join("config.json");
     let default_config: Value = json!({

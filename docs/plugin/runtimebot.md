@@ -25,6 +25,11 @@ async fn main() {
 }
 ```
 
+
+> [!WARNING]
+> `PluginBuilder` 只能在插件入口处，也就是由 `#[kovi::plugin]` 标注的函数的这个主线程中使用。请不要在监听闭包里使用 `PluginBuilder::get_runtime_bot();` 监听闭包不属于插件主线程。
+> 
+
 ## 封装了什么 API
 
 所有的标准 OneBot v11 API 都已经封装在 `RuntimeBot` 里。

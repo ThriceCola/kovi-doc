@@ -2,6 +2,10 @@
 
 通过 `PluginBuilder` 可以监听事件
 
+> [!WARNING]
+> `PluginBuilder` 只能在插件入口处，也就是由 `#[kovi::plugin]` 标注的函数的这个主线程中使用。请不要在监听闭包里使用 `PluginBuilder` 监听闭包不属于插件主线程。
+> 
+
 [[toc]]
 
 ## on_msg()
@@ -109,24 +113,24 @@ async fn main() {
 
 ```rust
 use kovi::croner;
-use kovi::{log::info, PluginBuilder as p};
+use kovi::{log::info, PluginBuilder as P};
 
 #[kovi::plugin]
 async fn main() {
     // 每天00:00
-    p::cron("0 0 * * *", || async {
+    P::cron("0 0 * * *", || async {
         info!("00:00");
     })
     .unwrap();
 
     // 每一秒
-    p::cron("* * * * * *", || async {
+    P::cron("* * * * * *", || async {
         info!("每一秒");
     })
     .unwrap();
 
     let cron = croner::Cron::new("0 0 * * *").parse().unwrap();
-    p::cron_use_croner(cron, || async {
+    P::cron_use_croner(cron, || async {
         info!("00:00");
     });
 }
@@ -144,7 +148,7 @@ async fn main() {
 
 > [!CAUTION]
 > 
-> 本函数运行起来非常复杂，对于主线程意外 panic! (这取决于 Kovi 开发有没有 Bug ) ，本函数不会触发。
+> 本函数运行起来非常复杂，对于主线程意外 panic! ，本函数不会触发。
 >
 > 只会在监听到系统退出信号时或者断开 OneBot 服务端连接时，才会运行传入的闭包。
 

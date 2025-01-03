@@ -194,8 +194,8 @@ async fn my_plugin_main() {
 }
 ```
 
-插件的 `main()` 只会在 插件 启动时运行一次。
+插件的 `#[kovi::plugin]` 入口函数只会在 插件 启动时运行一次。
 
-所有 [监听闭包](/plugin/onevent) 都是惰性的，不会马上运行，只会在接收消息时才会运行，来一次运行一次。
+所有的 [监听闭包](onevent) 都是惰性的，不会马上运行，在接收事件时才会触发运行。
 
 `Kovi` 已封装所有可用 `OneBot` 标准 API，拓展 API 你可以使用 `RuntimeBot` 的 `send_api()` 来自行发送 API。

@@ -59,13 +59,15 @@ fn main() {
 
     let mut bot = kovi::Bot::build(conf_b);
 
-    let (plugin_name, plugin_version) = testkovi::__kovi_get_plugin_info();
+    let (plugin_name, plugin_version) = my_plugin::__kovi_get_plugin_info();
 
     bot.mount_main(
         plugin_name,
         plugin_version,
         Arc::new(testkovi::__kovi_run_async_plugin),
     );
+
+    bot.set_plugin_startup_use_file_ref();
 
     bot.run();
 }
@@ -76,7 +78,12 @@ fn main() {
 
 运行 Bot 很简单 ，就是拥有了一个 Bot 实例后，直接 `bot.run()` 即可。
 
-`bot.run()` 是阻塞的，并且接管了整个程序，程序不会运行写在 `bot.run()` 后的任何代码。但是你可以在 `build_bot!()` 与 `bot.run()` 之间做你想要做的事情。
+`bot.run()` 是阻塞的。
+
+> [!CAUTION]
+> 0.11 以下版本的 Kovi 在同一个程序里不要多次使用 `bot.run()` 。
+>
+> 如果手痒痒的话，首先遇到的第一个 bug 就是无法退出程序，因为 Kovi 使用了 tokio运行时 监听了几乎所有退出信号。多次 `.run()` 会导致多次监听，导致程序出错。
 
 ```rust
 use kovi::build_bot;
@@ -94,6 +101,8 @@ fn main() {
 通过 `kovi-cli` 或者 `cargo` 可以很好的去构建插件， cargo 的工作区可以使插件开发更加便捷。具体可看[快速上手#插件开发](/start/fast#_3-插件开发)。
 
 通过 `PluginBuilder` 使得插件 crate 可以使用 `plugin` 的各种功能。比如 `PluginBuilder::on_msg` 监听消息事件。
+
+为了方便使用，推荐把 `PluginBuilder` 重命名成 `plugin` 或者 `P`
 
 ```rust
 use kovi::PluginBuilder as plugin;
@@ -135,6 +144,6 @@ async fn my_plugin_main() {
 
 它展开后，会创建一个公开函数，通过这个函数，可以获取到插件 crate 的 `name` 和 `version`。这是 `build_bot!()` 所需的信息。
 
-因为插件是异步函数，所以它会帮你做一些额外操作，以便于 `Kovi` 去运行。
+因为插件是异步函数，所以它会帮你做一些额外操作（ `Box::pin()` ），以便于 `Kovi` 去运行。
 
 :::

@@ -48,6 +48,8 @@ const thinks = [
 
 ## 赞助
 
+如果可以的话，还是进群直接V给我吧。
+
 [爱发电](https://afdian.com/a/threkork)
 
 

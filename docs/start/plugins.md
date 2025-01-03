@@ -12,7 +12,7 @@ import KoviPluginList from '../../components/KoviPluginList.vue'
 
 直接添加进依赖，即可以使用。
 
-如果您需要添加插件进入插件市场，请加群了解
+如果您需要添加插件进入插件市场，请加QQ群了解。
 
 ## `插件列表`
 

@@ -15,12 +15,12 @@ pub fn main() {
 
 [[toc]]
 
-## AllMsgEvent
+## MsgEvent
 
 具体可看 [OneBot v11 文档 Message Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/message.md)
 
 ```rust
-pub struct AllMsgEvent {
+pub struct MsgEvent {
     /// 事件发生的时间戳
     pub time: i64,
     /// 收到事件的机器人 登陆号
@@ -57,7 +57,7 @@ pub struct AllMsgEvent {
 }
 ```
 
-## AllMsgEvent 方法
+## MsgEvent 方法
 
 #### `event.reply()`
 
@@ -95,12 +95,12 @@ pub struct AllMsgEvent {
 
 借用 event 的 text
 
-## AllNotionEvent
+## NotionEvent
 
 具体可看 [OneBot v11 文档 Notion Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/notice.md)
 
 ```rust
-pub struct AllNoticeEvent {
+pub struct NoticeEvent {
     /// 事件发生的时间戳
     pub time: i64,
     /// 收到事件的机器人 登陆号
@@ -117,12 +117,12 @@ pub struct AllNoticeEvent {
 }
 ```
 
-## AllRequestEvent <Badge type="tip" text="^0.4.0" />
+## RequestEvent <Badge type="tip" text="^0.4.0" />
 
 具体可看 [OneBot v11 文档 Request Event 部分](https://github.com/botuniverse/onebot-11/blob/master/event/request.md)
 
 ```rust
-pub struct AllRequestEvent {
+pub struct RequestEvent {
     /// 事件发生的时间戳
     pub time: i64,
     /// 收到事件的机器人 登陆号

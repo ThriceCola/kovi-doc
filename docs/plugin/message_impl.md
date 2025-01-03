@@ -4,7 +4,7 @@
 
 ***
 
-### `msg.contains()` 检查 Message 是否包含任意 segment
+## `msg.contains()` 检查 Message 是否包含任意 segment
 
 检查 `Message` 是否包含任意一项 `segment`。返回 `bool`。
 
@@ -29,7 +29,7 @@ assert!(msg2.contains("text"));
 
 ***
 
-### `msg.get()` 获取 Message 中任意一种 segment
+## `msg.get()` 获取 Message 中任意一种 segment
 
 获取 `Message` 中任意一种 `segment` 。返回 `Vec<Segment>`，有多少项，就会返回多少项。
 
@@ -71,13 +71,13 @@ assert_eq!(msg.get("face")[0], face_value);
 
 ***
 
-### `msg.to_human_string()` Message 解析成人类可读字符串
+## `msg.to_human_string()` Message 解析成人类可读字符串
 
 `Message` 解析成人类可读字符串, 会将里面的 `segment` 转换成 `[type]` 字符串，如： `image` segment 会转换成 `[image]` 字符串，不要靠此函数做判断，可能不同版本会改变内容。
 
 ***
 
-### `msg.add_text()` 消息加上文字
+## `msg.add_text()` 消息加上文字
 
 消息加上文字
 
@@ -93,7 +93,7 @@ event.reply(msg);
 
 ***
 
-### `msg.add_at()` 消息加上 @
+## `msg.add_at()` 消息加上 @
 
 消息加上 `at`
 
@@ -105,7 +105,7 @@ event.reply(msg);
 
 ***
 
-### `msg.add_reply()` 消息加上引用
+## `msg.add_reply()` 消息加上引用
 
 消息加上引用
 
@@ -118,7 +118,7 @@ event.reply(msg);
 
 ***
 
-### `msg.add_face()` 消息加上表情
+## `msg.add_face()` 消息加上表情
 
 消息加上表情, 具体 id 请看服务端文档, 本框架不提供
 
@@ -134,7 +134,7 @@ event.reply(msg);
 
 ***
 
-### `msg.add_image()` 消息加上图片
+## `msg.add_image()` 消息加上图片
 
 消息加上图片
 
@@ -155,34 +155,34 @@ event.reply(msg);
 
 ***
 
-### `msg.add_segment()` 消息加上 segment
+## `msg.add_segment()` 消息加上 segment
 
 消息加上 `segment`，具体可看 [OneBot v11 文档 Segment 部分](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md)
 
 ***
 
-### `msg.push_text()` 消息末尾加上文字
+## `msg.push_text()` 消息末尾加上文字
 
 同 `msg.add_text()` 
 
 ***
 
-### `msg.push_at()` 消息末尾加上 @
+## `msg.push_at()` 消息末尾加上 @
 
 同 `msg.add_at()` 
 
-### `msg.push_reply()` 消息末尾加上引用
+## `msg.push_reply()` 消息末尾加上引用
 
 同 `msg.add_reply()` 
 
 ***
 
-### `msg.push_face()` 消息末尾加上表情
+## `msg.push_face()` 消息末尾加上表情
 
 同 `msg.add_face()` 
 
 ***
 
-### `msg.push_image()` 消息末尾加上图片
+## `msg.push_image()` 消息末尾加上图片
 
 同 `msg.add_image()` 

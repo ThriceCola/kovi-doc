@@ -1,8 +1,6 @@
 # 快速上手
 
 > [!WARNING] 警告
-> `Kovi` 目前处于前期快速迭代期，请以实际情况为准。
-> 
 > 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
 
 > [!TIP] 提示

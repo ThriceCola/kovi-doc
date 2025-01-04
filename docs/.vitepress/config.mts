@@ -3,10 +3,11 @@ import { defineConfig } from "vitepress";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
     title: "Kovi",
-    description: "Kovi 是一个基于 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！",
+    description:
+        "Kovi 是一个基于 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！",
     base: "/",
     sitemap: {
-        hostname: 'https://kovi.threkork.com'
+        hostname: "https://kovi.threkork.com",
     },
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
@@ -34,7 +35,19 @@ export default defineConfig({
                     },
                 ],
             },
-            { text: "crates.io", link: "https://crates.io/crates/kovi" },
+            {
+                text: "crates.io",
+                items: [
+                    {
+                        text: "crates.io",
+                        link: "https://crates.io/crates/kovi",
+                    },
+                    {
+                        text: "rustdoc",
+                        link: "https://docs.rs/kovi/latest/kovi/",
+                    },
+                ],
+            },
         ],
 
         sidebar: [

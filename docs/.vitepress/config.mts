@@ -34,6 +34,7 @@ export default defineConfig({
                     },
                 ],
             },
+            { text: "crates.io", link: "https://crates.io/crates/kovi" },
         ],
 
         sidebar: [

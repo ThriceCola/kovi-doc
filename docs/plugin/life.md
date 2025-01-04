@@ -56,3 +56,24 @@ async fn enable_my_plugin(e: Arc<MsgEvent>, bot: Arc<RuntimeBot>) {
     }
 }
 ```
+
+## 插件重载 `bot.restart_plugin()`
+
+因为要等待插件drop函数运行完毕再加载插件，为了阻塞，所以是异步函数。
+
+```rust
+use kovi::PluginBuilder as P;
+
+#[kovi::plugin]
+async fn main() {
+    let bot = P::get_runtime_bot();
+
+    P::on_msg(move |e| enable_my_plugin(e, bot.clone()));
+}
+
+async fn enable_my_plugin(e: Arc<MsgEvent>, bot: Arc<RuntimeBot>) {
+    if e.borrow_text() == Some("重载 my-plugin 插件") {
+        bot.restart_plugin("my-plugin").await.unwrap(); // [!code focus]
+    }
+}
+```

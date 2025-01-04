@@ -32,7 +32,7 @@ async fn main() {
 }
 
 async fn disable_my_plugin(e: Arc<MsgEvent>, bot: Arc<RuntimeBot>) {
-    if e.borrow_text() != Some("关闭 my-plugin 插件") {
+    if e.borrow_text() == Some("关闭 my-plugin 插件") {
         bot.disable_plugin("my-plugin").unwrap(); // [!code focus]
     }
 }

@@ -36,7 +36,7 @@ export default defineConfig({
                 ],
             },
             {
-                text: "crates.io",
+                text: "Rust",
                 items: [
                     {
                         text: "crates.io",

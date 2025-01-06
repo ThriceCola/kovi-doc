@@ -3,12 +3,12 @@
 通过 `PluginBuilder` 可以监听事件
 
 > [!WARNING]
-> `PluginBuilder` 只能在插件入口处，也就是由 `#[kovi::plugin]` 标注的函数的这个主线程中使用。请不要在监听闭包里使用 `PluginBuilder` 监听闭包不属于插件主线程。
+> `PluginBuilder` 只能在插件入口处，也就是由 `#[kovi::plugin]` 标注的函数的这个主线程中使用。请不要在监听闭包里使用 `PluginBuilder` ，监听闭包不属于插件主线程。
 > 
 
 [[toc]]
 
-## on_msg()
+## on_msg() 消息监听
 
 添加消息监听函数, 包括好友私聊、群消息以及讨论组消息
 
@@ -24,7 +24,7 @@ async fn main() {
 }
 ```
 
-## on_admin_msg()
+## on_admin_msg() 管理员消息监听
 
 添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，`Kovi` 会帮你筛选消息。
 
@@ -40,7 +40,7 @@ async fn main() {
 }
 ```
 
-## on_private_msg()
+## on_private_msg() 私聊消息监听
 
 添加好友私聊消息监听函数。
 
@@ -56,7 +56,7 @@ async fn main() {
 }
 ```
 
-## on_group_msg()
+## on_group_msg() 群消息监听
 
 添加群消息监听函数。
 
@@ -72,7 +72,7 @@ async fn main() {
 }
 ```
 
-## on_all_notice()
+## on_all_notice() 通知事件监听
 
 添加 OneBot 的 `通知事件` 监听函数。
 
@@ -88,7 +88,7 @@ async fn main() {
 }
 ```
 
-## on_all_request()
+## on_all_request() 请求事件监听
 
 添加 OneBot 的 `请求事件` 监听函数。
 
@@ -105,7 +105,7 @@ async fn main() {
 ```
 
 
-## cron() 和 cron_use_croner()
+## cron() 和 cron_use_croner() 定时任务
 
 添加一个定时任务。
 
@@ -138,15 +138,17 @@ async fn main() {
 
 
 
-## drop() 
+## drop() 程序退出或插件卸载监听
 
-添加 程序退出 监听函数。
+添加 程序退出或插件卸载 任务。
 
-如果你需要在程序结束时，运行一些代码，可以使用此监听来监听程序退出。
+如果你需要在插件结束时，运行一些代码，可以使用此监听来注册插件结束退出任务。
 
 为了提高用户侧退出体验，程序在接收到第二次退出信号的时候，会强制退出程序。
 
 > [!CAUTION]
+>
+> 对于程序退出。
 > 
 > 本函数运行起来非常复杂，对于主线程意外 panic! ，本函数不会触发。
 >
@@ -156,13 +158,13 @@ async fn main() {
 #[kovi::plugin]
 async fn main() {
     PluginBuilder::drop(|| async { // [!code focus]
-        println!("正在退出程序"); // [!code focus]
+        println!("正在关闭插件"); // [!code focus]
     }); // [!code focus]
 }
 ```
 
 
-## on_msg_send()
+## on_msg_send() 自身消息发送监听
 
 添加自身消息发送监听函数。
 

@@ -17,7 +17,7 @@
 
 
 
-## 插件卸载 `bot.disable_plugin()`
+## `bot.disable_plugin()` 插件卸载
 
 插件卸载时，会自动运行插件的 Drop 监听闭包。
 
@@ -27,7 +27,6 @@ use kovi::PluginBuilder as P;
 #[kovi::plugin]
 async fn main() {
     let bot = P::get_runtime_bot();
-
     P::on_msg(move |e| disable_my_plugin(e, bot.clone()));
 }
 
@@ -38,7 +37,7 @@ async fn disable_my_plugin(e: Arc<MsgEvent>, bot: Arc<RuntimeBot>) {
 }
 ```
 
-## 插件挂载 `bot.enable_plugin()`
+## `bot.enable_plugin()` 插件挂载
 
 ```rust
 use kovi::PluginBuilder as P;
@@ -46,7 +45,6 @@ use kovi::PluginBuilder as P;
 #[kovi::plugin]
 async fn main() {
     let bot = P::get_runtime_bot();
-
     P::on_msg(move |e| enable_my_plugin(e, bot.clone()));
 }
 
@@ -57,7 +55,7 @@ async fn enable_my_plugin(e: Arc<MsgEvent>, bot: Arc<RuntimeBot>) {
 }
 ```
 
-## 插件重载 `bot.restart_plugin()`
+## `bot.restart_plugin()` 插件重载
 
 因为要等待插件drop函数运行完毕再加载插件，为了阻塞，所以是异步函数。
 
@@ -67,7 +65,6 @@ use kovi::PluginBuilder as P;
 #[kovi::plugin]
 async fn main() {
     let bot = P::get_runtime_bot();
-
     P::on_msg(move |e| enable_my_plugin(e, bot.clone()));
 }
 

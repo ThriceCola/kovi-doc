@@ -19,18 +19,8 @@ fn main() {
 }
 ```
 
-::: tip 你可能想要知道的
-
-### `build_bot!()` 帮你做了什么呢？
-
-1. 生成 `kovi.conf.json` 。
-2. 使用 `env_logger` 库初始化了 `logger` （需启用 `logger` 特性，`logger` 目前默认启用）。
-3. 根据传入的 crate 名称，展开挂载 crate 的 `main` 函数。
-4. 传出一个 Bot 实例
-
 可以选择不传入任何插件。这时 Kovi 不会有任何功能。
 
-:::
 
 当然，也可以自己创建 Bot 实例，但是这需要你手动做很多事情。
 
@@ -73,17 +63,22 @@ fn main() {
 }
 ```
 
+::: tip 你可能想要知道的
+
+### `build_bot!()` 帮你做了什么呢？
+
+1. 生成 `kovi.conf.json` 。
+2. 使用 `env_logger` 库初始化了 `logger` （需启用 `logger` 特性，`logger` 目前默认启用）。
+3. 根据传入的 crate 名称，展开挂载 crate 的 `main` 函数。
+4. 传出一个 Bot 实例
+
+:::
 
 ## 运行 Bot
 
 运行 Bot 很简单 ，就是拥有了一个 Bot 实例后，直接 `bot.run()` 即可。
 
 `bot.run()` 是阻塞的。
-
-> [!CAUTION]
-> 0.11 以下版本的 Kovi 在同一个程序里不要多次使用 `bot.run()` 。
->
-> 如果手痒痒的话，首先遇到的第一个 bug 就是无法退出程序，因为 Kovi 使用了 tokio运行时 监听了几乎所有退出信号。多次 `.run()` 会导致多次监听，导致程序出错。
 
 ```rust
 use kovi::build_bot;
@@ -93,6 +88,11 @@ fn main() {
     bot.run()
 }
 ```
+
+> [!CAUTION]
+> 0.11 以下版本的 Kovi 在同一个程序里不要多次使用 `bot.run()` 。
+>
+> 如果手痒痒的话，首先遇到的第一个 bug 就是无法退出程序，因为 Kovi 使用了 tokio运行时 监听了几乎所有退出信号。多次 `.run()` 会导致多次监听，导致程序出错。
 
 ## 插件
 

@@ -68,6 +68,16 @@ author_name = "三瓶可乐不过岗"
 author_url = "https://github.com/Threkork"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
+[cmd]
+type = "crates.io"
+package_name = "kovi-plugin-cmd"
+description = "Kovi 的管理插件，通过消息命令配置 Kovi。"
+repository = "https://github.com/Threkork/kovi-plugin"
+documentation = "https://crates.io/crates/kovi-plugin-cmd"
+author_name = "三瓶可乐不过岗"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
 [shindan-maker]
 type = "crates.io"
 shop_name = "shindan-maker"

@@ -133,7 +133,7 @@ description = "检测龙图或者奶龙并撤回"
 git_url = "https://github.com/Threkork/kovi-plugin-check-alllong.git"
 repository = "https://github.com/Threkork/kovi-plugin-check-alllong"
 documentation = "https://github.com/Threkork/kovi-plugin-check-alllong"
-author_name = "三瓶可乐不过岗"
+author_name = "三瓶可乐不过岗-不官方"
 author_url = "https://github.com/Threkork"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 

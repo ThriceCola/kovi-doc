@@ -4,7 +4,7 @@ import { VPTeamMembers, VPTeamPageSection } from 'vitepress/theme'
 const authors = [
     {
         avatar: "https://proxy.viki.moe/u/92619280?v=4&proxy-host=avatars.githubusercontent.com",
-        name: "三瓶可乐不过岗 / Threkork",
+        name: "三瓶可乐不过岗",
         title: "Hi 👋",
         links: [{ icon: "github", link: "https://github.com/Threkork" }],
     },
@@ -18,10 +18,14 @@ const contributors = [
     },
     {
         avatar: "https://proxy.viki.moe/u/105690584?v=4&proxy-host=avatars.githubusercontent.com",
-        name: "rust-kotlin TomZz",
+        name: "TomZz",
         links: [{ icon: "github", link: "https://github.com/rust-kotlin" }],
     },
-    
+    {
+        avatar: "https://proxy.viki.moe/u/3616727?v=4&proxy-host=avatars.githubusercontent.com",
+        name: "Yuze Fu",
+        links: [{ icon: "github", link: "https://github.com/xfoxfu" }],
+    },
 ];
 
 const thinks = [

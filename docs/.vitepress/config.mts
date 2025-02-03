@@ -87,19 +87,31 @@ export default defineConfig({
                 ],
             },
             {
-                text: "学习与提升",
+                text: "进阶开发",
                 collapsed: false,
 
                 items: [
-                    { text: "无畏并发-闭包间共享状态", link: "/plugin/arc" },
-                    { text: "异步", link: "/plugin/async" },
+                    { text: "Bot 启动时插件控制", link: "/plugin/kovi-self" },
+                    { text: "框架级黑白名单", link: "/plugin/access-control" },
                 ],
             },
+            // {
+            //     text: "学习与提升",
+            //     collapsed: false,
+
+            //     items: [
+            //         { text: "无畏并发-闭包间共享状态", link: "/plugin/arc" },
+            //         { text: "异步", link: "/plugin/async" },
+            //     ],
+            // },
             {
                 text: "附录",
                 collapsed: false,
 
-                items: [{ text: "OneBot Api", link: "/api/onebot_api" }],
+                items: [
+                    { text: "OneBot Api", link: "/api/onebot_api" },
+                    { text: "Kovi Api", link: "/api/kovi_api" },
+                ],
             },
         ],
 

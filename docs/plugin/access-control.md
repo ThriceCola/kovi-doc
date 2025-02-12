@@ -24,6 +24,4 @@ async fn main(){
 
 更多方法可以查看 [RustDoc 的 RuntimeBot 结构体](https://docs.rs/kovi/latest/kovi/bot/runtimebot/struct.RuntimeBot.html)下面有什么，这里不再复述。
 
-此功能可以通过 feature 里的 `save_plugin_status` 将数据保存到程序运行目录下的 `kovi.plugin.toml`
-
-如果要关闭这个功能，你需要关闭这个特性。
+此功能由 feature 里的 `plugin_access_control` 开启。（默认打开）

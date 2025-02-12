@@ -91,8 +91,8 @@ export default defineConfig({
         collapsed: false,
 
         items: [
-          { text: "Bot 启动时插件控制", link: "/plugin/bot-startup" },
           { text: "框架级访问控制(黑白名单)", link: "/plugin/access-control" },
+          { text: "Bot 启动时插件控制", link: "/plugin/bot-startup" },
         ],
       },
       // {

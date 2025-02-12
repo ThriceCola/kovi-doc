@@ -5,7 +5,7 @@
 ```rust
 use kovi::PluginBuilder as P;
 
-#[kovi::plugin] 
+#[kovi::plugin]
 pub fn main() {
     P::on_msg(|event| async move{// [!code focus]
         event.reply("Hi!") // [!code focus]
@@ -71,11 +71,15 @@ pub struct MsgEvent {
 
 ***
 
-#### `event.reply_text()`
+#### `event.is_group()`
 
-这个函数需开启 cqstring 特性
+事件是否是群聊消息，如果是群聊消息则返回 `true`，否则返回 `false`。
 
-快速回复消息，并且kovi不进行解析，直接发送字符串
+***
+
+#### `event.is_private()`
+
+事件是否是私聊消息，如果是私聊消息则返回 `true`，否则返回 `false`。
 
 ***
 
@@ -94,6 +98,14 @@ pub struct MsgEvent {
 #### `event.borrow_text()`
 
 借用 event 的 text
+
+***
+
+#### `event.reply_text()`
+
+这个函数需开启 cqstring 特性
+
+快速回复消息，并且kovi不进行解析，直接发送字符串
 
 ## NotionEvent
 

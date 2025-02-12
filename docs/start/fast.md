@@ -34,7 +34,7 @@ cd ./my-kovi-bot
 cargo add Kovi
 ```
 
-::: 
+:::
 
 ## 2. 在 `src/main.rs` 创建 Bot 实例。
 
@@ -61,7 +61,7 @@ OneBot 服务端的 IP 是什么？ (默认值：127.0.0.1)
 ✔ What is the port of the OneBot server? · 8081
 OneBot 服务端的端口是什么？ (默认值：8081)
 
-✔ What is the access_token of the OneBot server? (Optional) 
+✔ What is the access_token of the OneBot server? (Optional)
 OneBot 服务端的 access_token 是什么？ (默认值：空)
 
 ✔ What is the ID of the main administrator? (Not used yet)
@@ -87,7 +87,7 @@ OneBot 服务端的 access_token 是什么？ (默认值：空)
 [dependencies]
 ...
 
-[workspace] // [!code focus] // [!code ++] 
+[workspace] // [!code focus] // [!code ++]
 ```
 
 接着
@@ -102,7 +102,7 @@ cargo kovi create hi
 cargo new plugins/hi --lib
 ```
 
-::: 
+:::
 
 `kovi-cli` 或者 `cargo` 会帮你做好一切的。
 
@@ -110,10 +110,10 @@ cargo new plugins/hi --lib
 
 ```
 .
-├── plugins // [!code ++] 
-│   └── hi // [!code ++] 
-│       └── src // [!code ++] 
-│           └── lib.rs // [!code ++] 
+├── plugins // [!code ++]
+│   └── hi // [!code ++]
+│       └── src // [!code ++]
+│           └── lib.rs // [!code ++]
 ├── src
 │   └── main.rs
 │
@@ -149,7 +149,7 @@ async fn my_plugin_main() {
 将依赖添加进根项目。
 
 > 如果你的 `kovi-cli` 是最新版，在创建插件时，就已经帮你 add 好了插件。
-> 
+>
 > 不再需要使用 `cargo kovi add hi` 。
 
 ::: code-group
@@ -159,10 +159,10 @@ cargo kovi add hi
 ```
 
 ```bash [cargo]
-cargo add --path plugins/hi  
+cargo add --path plugins/hi
 ```
 
-::: 
+:::
 
 将插件导入到 `my-kovi-bot` 的 `main.rs` 。
 
@@ -197,3 +197,19 @@ async fn my_plugin_main() {
 所有的 [监听闭包](/plugin/onevent) 都是惰性的，不会马上运行，在接收事件时才会触发运行。
 
 `Kovi` 已封装所有可用 `OneBot` 标准 API，拓展 API 你可以使用 `RuntimeBot` 的 `send_api()` 来自行发送 API。
+
+## 4. 消息命令控制
+
+推荐使用 官方的 cmd 插件来通过消息命令控制 bot 。
+
+```shell
+cargo kovi add cmd
+```
+
+接着挂载插件
+
+```rust
+let bot = build_bot!(kovi_plugin_cmd);
+```
+
+试试给 bot 发送消息 `.kovi` 吧。

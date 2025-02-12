@@ -63,7 +63,7 @@ fn main() {
 }
 ```
 
-::: tip 你可能想要知道的
+<!-- ::: tip 你可能想要知道的
 
 ### `build_bot!()` 帮你做了什么呢？
 
@@ -72,7 +72,7 @@ fn main() {
 3. 根据传入的 crate 名称，展开挂载 crate 的 `main` 函数。
 4. 传出一个 Bot 实例
 
-:::
+::: -->
 
 ## 运行 Bot
 
@@ -116,14 +116,14 @@ async fn my_plugin_main() {
 ```
 
 > [!CAUTION]
-> 
+>
 > PluginBuilder 只能在插件入口函数中使用。如果在其他地方使用，会导致运行时出错，出错原因是没有 PluginBuilder 实例。
 >
 > 以下代码会在运行时出错。
-> 
+>
 > ```rust
 > use kovi::{log::info, PluginBuilder as plugin};
-> 
+>
 > #[kovi::plugin]
 > async fn main() {
 >     plugin::on_msg(|event| async move {
@@ -134,7 +134,7 @@ async fn my_plugin_main() {
 >     });
 > }
 > ```
-> 
+>
 > 这防止了一些逻辑错误，谁知道会不会有人写出，来一次消息，注册一次监听事件呢？
 >
 

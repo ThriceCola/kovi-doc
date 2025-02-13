@@ -83,7 +83,7 @@ export default defineConfig({
             link: "/plugin/better",
           },
 
-          { text: "生命周期与运行时管理插件", link: "/plugin/life" },
+          { text: "生命周期", link: "/plugin/life" },
         ],
       },
       {
@@ -91,6 +91,7 @@ export default defineConfig({
         collapsed: false,
 
         items: [
+          { text: "运行时管理插件", link: "/plugin/plugin-control" },
           { text: "框架级访问控制(黑白名单)", link: "/plugin/access-control" },
           { text: "Bot 启动时插件控制", link: "/plugin/bot-startup" },
         ],

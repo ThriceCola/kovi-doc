@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Kovi"
-  tagline: "基于 Rust 的\nOneBot 插件开发框架"
+  tagline: "Rust OneBot 插件开发框架"
   actions:
     - theme: brand
       text: 开始 Kovi 之旅

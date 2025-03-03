@@ -17,9 +17,9 @@ git_url = "https://github.com/Threkork/kovi-plugin-title.git"
 repository = "https://github.com/Threkork/kovi-plugin-title"
 # 文档地址（可选）
 documentation = "https://github.com/Threkork/kovi-plugin-title"
-# 作者 
+# 作者
 author_name = "三瓶可乐不过岗"
-# 作者链接（可选） 
+# 作者链接（可选）
 author_url = "https://github.com/Threkork"
 # 作者头像链接（可选）
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
@@ -44,9 +44,9 @@ repository = "https://github.com/Threkork/kovi-plugin"
 documentation = "https://github.com/Threkork/kovi-plugin"
 # 作者（可选，不写则获取crates.io的数据）
 author_name = "三瓶可乐不过岗"
-# 作者链接（可选，不写则获取crates.io的数据） 
+# 作者链接（可选，不写则获取crates.io的数据）
 author_url = "https://github.com/Threkork"
-# 作者链接（可选，不写则获取crates.io的数据） 
+# 作者链接（可选，不写则获取crates.io的数据）
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 
@@ -125,14 +125,14 @@ author_name = "super1207"
 author_url = "https://github.com/super1207"
 avatar_url = "https://avatars.githubusercontent.com/u/30586004?v=4"
 
-[check-alllong]
+[check-all-long]
 type = "git"
 shop_name = "检测龙图与奶龙"
 package_name = "kovi-plugin-check-alllong"
 description = "检测龙图或者奶龙并撤回"
-git_url = "https://github.com/Threkork/kovi-plugin-check-alllong.git"
-repository = "https://github.com/Threkork/kovi-plugin-check-alllong"
-documentation = "https://github.com/Threkork/kovi-plugin-check-alllong"
+git_url = "https://github.com/kovi-plugins/check-all-long.git"
+repository = "https://github.com/kovi-plugins/check-all-long"
+documentation = "https://github.com/kovi-plugins/check-all-long"
 author_name = "三瓶可乐不过岗-不官方"
 author_url = "https://github.com/Threkork"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
@@ -158,3 +158,15 @@ documentation = "https://docs.rs/kovi-plugin-live-agent/latest/kovi_plugin_live_
 author_name = "梦梦永远の神"
 author_url = "https://github.com/realzhujunhao"
 avatar_url = "https://avatars.githubusercontent.com/u/63294481?v=4"
+
+[aiqa]
+type = "git"
+shop_name = "AI问答"
+package_name = "kovi-plugin-aiqa"
+description = "一次性的ai问答，并且输出图片，兼容openai的模型皆可用"
+git_url = "https://github.com/kovi-plugins/aiqa.git"
+repository = "https://github.com/kovi-plugins/aiqa"
+documentation = "https://github.com/kovi-plugins/aiqa"
+author_name = "三瓶可乐不过岗"
+author_url = "https://github.com/Threkork"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"

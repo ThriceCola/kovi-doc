@@ -326,7 +326,9 @@ const authorIsAuthor = (name: string | undefined): boolean => {
         return false;
     }
 
-    return name === "三瓶可乐不过岗" || name.toLowerCase() === "threkork";
+    const names = ["三瓶可乐不过岗", "threkork", "thricecola"];
+
+    return names.includes(name);
 };
 
 const copyToClipboard = (plugin: Plugin): void => {
@@ -377,14 +379,9 @@ onMounted(init);
             </Transition>
         </div>
         <div v-else class="plugin-list">
-            <div
-                v-for="plugin in plugins"
-                :key="plugin.id"
-                class="plugin-card brackground"
+            <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card brackground"
                 @mouseover="!isMobile && (plugin.showCopyBox = true)"
-                @mouseleave="!isMobile && (plugin.showCopyBox = false)"
-                @click="toggleCopyBox(plugin)"
-            >
+                @mouseleave="!isMobile && (plugin.showCopyBox = false)" @click="toggleCopyBox(plugin)">
                 <div>
                     <div class="plugin-card-box">
                         <div class="plugin-header">
@@ -398,25 +395,13 @@ onMounted(init);
                     </div>
                     <div class="card-footer">
                         <div class="label">
-                            <span
-                                class="badge"
-                                v-if="authorIsAuthor(plugin.author_name)"
-                                >官方</span
-                            >
+                            <span class="badge" v-if="authorIsAuthor(plugin.author_name)">官方</span>
                             <span class="plugin-type">{{ plugin.type }}</span>
                         </div>
 
                         <div style="display: flex; align-items: center">
-                            <img
-                                v-if="plugin.avatar_url"
-                                :src="plugin.avatar_url"
-                                class="avatar"
-                            />
-                            <img
-                                v-else
-                                src="https://ga.viki.moe/avatar/?d=mp"
-                                class="avatar"
-                            />
+                            <img v-if="plugin.avatar_url" :src="plugin.avatar_url" class="avatar" />
+                            <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
                             <p class="author" v-if="plugin.author_name">
                                 {{ plugin.author_name }}
                             </p>
@@ -426,97 +411,48 @@ onMounted(init);
                 </div>
 
                 <!-- @click="goToLink(plugin)" -->
-                <Transition
-                    name="copy-box"
-                    @click="isMobile && toggleCopyBox(plugin)"
-                >
-                    <div
-                        v-show="plugin.showCopyBox"
-                        class="copy-box"
-                        @click.stop
-                    >
+                <Transition name="copy-box" @click="isMobile && toggleCopyBox(plugin)">
+                    <div v-show="plugin.showCopyBox" class="copy-box" @click.stop>
                         <div class="plugin-header">
                             <div class="plugins-h2">
                                 {{ plugin.shop_name }}
                             </div>
                         </div>
                         <div class="link-button">
-                            <button
-                                class="brackground"
-                                @click.stop="copyToClipboard(plugin)"
-                            >
+                            <button class="brackground" @click.stop="copyToClipboard(plugin)">
                                 {{
                                     plugin.copyStatus === "copied"
                                         ? "已复制"
                                         : "复制添加命令"
                                 }}
                             </button>
-                            <button
-                                v-if="plugin.type === 'crates.io'"
-                                @click.stop="goCratesIoToLink(plugin)"
-                            >
-                                <img
-                                    src="https://crates.io/assets/cargo.png"
-                                    alt="crates.io"
-                                />
+                            <button v-if="plugin.type === 'crates.io'" @click.stop="goCratesIoToLink(plugin)">
+                                <img src="https://crates.io/assets/cargo.png" alt="crates.io" />
                                 <p>crates.io</p>
                             </button>
 
-                            <button
-                                v-if="plugin.repository"
-                                @click.stop="goToLink(plugin.repository)"
-                            >
-                                <img
-                                    src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png"
-                                    alt="git"
-                                />
+                            <button v-if="plugin.repository" @click.stop="goToLink(plugin.repository)">
+                                <img src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png" alt="git" />
                                 <p>仓库</p>
                             </button>
 
-                            <button
-                                v-if="plugin.documentation"
-                                @click.stop="goToLink(plugin.documentation)"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="1em"
-                                    height="1em"
-                                    viewBox="0 0 512 512"
-                                >
-                                    <path
-                                        fill="#dce2e2"
-                                        d="M433.694 507.594H78.306c-11.929 0-21.6-9.671-21.6-21.6V25.317c0-11.929 9.671-21.6 21.6-21.6h263.026l113.961 112.739v369.538c.001 11.929-9.67 21.6-21.599 21.6"
-                                    />
-                                    <path
-                                        fill="#96a9b2"
-                                        d="M298.976 79.728h-74.642a7.904 7.904 0 0 1 0-15.808h74.642a7.904 7.904 0 0 1 0 15.808m-20.594 46.49a7.904 7.904 0 0 0-7.904-7.904h-46.144a7.904 7.904 0 0 0 0 15.808h46.144a7.904 7.904 0 0 0 7.904-7.904m116.577 54.394a7.904 7.904 0 0 0-7.904-7.904H224.333a7.904 7.904 0 0 0 0 15.808h162.721a7.905 7.905 0 0 0 7.905-7.904m-17.603 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h262.896a7.903 7.903 0 0 0 7.903-7.904M271.69 289.399a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h157.229a7.903 7.903 0 0 0 7.904-7.904m123.269 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904"
-                                    />
-                                    <path
-                                        fill="#b9c5c6"
-                                        d="m341.333 3.717l112.739 112.739h-88.776c-13.235 0-23.963-10.729-23.963-23.963z"
-                                    />
-                                    <path
-                                        fill="#00b1ff"
-                                        d="M106.207 64.821h84.582a8.13 8.13 0 0 1 8.127 8.127v106.54a8.13 8.13 0 0 1-8.127 8.127h-84.582a8.13 8.13 0 0 1-8.127-8.127V72.948a8.13 8.13 0 0 1 8.127-8.127"
-                                    />
+                            <button v-if="plugin.documentation" @click.stop="goToLink(plugin.documentation)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
+                                    <path fill="#dce2e2"
+                                        d="M433.694 507.594H78.306c-11.929 0-21.6-9.671-21.6-21.6V25.317c0-11.929 9.671-21.6 21.6-21.6h263.026l113.961 112.739v369.538c.001 11.929-9.67 21.6-21.599 21.6" />
+                                    <path fill="#96a9b2"
+                                        d="M298.976 79.728h-74.642a7.904 7.904 0 0 1 0-15.808h74.642a7.904 7.904 0 0 1 0 15.808m-20.594 46.49a7.904 7.904 0 0 0-7.904-7.904h-46.144a7.904 7.904 0 0 0 0 15.808h46.144a7.904 7.904 0 0 0 7.904-7.904m116.577 54.394a7.904 7.904 0 0 0-7.904-7.904H224.333a7.904 7.904 0 0 0 0 15.808h162.721a7.905 7.905 0 0 0 7.905-7.904m-17.603 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h262.896a7.903 7.903 0 0 0 7.903-7.904M271.69 289.399a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h157.229a7.903 7.903 0 0 0 7.904-7.904m123.269 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904" />
+                                    <path fill="#b9c5c6"
+                                        d="m341.333 3.717l112.739 112.739h-88.776c-13.235 0-23.963-10.729-23.963-23.963z" />
+                                    <path fill="#00b1ff"
+                                        d="M106.207 64.821h84.582a8.13 8.13 0 0 1 8.127 8.127v106.54a8.13 8.13 0 0 1-8.127 8.127h-84.582a8.13 8.13 0 0 1-8.127-8.127V72.948a8.13 8.13 0 0 1 8.127-8.127" />
                                 </svg>
                                 <p>文档</p>
                             </button>
 
-                            <button
-                                v-if="plugin.author_url"
-                                @click.stop="goToLink(plugin.author_url)"
-                            >
-                                <img
-                                    v-if="plugin.avatar_url"
-                                    :src="plugin.avatar_url"
-                                    class="avatar"
-                                />
-                                <img
-                                    v-else
-                                    src="https://ga.viki.moe/avatar/?d=mp"
-                                    class="avatar"
-                                />
+                            <button v-if="plugin.author_url" @click.stop="goToLink(plugin.author_url)">
+                                <img v-if="plugin.avatar_url" :src="plugin.avatar_url" class="avatar" />
+                                <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
                                 <p v-if="plugin.author_name">
                                     {{ plugin.author_name }}
                                 </p>
@@ -569,7 +505,6 @@ onMounted(init);
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    justify-content: center;
     gap: 16px;
 }
 
@@ -616,12 +551,15 @@ onMounted(init);
 }
 
 .label {
-    position: static; /* 改为static而不是absolute */
+    position: static;
+    /* 改为static而不是absolute */
     display: flex;
     align-items: center;
     flex-direction: row;
-    min-width: 0; /* 移除最小宽度限制 */
-    text-align: left; /* 左对齐文本 */
+    min-width: 0;
+    /* 移除最小宽度限制 */
+    text-align: left;
+    /* 左对齐文本 */
     font-size: 14px;
     color: var(--vp-c-text-1);
 }
@@ -667,16 +605,18 @@ onMounted(init);
     position: absolute;
     font-size: 14px;
     display: flex;
-    justify-content: space-between; /* 这确保了子元素之间的最大间距 */
+    justify-content: space-between;
+    /* 这确保了子元素之间的最大间距 */
     align-items: center;
     bottom: 0;
     width: calc(100% - 32px);
 }
 
-.card-footer > div:last-child {
+.card-footer>div:last-child {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* 确保右对齐 */
+    justify-content: flex-end;
+    /* 确保右对齐 */
 }
 
 .description {
@@ -726,8 +666,10 @@ onMounted(init);
 
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* 隐藏溢出内容 */
+    overflow: hidden;
+    /* 隐藏溢出内容 */
 }
+
 /*
     display: flex;
     flex-direction: column;
@@ -747,6 +689,7 @@ onMounted(init);
     justify-content: flex-end;
     pointer-events: none;
 }
+
 .copy-box-footer button {
     pointer-events: auto;
 }
@@ -831,6 +774,7 @@ onMounted(init);
     font-weight: 500;
     font-size: 14px;
 }
+
 :root.dark .link-button button {
     color: var(--vp-c-text-1);
 }
@@ -847,6 +791,7 @@ onMounted(init);
 :root.dark .brackground {
     background-color: #1b1b1f;
 }
+
 .brackground {
     background-color: #fff;
 }

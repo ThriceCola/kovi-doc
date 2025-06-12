@@ -17,14 +17,29 @@ const contributors = [
         links: [{ icon: "github", link: "https://github.com/vikiboss" }],
     },
     {
+        avatar: "https://proxy.viki.moe/u/30586004?v=4&proxy-host=avatars.githubusercontent.com",
+        name: "super1207",
+        links: [{ icon: "github", link: "https://github.com/super1207" }],
+    },
+    {
         avatar: "https://proxy.viki.moe/u/105690584?v=4&proxy-host=avatars.githubusercontent.com",
         name: "TomZz",
         links: [{ icon: "github", link: "https://github.com/rust-kotlin" }],
     },
     {
+        avatar: "https://proxy.viki.moe/u/133293581?v=4&proxy-host=avatars.githubusercontent.com",
+        name: "Meow0x7E",
+        links: [{ icon: "github", link: "https://github.com/Meow0x7E" }],
+    },
+    {
         avatar: "https://proxy.viki.moe/u/3616727?v=4&proxy-host=avatars.githubusercontent.com",
         name: "Yuze Fu",
         links: [{ icon: "github", link: "https://github.com/xfoxfu" }],
+    },
+    {
+        avatar: "https://proxy.viki.moe/u/59910046?v=4&proxy-host=avatars.githubusercontent.com",
+        name: "InuDial",
+        links: [{ icon: "github", link: "https://github.com/InuDial" }],
     },
 ];
 

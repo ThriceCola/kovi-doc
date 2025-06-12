@@ -2,7 +2,7 @@
 
 > [!WARNING] 警告
 > 此篇文章写于旧版本 Kovi ，其中的例子不可以直接用于新版本 Kovi。
-> 
+>
 
 [[toc]]
 
@@ -12,7 +12,7 @@
 
 如果你学习过并发相关内容，可以跳过本章节。
 
-还记得前文的生命周期吗，Kovi 会在启动时将所有插件的 `main()` 函数运行一遍。所有写在 `main()` 函数里的[监听闭包](onevent)都是惰性的，只会在消息来的那一刻运行一次。而这时， `main()` 函数可能早已运行结束。 `main()` 所有变量，会在 `main()` 结束的那一刻丢弃。
+还记得前文的生命周期吗，Kovi 会在启动时将所有插件的 `main()` 函数运行一遍。所有写在 `main()` 函数里的[监听闭包](on_event)都是惰性的，只会在消息来的那一刻运行一次。而这时， `main()` 函数可能早已运行结束。 `main()` 所有变量，会在 `main()` 结束的那一刻丢弃。
 
 > 关于更多无畏并发，你可以查看这个。
 >
@@ -23,9 +23,9 @@
 
 下面代码因为 `bot` 变量属于 `main()` ，所以闭包内无法使用闭包外的变量。
 
-```rust 
+```rust
 //此代码不可编译 // [!code focus]
-use kovi::PluginBuilder; 
+use kovi::PluginBuilder;
 
 #[kovi::plugin]
 pub fn main(mut p: PluginBuilder) {
@@ -52,8 +52,8 @@ note: function requires argument type to outlive `'static`
 
 你可以通过 `move` 关键字来捕获闭包外的变量。此变量便归此闭包所有。
 
-```rust 
-use kovi::PluginBuilder; 
+```rust
+use kovi::PluginBuilder;
 
 #[kovi::plugin]
 pub fn main(mut p: PluginBuilder) {
@@ -126,13 +126,13 @@ pub fn main(mut p: PluginBuilder) {
     p.on_msg({
         let event_vec = event_vec.clone();
         move |e| {
-            event_vec.push(e.clone()); // [!code error] 
+            event_vec.push(e.clone()); // [!code error]
         }
     });
     p.on_msg({
         let event_vec = event_vec.clone();
         move |e| {
-            event_vec.push(e.clone()); // [!code error] 
+            event_vec.push(e.clone()); // [!code error]
         }
     })
 }

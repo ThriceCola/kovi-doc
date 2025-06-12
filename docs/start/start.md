@@ -1,7 +1,6 @@
 # 准备
 
-> [!TIP] 提示
-> `Kovi` 目前只支持 OneBot V11 正向 WebSocket 协议。
+希望你是想要通过 Kovi 来学习 Rust ，或者是为了 Rust 来使用 Kovi , 不要为了 Kovi 而来使用 Kovi 。
 
 1. Kovi 由 [Rust](https://www.rust-lang.org/) 所写，插件也需用 [Rust](https://www.rust-lang.org/) 写，请确保本地已安装。
 
@@ -10,3 +9,7 @@
 3. Kovi 只是一个 [OneBot](https://onebot.dev/) 插件开发框架，你需要准备 OneBot V11 服务端。如果没有的话，需要找找，并部署起来。
 
 4. 将你的 OneBot V11 服务端，配置成正向 WebSocket 模式。
+
+
+> [!TIP] 提示
+> `Kovi` 目前只支持 OneBot V11 正向 WebSocket 协议。

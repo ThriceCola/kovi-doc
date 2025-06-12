@@ -6,7 +6,7 @@ const authors = [
         avatar: "https://proxy.viki.moe/u/92619280?v=4&proxy-host=avatars.githubusercontent.com",
         name: "三瓶可乐不过岗",
         title: "Hi 👋",
-        links: [{ icon: "github", link: "https://github.com/Threkork" }],
+        links: [{ icon: "github", link: "https://github.com/thricecola" }],
     },
 ];
 
@@ -54,7 +54,7 @@ const thinks = [
 
 如果可以的话，还是进群直接V给我吧。
 
-[爱发电](https://afdian.com/a/threkork)
+[爱发电](https://afdian.com/a/thricecola)
 
 
 <VPTeamPage>

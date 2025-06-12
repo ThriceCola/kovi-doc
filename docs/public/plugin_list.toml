@@ -12,15 +12,15 @@ package_name = "kovi-plugin-title"
 # 插件描述
 description = "kovi 的头衔插件。"
 # git 地址
-git_url = "https://github.com/Threkork/kovi-plugin-title.git"
+git_url = "https://github.com/kovi-plugins/kovi-plugin-title.git"
 # 插件仓库地址
-repository = "https://github.com/Threkork/kovi-plugin-title"
+repository = "https://github.com/kovi-plugins/kovi-plugin-title"
 # 文档地址（可选）
-documentation = "https://github.com/Threkork/kovi-plugin-title"
+documentation = "https://github.com/kovi-plugins/kovi-plugin-title"
 # 作者
 author_name = "三瓶可乐不过岗"
 # 作者链接（可选）
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 # 作者头像链接（可选）
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
@@ -39,13 +39,13 @@ package_name = "kovi-plugin-like"
 # 插件描述
 description = "kovi 的点赞插件，可在config.json里配置。"
 # 插件仓库地址（可选）
-repository = "https://github.com/Threkork/kovi-plugin"
+repository = "https://github.com/kovi-plugins/kovi-plugin-like"
 # 文档地址（可选）
-documentation = "https://github.com/Threkork/kovi-plugin"
+documentation = "https://github.com/kovi-plugins/kovi-plugin-like"
 # 作者（可选，不写则获取crates.io的数据）
 author_name = "三瓶可乐不过岗"
 # 作者链接（可选，不写则获取crates.io的数据）
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 # 作者链接（可选，不写则获取crates.io的数据）
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
@@ -56,7 +56,7 @@ plugin_type = "expand"
 package_name = "kovi-plugin-expand-lagrange"
 description = "kovi 的 lagrange Api 拓展。"
 author_name = "三瓶可乐不过岗"
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 [expand-napcat]
@@ -65,17 +65,17 @@ plugin_type = "expand"
 package_name = "kovi-plugin-expand-napcat"
 description = "kovi 的 napcat Api 拓展。"
 author_name = "三瓶可乐不过岗"
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 [cmd]
 type = "crates.io"
 package_name = "kovi-plugin-cmd"
 description = "Kovi 的管理插件，通过消息命令配置 Kovi。"
-repository = "https://github.com/Threkork/kovi-plugin"
+repository = "https://github.com/kovi-plugins/cmd"
 documentation = "https://crates.io/crates/kovi-plugin-cmd"
 author_name = "三瓶可乐不过岗"
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 [shindan-maker]
@@ -134,7 +134,7 @@ git_url = "https://github.com/kovi-plugins/check-all-long.git"
 repository = "https://github.com/kovi-plugins/check-all-long"
 documentation = "https://github.com/kovi-plugins/check-all-long"
 author_name = "三瓶可乐不过岗-不官方"
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 [local-chat-model]
@@ -168,7 +168,7 @@ git_url = "https://github.com/kovi-plugins/aiqa.git"
 repository = "https://github.com/kovi-plugins/aiqa"
 documentation = "https://github.com/kovi-plugins/aiqa"
 author_name = "三瓶可乐不过岗"
-author_url = "https://github.com/Threkork"
+author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 
 [kovi-plugin-siliconflow]
@@ -180,4 +180,3 @@ repository = "https://github.com/Admsec/kovi-plugin-siliconflow"
 author_name = "Admsec"
 author_url = "https://github.com/Admsec/"
 avatar_url = "https://avatars.githubusercontent.com/u/86643414?v=4"
-

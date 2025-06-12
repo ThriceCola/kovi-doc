@@ -1,19 +1,18 @@
 # 监听事件
 
-通过 `PluginBuilder` 可以监听事件
+正如在前面 "快速开始" 看到的，通过 `PluginBuilder` 可以监听事件
+
+[[toc]]
 
 > [!WARNING]
 > `PluginBuilder` 只能在插件入口处，也就是由 `#[kovi::plugin]` 标注的函数的这个主线程中使用。请不要在监听闭包里使用 `PluginBuilder` ，监听闭包不属于插件主线程。
-> 
-
-[[toc]]
+>
 
 ## on_msg() 消息监听
 
 添加消息监听函数, 包括好友私聊、群消息以及讨论组消息
 
-
-关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
+关于 [MsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -29,7 +28,7 @@ async fn main() {
 添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，`Kovi` 会帮你筛选消息。
 
 
-关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
+关于 [AdminMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -45,7 +44,7 @@ async fn main() {
 添加好友私聊消息监听函数。
 
 
-关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
+关于 [PrivateMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -61,7 +60,7 @@ async fn main() {
 添加群消息监听函数。
 
 
-关于 [AllMsgEvent](/plugin/event#allmsgevent) ，点击前往查看
+关于 [GroupMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -72,33 +71,33 @@ async fn main() {
 }
 ```
 
-## on_all_notice() 通知事件监听
+## on_notice() 通知事件监听
 
 添加 OneBot 的 `通知事件` 监听函数。
 
 
-关于 [AllNotionEvent](/plugin/event#allnotionevent)，点击前往查看
+关于 [NotionEvent](/plugin/event_list#notionevent)，点击前往查看
 
 ```rust
 #[kovi::plugin]
 async fn main() {
-    PluginBuilder::on_all_notice(|event| async move {// [!code focus]
+    PluginBuilder::on_notice(|event| async move {// [!code focus]
         info!("{}", event.notice_type); // [!code focus]
     }); // [!code focus]
 }
 ```
 
-## on_all_request() 请求事件监听
+## on_request() 请求事件监听
 
 添加 OneBot 的 `请求事件` 监听函数。
 
 
-关于 [AllRequestEvent](/plugin/event#allrequestevent) ，点击前往查看
+关于 [RequestEvent](/plugin/event_list#requestevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
 async fn main() {
-    PluginBuilder::on_all_request(|event| async move {// [!code focus]
+    PluginBuilder::on_request(|event| async move {// [!code focus]
         info!("{}", event.request_type); // [!code focus]
     }); // [!code focus]
 }
@@ -149,7 +148,7 @@ async fn main() {
 > [!CAUTION]
 >
 > 对于程序退出。
-> 
+>
 > 本函数运行起来非常复杂，对于主线程意外 panic! ，本函数不会触发。
 >
 > 只会在监听到系统退出信号时或者断开 OneBot 服务端连接时，才会运行传入的闭包。
@@ -163,20 +162,71 @@ async fn main() {
 }
 ```
 
+## 自定义监听 <Badge type="tip" text="^0.12.0" />
 
-## on_msg_send() 自身消息发送监听
+如果细心点进去 上面监听的源代码一看。他们都是通过一个统一的 `PluginBuilder::on` 进行监听的。
 
-添加自身消息发送监听函数。
-
-需打开 `message_sent` feature。
-
-还要注意服务端是否有这一个功能。
+类似如下效果
 
 ```rust
+PluginBuilder::on(|event: Arc<MsgEvent>| foo())
+```
+
+是的没错，Kovi 通过了一些 ~~魔法~~ 让 on 可以通过指定`事件类型`，就可以监听此事件。
+
+可以通过这种方式来监听自己想要的事件。
+
+甚至可以写出这种极其简约的写法
+
+```rust
+use kovi::event::MsgEvent;
+use kovi::PluginBuilder as P;
+use std::sync::Arc;
+
 #[kovi::plugin]
-async fn main() {
-    PluginBuilder::on_msg_sent(|_event| async move {// [!code focus]
-        info!("我自己发了消息"); // [!code focus]
-    });// [!code focus]
+async fn main(){
+    P::on(foo)
+}
+async fn foo(e: Arc<MsgEvent>){
+    todo!()
+}
+```
+
+Kovi 框架内部目前有三个的 ‘自定义监听’，如下
+
+### MsgSendFromKoviEvent 自己发送的消息（来自Kovi框架自身） <Badge type="tip" text="^0.12.0" />
+
+可以通过这个来监听自己发送的消息。
+
+```rust
+use kovi::event::MsgSendFromKoviEvent;
+
+#[kovi::plugin]
+async fn main(){
+    P::on(|e: Arc<MsgSendFromKoviEvent>| async move {})
+}
+```
+
+### MsgSendFromServerEvent 自己发送的消息（来自服务端） <Badge type="tip" text="^0.12.0" />
+
+```rust
+use kovi::event::MsgSendFromServerEvent;
+
+#[kovi::plugin]
+async fn main(){
+    P::on(|e: Arc<MsgSendFromServerEvent>| async move {})
+}
+```
+
+### LifecycleEvent 生命周期元信息（来自服务端） <Badge type="tip" text="^0.12.0" />
+
+其实这个一点用都没有，插件启动其实就代表着Bot启动了，LifecycleEvent 是给框架本体用的信息，但是 Kovi 内部有这玩意，顺便 pub 出来。
+
+```rust
+use kovi::event::LifecycleEvent;
+
+#[kovi::plugin]
+async fn main(){
+    P::on(|e: Arc<LifecycleEvent>| async move {})
 }
 ```

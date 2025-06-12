@@ -9,7 +9,7 @@ pub struct ApiReturn {
     pub status: String,
     pub retcode: i32,
     pub data: Value,
-    pub echo: String,
+    echo: String, // 私有字段
 }
 ```
 
@@ -489,4 +489,3 @@ pub struct ApiReturn {
 - `file`: 收到的图片文件名（消息段的 `file` 参数），例如 `6B4DE3DFD1BD271E3297859D41C530F5.jpg`。
 
 - `Result<ApiReturn, ApiReturn>`
-

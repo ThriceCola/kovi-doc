@@ -8,10 +8,6 @@
 
 值得一提的是，本框架的所有发送消息 Api 都已经实现了字符串自动转换成 `Message`。
 
-OneBot v11 含有两种消息， `CQString` 和 `Array`。
-
-Kovi 默认只提供 `Array` 类型。
-
 具体解释，可以看 [OneBot v11 文档 Message 部分](https://github.com/botuniverse/onebot-11/blob/master/message/README.md)
 
 ## 构建 Message
@@ -67,7 +63,7 @@ let msg: Message = Message::from_value(json!(
         {
             "type":"text",
             "data":{
-                "text":"你好啊👋"    
+                "text":"你好啊👋"
             }
         }
     ]
@@ -75,22 +71,26 @@ let msg: Message = Message::from_value(json!(
 ```
 
 > [!CAUTION]
-> 
+>
 > 只有 `serde_json::Value::String` 和 `serde_json::Value::Array` 可以正确解析，
-> 
+>
 > 对于其他的 `serde_json::Value` 类型，`Message::from_value` 会返回 `kovi::Error::ParseError` 。
 
 ***
 
 > [!WARNING]
 >  Kovi 不会保证 `Segment` 的内部是否正确，你需要自行确认。
-> 
+>
 >  Kovi 不会保证 `Segment` 的内部是否正确，你需要自行确认。
-> 
+>
 >  Kovi 不会保证 `Segment` 的内部是否正确，你需要自行确认。
 
 
 ## `CQMessage`
+
+OneBot v11 含有两种消息， `CQString` 和 `Array`。
+
+Kovi 默认只提供 `Array` 类型。
 
 `CQMessage` 是 Kovi 给 cqstring 提供的封装。使用需打开 feature `cqstring`。这时，Kovi 向 服务端 发送消息会使用 cqstring，而不会使用 array。
 
@@ -98,6 +98,6 @@ let msg: Message = Message::from_value(json!(
 
 如果想要对 `CQMessage` 进行查询或者获取，需要将它转换成 `Message`。除此之外，`CQMessage` 和 `Message` 是一样的。
 
-需要注意的是，为了方便 Kovi 框架运行，监听闭包 MsgEvent 中的消息仍然是 `Message` ，只有发送时才会强迫使用 `CQMessage`。
+需要注意的是，为了 Kovi 正确运行，监听闭包 MsgEvent 中的消息仍然是 `Message` ，只有发送时才会强迫使用 `CQMessage`。
 
 对于 `CQMessage` ，Kovi 开发只会维护基本功能，不会对此太过上心。

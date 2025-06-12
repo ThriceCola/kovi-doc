@@ -18,14 +18,11 @@ pub use log;
 pub use serde_json;
 pub use tokio;
 pub use toml;
-
-#[cfg(feature = "cqstring")]
-pub use regex;
 ```
 
 ## 异步，以及它所带来的开发问题
 
-Kovi 在 0.8.0 版本后已经全面改成异步，这带来的性能的提升，但同时也带来了一些开发上的问题。
+Kovi 是异步的，由于 Rust 异步不是很人性化，所以带来了一些开发上的问题。
 
 ### 目前 Rust 2024 版本的异步闭包 AsyncFn 支持还不完善
 
@@ -150,7 +147,7 @@ async fn main() {
 
 #### 3.使用 Kovi Github 仓库的不稳定Rust版本的分支。
 
-[Kovi AsyncFn 分支链接，点击前往](https://github.com/Threkork/Kovi/tree/rust-2024)
+[Kovi AsyncFn 分支链接，点击前往](https://github.com/thricecola/Kovi/tree/rust-2024)
 
 还记得上文提到过为什么不能用 AsyncFn 吗，因为 Rust 暂时**还没有稳定**可以约束异步闭包为 `Send` 的语法。
 
@@ -182,14 +179,14 @@ rustup override unset
 
 ```toml
 [patch.crates-io]
-kovi = { version = "2025.1.0", git = "https://github.com/Threkork/Kovi.git", branch = "rust-2024" }
+kovi = { version = "2025.1.0", git = "https://github.com/thricecola/Kovi.git", branch = "rust-2024" }
 ```
 
 最好是指定一下哈希，但是文档里也不能确定哈希是多少，请你自己去这个仓库里看一下，接着指定就好了
 
 ```toml
 [patch.crates-io]
-kovi = { version = "2025.1.0", git = "https://github.com/Threkork/Kovi.git", rev = "80ccf2c" }
+kovi = { version = "2025.1.0", git = "https://github.com/thricecola/Kovi.git", rev = "80ccf2c" }
 ```
 
 接着应该就能愉快的使用 全新的异步闭包 功能了。

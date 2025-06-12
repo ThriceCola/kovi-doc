@@ -1,11 +1,9 @@
 # 快速上手
 
-> [!WARNING] 警告
-> 如有问题请前往 [GitHub Issues](https://github.com/Threkork/Kovi/issues)，或加入 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
-
 > [!TIP] 提示
-> `Kovi` 目前只支持 OneBot V11 正向 WebSocket 协议。
+> 如有问题请前往 [GitHub Issues](https://github.com/thricecola/Kovi/issues)，或加入 QQ 交流群 [857054777](https://qm.qq.com/q/kmpSBOVaCI)。
 
+## 1. 创建一个基本 Rust 项目，添加 Kovi 依赖。
 
 > [!TIP] 提示
 > `Kovi` 已拥有 `kovi-cli` 工具，使用 `kovi-cli` 工具可快速管理 `Kovi`
@@ -13,11 +11,6 @@
 > ```bash
 > cargo install kovi-cli
 > ```
-
-
-
-## 1. 创建一个基本 Rust 项目，添加 Kovi 依赖。
-
 
 使用 `kovi-cli` 或者 `cargo` 创建基本项目。
 

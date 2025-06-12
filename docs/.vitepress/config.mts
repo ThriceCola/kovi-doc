@@ -4,10 +4,10 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "Kovi",
   description:
-    "Kovi 是一个基于 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！",
+    "Kovi 是一个 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！",
   base: "/",
   sitemap: {
-    hostname: "https://kovi.threkork.com",
+    hostname: "https://kovi.thricecola.com",
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -19,19 +19,19 @@ export default defineConfig({
         items: [
           {
             text: "Kovi",
-            link: "https://github.com/Threkork/Kovi/",
+            link: "https://github.com/ThriceCola/Kovi/",
           },
           {
             text: "Kovi-cli",
-            link: "https://github.com/Threkork/kovi-cli/",
+            link: "https://github.com/ThriceCola/kovi-cli/",
           },
           {
             text: "Kovi-plugin",
-            link: "https://github.com/Threkork/kovi-plugin/",
+            link: "https://github.com/ThriceCola/kovi-plugin/",
           },
           {
             text: "Kovi-doc",
-            link: "https://github.com/Threkork/kovi-doc/",
+            link: "https://github.com/ThriceCola/kovi-doc/",
           },
         ],
       },
@@ -67,11 +67,18 @@ export default defineConfig({
 
         items: [
           { text: "基础", link: "/plugin/basics" },
-          { text: "注意事项", link: "/plugin/take-care" },
-          { text: "监听事件", link: "/plugin/onevent" },
-          { text: "事件 Event", link: "/plugin/event" },
-          { text: "Message", link: "/plugin/message" },
-          { text: "Message 方法", link: "/plugin/message_impl" },
+          { text: "注意事项", link: "/plugin/take_care" },
+          {
+            text: "Event 事件", items: [
+              { text: "监听 Event", link: "/plugin/on_event" },
+              { text: "基础 Event", link: "/plugin/event_list" },
+            ]
+          },
+
+          {
+            text: "Message 消息", items: [{ text: "构建 Message", link: "/plugin/message" },
+            { text: "Message 方法", link: "/plugin/message_impl" }]
+          },
           { text: "RuntimeBot 与 Api", link: "/plugin/runtimebot" },
 
           {
@@ -91,9 +98,10 @@ export default defineConfig({
         collapsed: false,
 
         items: [
-          { text: "运行时管理插件", link: "/plugin/plugin-control" },
-          { text: "框架级访问控制(黑白名单)", link: "/plugin/access-control" },
-          { text: "Bot 启动时插件控制", link: "/plugin/bot-startup" },
+          { text: "运行时管理插件", link: "/plugin/plugin_control" },
+          { text: "框架级访问控制(黑白名单)", link: "/plugin/access_control" },
+          { text: "Bot 启动时插件控制", link: "/plugin/bot_startup" },
+          { text: "自定义 Event 事件", link: "/plugin/diy_event" },
         ],
       },
       // {
@@ -117,10 +125,10 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/Threkork/Kovi" },
+      { icon: "github", link: "https://github.com/ThriceCola/Kovi" },
     ],
     editLink: {
-      pattern: "https://github.com/Threkork/kovi-doc/blob/main/docs/:path",
+      pattern: "https://github.com/ThriceCola/kovi-doc/blob/main/docs/:path",
       text: "在 GitHub 上帮助我们完善这个页面",
     },
     search: {

@@ -80,7 +80,8 @@ OneBot 服务端的 access_token 是什么？ (默认值：空)
 [dependencies]
 ...
 
-[workspace] // [!code focus] // [!code ++]
+    // [!code focus:2]
+[workspace] // [!code ++]
 ```
 
 接着
@@ -101,12 +102,12 @@ cargo new plugins/hi --lib
 
 可以看到创建了新的 `plugins/hi` 目录，这也是推荐的插件开发方法，有目录管理总会是好的。
 
-```
+```shell
 .
-├── plugins // [!code ++]
-│   └── hi // [!code ++]
-│       └── src // [!code ++]
-│           └── lib.rs // [!code ++]
+├── plugins # [!code ++]
+│   └── hi  # [!code ++]
+│       └── src # [!code ++]
+│           └── lib.rs  # [!code ++]
 ├── src
 │   └── main.rs
 │

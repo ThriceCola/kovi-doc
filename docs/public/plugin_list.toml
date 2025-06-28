@@ -5,7 +5,7 @@
 type = "git"
 #商店外显名字（可选，不写则显示唯一ID）
 shop_name = "我要头衔"
-# 插件类型（可选，默认为normal）
+# 插件类型（可选，默认为 normal ，框架本体拓展为 expand ）
 plugin_type = "normal"
 # 包的名称
 package_name = "kovi-plugin-title"
@@ -32,7 +32,7 @@ avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
 type = "crates.io"
 #商店外显名字（可选，不写则显示唯一ID）
 shop_name = "like"
-# 插件类型（可选，默认为normal）
+# 插件类型（可选，默认为 normal ，框架本体拓展为 expand ）
 plugin_type = "normal"
 # 包的名称
 package_name = "kovi-plugin-like"
@@ -180,3 +180,17 @@ repository = "https://github.com/Admsec/kovi-plugin-siliconflow"
 author_name = "Admsec"
 author_url = "https://github.com/Admsec/"
 avatar_url = "https://avatars.githubusercontent.com/u/86643414?v=4"
+
+
+[event-engine]
+type = "git"
+shop_name = "事件驱动器"
+plugin_type = "expand"
+package_name = "kovi-plugin-event-engine"
+description = "kovi 的额外事件驱动器。"
+git_url = "https://github.com/kovi-plugins/event-engine.git"
+repository = "https://github.com/kovi-plugins/event-engine"
+documentation = "https://github.com/kovi-plugins/event-engine"
+author_name = "三瓶可乐不过岗"
+author_url = "https://github.com/thricecola"
+avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"

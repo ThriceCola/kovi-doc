@@ -194,3 +194,29 @@ documentation = "https://github.com/kovi-plugins/event-engine"
 author_name = "三瓶可乐不过岗"
 author_url = "https://github.com/thricecola"
 avatar_url = "https://avatars.githubusercontent.com/u/92619280?v=4"
+
+
+[copycat]
+type = "crates.io"
+plugin_type = "normal"
+package_name = "kovi-plugin-copycat"
+description = "非常好自动复读插件，使人类本质被揭示"
+git_url = "https://github.com/Hamster5295/copycat.git"
+repository = "https://github.com/Hamster5295/copycat"
+documentation = "https://github.com/Hamster5295/copycat/blob/main/README.md"
+author_name = "Hamster5295"
+author_url = "https://github.com/Hamster5295"
+avatar_url = "https://avatars.githubusercontent.com/u/37259613?v=4"
+
+
+[pet-cat]
+type = "crates.io"
+plugin_type = "normal"
+package_name = "kovi-plugin-pet-cat"
+description = "非常好自动撸猫插件，自动检测群友发猫猫并回复一个表情包！"
+git_url = "https://github.com/Hamster5295/pet-cat.git"
+repository = "https://github.com/Hamster5295/pet-cat"
+documentation = "https://github.com/Hamster5295/pet-cat/blob/main/README.md"
+author_name = "Hamster5295"
+author_url = "https://github.com/Hamster5295"
+avatar_url = "https://avatars.githubusercontent.com/u/37259613?v=4"

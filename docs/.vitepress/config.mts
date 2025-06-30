@@ -102,6 +102,7 @@ export default defineConfig({
           { text: "框架级访问控制(黑白名单)", link: "/plugin/access_control" },
           { text: "Bot 启动时插件控制", link: "/plugin/bot_startup" },
           { text: "自定义 Event 事件", link: "/plugin/diy_event" },
+          { text: "流程守卫", link: "/plugin/flow_guard" },
         ],
       },
       // {

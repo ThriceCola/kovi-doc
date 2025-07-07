@@ -1,18 +1,17 @@
 {
-	"name": "kovi-documentation",
-	"devDependencies": {
-		"@types/node": "^22.8.1",
-		"vitepress": "^1.6.3"
-	},
-	"scripts": {
-		"dev": "npm run docs:dev",
-		"docs:dev": "vitepress dev docs",
-		"docs:build": "vitepress build docs",
-		"docs:preview": "vitepress preview docs"
-	},
-	"dependencies": {
-		"@iarna/toml": "^2.2.5",
-		"@ltd/j-toml": "^1.38.0",
-		"axios": "^1.7.7"
-	}
+  "name": "kovi-documentation",
+  "devDependencies": {
+    "@types/node": "^22.8.1",
+    "vitepress": "^1.6.3"
+  },
+  "scripts": {
+    "dev": "npm run docs:dev",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "@ltd/j-toml": "^1.38.0",
+    "axios": "^1.7.7"
+  }
 }

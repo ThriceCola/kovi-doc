@@ -57,43 +57,39 @@ pub struct MsgEvent {
 }
 ```
 
+---
+
 ## MsgEvent 方法
 
-#### `event.reply()`
+### `event.reply()`
 
 快速回复消息，传入 Message 类型，因为字符串可以转换成Message类型，所以可以传入字符串
 
-***
 
-#### `event.reply_and_quote()`
+### `event.reply_and_quote()`
 
 快速回复消息，并且引用，传入 Message 类型，因为字符串可以转换成Message类型，所以可以传入字符串
 
-***
 
-#### `event.is_group()`
+### `event.is_group()`
 
 事件是否是群聊消息，如果是群聊消息则返回 `true`，否则返回 `false`。
 
-***
 
-#### `event.is_private()`
+### `event.is_private()`
 
 事件是否是私聊消息，如果是私聊消息则返回 `true`，否则返回 `false`。
 
-***
 
-#### `event.get_text()`
+### `event.get_text()`
 
 获取文本，如果没有文本则会返回空字符串，如果只需要借用，请使用 `borrow_text()`
 
-***
 
-#### `event.get_sender_nickname()`
+### `event.get_sender_nickname()`
 
 获取发送者昵称
 
-***
 
 ### `event.get()`
 
@@ -103,19 +99,17 @@ pub struct MsgEvent {
 
 可以通过这个获取到想要的一切动态值，但是这个用法小心 panic!() 崩溃
 
-***
-
-#### `event.borrow_text()`
+### `event.borrow_text()`
 
 借用 event 的 text
 
-***
-
-#### `event.reply_text()`
+### `event.reply_text()`
 
 这个函数需开启 cqstring 特性
 
 快速回复消息，并且kovi不进行解析，直接发送字符串
+
+---
 
 ## AdminMsgEvent
 

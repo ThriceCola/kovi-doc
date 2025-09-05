@@ -4,7 +4,7 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "Kovi",
   description:
-    "Kovi 是一个 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！",
+    "Kovi 是一个 Rust 的 OneBot 插件框架。拥有简单明了的文档、便捷的 CLI 工具和易用的插件商店，让开发 Bot 更加高效便捷。轻松开启你的 Rust OneBot 开发之旅！ 可以用 Kovi 来对接各种支持OneBot协议的平台, 例如: QQ",
   base: "/",
   sitemap: {
     hostname: "https://kovi.thricecola.com",

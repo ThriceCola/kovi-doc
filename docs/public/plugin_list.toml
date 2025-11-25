@@ -100,6 +100,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[oai]
+type = "crates.io"
+shop_name = "oai"
+package_name = "kovi-plugin-oai"
+description = "Kovi 的 OpenAI 兼容 API 聊天插件。支持多智能体管理、符号指令系统、图片识别与生成。"
+repository = "https://github.com/araea/kovi-plugin-oai"
+documentation = "https://github.com/araea/kovi-plugin-oai"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

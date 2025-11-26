@@ -133,6 +133,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[image-splitter]
+type = "crates.io"
+shop_name = "image-splitter"
+package_name = "kovi-plugin-image-splitter"
+description = "Kovi 的图片网格裁剪插件，支持自定义行列分割与合并转发。"
+repository = "https://github.com/araea/kovi-plugin-image-splitter"
+documentation = "https://github.com/araea/kovi-plugin-image-splitter"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

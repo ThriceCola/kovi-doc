@@ -144,6 +144,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[gif-lab]
+type = "crates.io"
+shop_name = "gif-lab"
+package_name = "kovi-plugin-gif-lab"
+description = "Kovi 的 GIF 处理插件，支持合成、拆分、变速、倒放、旋转与拼图。"
+repository = "https://github.com/araea/kovi-plugin-gif-lab"
+documentation = "https://github.com/araea/kovi-plugin-gif-lab"
+author_name = "araea"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

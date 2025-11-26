@@ -113,7 +113,7 @@ avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
 [web-shot]
 type = "crates.io"
-shop_name = "网页截图"
+shop_name = "web-shot"
 package_name = "kovi-plugin-web-shot"
 description = "Kovi 的网页截图插件。自动检测消息中的 URL，调用无头浏览器进行截图（支持长页面自动滚动截图）。"
 repository = "https://github.com/araea/kovi-plugin-web-shot"

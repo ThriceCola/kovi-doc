@@ -122,6 +122,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[sticker-saver]
+type = "crates.io"
+shop_name = "sticker-saver"
+package_name = "kovi-plugin-sticker-saver"
+description = "Kovi 的表情包提取插件，支持引用表情包转图片保存。"
+repository = "https://github.com/araea/kovi-plugin-sticker-saver"
+documentation = "https://github.com/araea/kovi-plugin-sticker-saver"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

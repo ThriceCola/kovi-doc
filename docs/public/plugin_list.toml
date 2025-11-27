@@ -177,6 +177,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[msg-logger]
+type = "crates.io"
+shop_name = "msg-logger"
+package_name = "kovi-plugin-msg-logger"
+description = "Kovi 的全量消息记录与分析插件，支持 Jieba 分词与多维度数据查询。"
+repository = "https://github.com/araea/kovi-plugin-msg-logger"
+documentation = "https://github.com/araea/kovi-plugin-msg-logger"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

@@ -166,6 +166,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[media-transfer]
+type = "crates.io"
+shop_name = "media-transfer"
+package_name = "kovi-plugin-media-transfer"
+description = "Kovi 的媒体链接互转插件，支持提取图片/视频直链，以及将 URL 转换为媒体消息发送。"
+repository = "https://github.com/araea/kovi-plugin-media-transfer"
+documentation = "https://github.com/araea/kovi-plugin-media-transfer"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

@@ -188,6 +188,17 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[insight]
+type = "crates.io"
+shop_name = "insight"
+package_name = "kovi-plugin-insight"
+description = "基于 msg-logger 的群组数据可视化插件，提供词云、热力图、趋势图等洞察报表。"
+repository = "https://github.com/araea/kovi-plugin-insight"
+documentation = "https://github.com/araea/kovi-plugin-insight"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

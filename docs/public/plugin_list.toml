@@ -155,6 +155,17 @@ author_name = "araea"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[card-reader]
+type = "crates.io"
+shop_name = "card-reader"
+package_name = "kovi-plugin-card-reader"
+description = "Kovi 的 SillyTavern 角色卡解析插件，支持 V2/V3 格式 PNG 解析与数据导出。"
+repository = "https://github.com/araea/kovi-plugin-card-reader"
+documentation = "https://github.com/araea/kovi-plugin-card-reader"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

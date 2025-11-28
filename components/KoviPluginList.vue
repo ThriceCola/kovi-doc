@@ -1,109 +1,33 @@
+<!-- KoviPluginList.vue -->
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import axios from "axios";
 import TOML from "@ltd/j-toml";
-import { defineComponent } from "vue";
-defineComponent({
-    name: "FxemojiDocumenttextpicture",
-});
 
-const loadingTexts = [
-    "加载中...",
-    "请耐心等待...",
-    "让我找找看...",
-    "或许需要一点时间...",
-    "马上就好...",
-    "插件在哪里呢...",
-    "或许真的出了什么事？",
-    "或许真的出了什么事？刷新一下吧？",
-];
+// --- 接口定义 ---
 
-const currentLoadingText = ref(loadingTexts[0]);
-
-const rotateLoadingText = () => {
-    let currentIndex = 0;
-    return setInterval(() => {
-        if (currentIndex < loadingTexts.length - 1) {
-            currentIndex++;
-            currentLoadingText.value = loadingTexts[currentIndex];
-        }
-    }, 8000);
-};
-
-let loadingInterval: NodeJS.Timeout;
-
-onMounted(() => {
-    // 开始轮换loading文本
-    loadingInterval = rotateLoadingText();
-});
-
-onUnmounted(() => {
-    // 清理interval
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-});
-
-const isMobile = ref(false);
-
-onMounted(() => {
-    const checkMobile = () => {
-        isMobile.value = window.innerWidth <= 768;
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    onUnmounted(() => {
-        window.removeEventListener("resize", checkMobile);
-    });
-});
-
-const toggleCopyBox = (plugin: Plugin) => {
-    if (isMobile.value) {
-        plugin.showCopyBox = !plugin.showCopyBox;
-    }
-};
-
-interface TomlGitPlugin {
-    type: "git";
-    shop_name?: string;
+interface Plugin {
+    id: string;
+    type: "crates.io" | "git";
+    shop_name: string;
     plugin_type: "normal" | "expand";
     package_name: string;
-    description: string;
-    git_url: string;
-    repository: string;
-    documentation?: string;
-    author_name: string;
-    author_url?: string;
-    avatar_url?: string;
-}
-
-interface TomlCratesIoPlugin {
-    type: "crates.io";
-    shop_name?: string;
-    plugin_type: "normal" | "expand";
-    package_name: string;
+    git_url?: string;
     description: string;
     repository?: string;
     documentation?: string;
     author_name?: string;
     author_url?: string;
     avatar_url?: string;
+
+    // 状态控制
+    showCopyBox: boolean;
+    copyStatus: "default" | "copied";
+    copyTimeout?: number;
 }
 
-interface TomlGitPluginMap {
-    [key: string]: TomlGitPlugin;
-}
-interface TomlCratesIoPluginMap {
-    [key: string]: TomlCratesIoPlugin;
-}
-interface Plugins {
-    git: TomlGitPluginMap;
-    crates_io: TomlCratesIoPluginMap;
-}
-
-interface TempPlugin {
+// TOML 解析用的临时接口
+interface TomlPluginRaw {
     type: "git" | "crates.io";
     shop_name?: string;
     plugin_type?: "normal" | "expand";
@@ -117,682 +41,902 @@ interface TempPlugin {
     avatar_url?: string;
 }
 
-interface TempPluginMap {
-    [key: string]: TempPlugin;
+interface TomlMap {
+    [key: string]: TomlPluginRaw;
 }
 
-const loadTomlfile = async (): Promise<Plugins> => {
-    const pluginList: Plugins = {
-        git: {} as TomlGitPluginMap,
-        crates_io: {} as TomlCratesIoPluginMap,
-    };
-
-    try {
-        const response = await fetch("/plugin_list.toml");
-        const text = await response.text();
-
-        const jsomMapList = TOML.parse(text) as unknown as TempPluginMap;
-
-        for (const [key, plugin] of Object.entries(jsomMapList)) {
-            if (plugin.type === "git") {
-                if (!plugin.plugin_type) {
-                    plugin.plugin_type = "normal";
-                }
-                pluginList.git[key] = plugin as TomlGitPlugin;
-            } else if (plugin.type === "crates.io") {
-                if (!plugin.plugin_type) {
-                    plugin.plugin_type = "normal";
-                }
-                pluginList.crates_io[key] = plugin as TomlCratesIoPlugin;
-            }
-        }
-    } catch (error) {
-        console.error("Failed to fetch plugins:", error);
-    }
-
-    return pluginList;
-};
-
-const checkAndInitCratesIoPlugins = async (
-    plugins: Plugins
-): Promise<Plugins> => {
-    for (const [_, plugin] of Object.entries(plugins.crates_io)) {
-        if (!plugin.author_name) {
-            const { name, url, avatar } = await fetchPluginAuthor(
-                plugin.package_name
-            );
-            if (!plugin.author_name) {
-                plugin.author_name = name;
-            }
-
-            if (!plugin.author_url) {
-                plugin.author_url = url;
-            }
-
-            if (!plugin.avatar_url) {
-                plugin.avatar_url = avatar;
-            }
-        }
-    }
-    return plugins;
-};
-
-interface Plugin {
-    id: string;
-    type: "crates.io" | "git";
-    shop_name: string;
-    plugin_type: "normal" | "expand";
-    package_name: string;
-
-    git_url?: string;
-    description: string;
-    repository?: string;
-    documentation?: string;
-    author_name?: string;
-    author_url?: string;
-    avatar_url?: string;
-    showCopyBox: boolean;
-    copyStatus: "default" | "copied";
-    copyTimeout?: number;
-}
+// --- 状态管理 ---
 
 const plugins = ref<Plugin[]>([]);
 const loading = ref<boolean>(true);
+const isMobile = ref(false);
+const listTopRef = ref<HTMLElement | null>(null);
+
+// 搜索与分页
+const searchQuery = ref("");
+const currentCategory = ref("all");
+const currentPage = ref(1);
+const pageSize = 12; // 每页显示数量
+
+// --- 加载文案轮播 ---
+const loadingTexts = [
+    "正在连接插件市场...",
+    "正在读取 TOML 索引...",
+    "正在从 Crates.io 获取元数据...",
+    "稍等片刻，马上就好...",
+    "加载中...",
+];
+const currentLoadingText = ref(loadingTexts[0]);
+
+// --- 核心逻辑 ---
+
+// 1. 分类配置 (易于拓展)
+const categories = [
+    { key: "all", label: "全部" },
+    { key: "official", label: "官方推荐" },
+    { key: "community", label: "社区贡献" },
+    { key: "expand", label: "API 拓展" },
+    { key: "crates", label: "Crates.io" },
+    { key: "git", label: "Git 仓库" },
+];
+
+const officialAuthors = ["三瓶可乐不过岗", "threkork", "thricecola"];
+
+const isOfficial = (author?: string) => {
+    return author ? officialAuthors.includes(author) : false;
+};
+
+// 2. 过滤逻辑 (搜索 + 分类)
+const filteredPlugins = computed(() => {
+    let result = plugins.value;
+
+    // 分类筛选
+    if (currentCategory.value !== "all") {
+        result = result.filter((p) => {
+            switch (currentCategory.value) {
+                case "official":
+                    return isOfficial(p.author_name);
+                case "community":
+                    return !isOfficial(p.author_name);
+                case "expand":
+                    return p.plugin_type === "expand";
+                case "crates":
+                    return p.type === "crates.io";
+                case "git":
+                    return p.type === "git";
+                default:
+                    return true;
+            }
+        });
+    }
+
+    // 搜索筛选
+    const query = searchQuery.value.toLowerCase().trim();
+    if (query) {
+        result = result.filter(
+            (p) =>
+                p.shop_name.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query) ||
+                (p.author_name &&
+                    p.author_name.toLowerCase().includes(query)) ||
+                p.package_name.toLowerCase().includes(query)
+        );
+    }
+
+    return result;
+});
+
+// 3. 分页逻辑
+const totalPages = computed(() =>
+    Math.ceil(filteredPlugins.value.length / pageSize)
+);
+
+const paginatedPlugins = computed(() => {
+    const start = (currentPage.value - 1) * pageSize;
+    const end = start + pageSize;
+    return filteredPlugins.value.slice(start, end);
+});
+
+// 监听筛选条件变化，重置页码
+watch([searchQuery, currentCategory], () => {
+    currentPage.value = 1;
+});
+
+// 翻页操作
+const changePage = (page: number) => {
+    if (page < 1 || page > totalPages.value) return;
+    currentPage.value = page;
+
+    // 滚动到列表顶部
+    nextTick(() => {
+        if (listTopRef.value) {
+            const top =
+                listTopRef.value.getBoundingClientRect().top +
+                window.scrollY -
+                100; // 减去头部导航栏高度偏移
+            window.scrollTo({ top, behavior: "smooth" });
+        }
+    });
+};
+
+// --- 数据获取与初始化 ---
+
+const loadTomlfile = async (): Promise<Plugin[]> => {
+    try {
+        const response = await fetch("/plugin_list.toml");
+        const text = await response.text();
+        const rawMap = TOML.parse(text) as unknown as TomlMap;
+        const list: Plugin[] = [];
+
+        for (const [key, raw] of Object.entries(rawMap)) {
+            list.push({
+                id: key,
+                type: raw.type,
+                shop_name: raw.shop_name || key,
+                plugin_type: raw.plugin_type || "normal",
+                package_name: raw.package_name,
+                description: raw.description || "暂无描述",
+                git_url: raw.git_url,
+                repository: raw.repository,
+                documentation: raw.documentation,
+                author_name: raw.author_name,
+                author_url: raw.author_url,
+                avatar_url: raw.avatar_url,
+                showCopyBox: false,
+                copyStatus: "default",
+            });
+        }
+        return list;
+    } catch (error) {
+        console.error("加载插件列表失败:", error);
+        currentLoadingText.value = "加载列表失败，请检查网络或配置。";
+        return [];
+    }
+};
+
+// 异步获取 Crates.io 信息 (不阻塞页面渲染)
+const fetchMetadataAsync = async (pluginList: Plugin[]) => {
+    const tasks = pluginList.map(async (plugin) => {
+        if (
+            plugin.type === "crates.io" &&
+            (!plugin.author_name || !plugin.avatar_url)
+        ) {
+            try {
+                const res = await axios.get(
+                    `https://crates.io/api/v1/crates/${plugin.package_name}/owner_user`
+                );
+                const user = res.data.users[0];
+                if (user) {
+                    if (!plugin.author_name) plugin.author_name = user.name;
+                    if (!plugin.author_url) plugin.author_url = user.url;
+                    if (!plugin.avatar_url) plugin.avatar_url = user.avatar;
+                }
+            } catch (e) {
+                // 忽略单个失败，不影响整体
+            }
+        }
+    });
+    // 这里不 await all，让它们在后台慢慢加载，Vue 的响应式会自动更新 UI
+    await Promise.allSettled(tasks);
+};
 
 const init = async () => {
-    const tomlPlugins = await loadTomlfile();
-    const pluginsWithAuthors = await checkAndInitCratesIoPlugins(tomlPlugins);
-    const pluginArray: Plugin[] = [
-        ...Object.entries(pluginsWithAuthors.git).map(
-            ([id, plugin]): Plugin => ({
-                id,
-                type: plugin.type,
-                shop_name: plugin.shop_name ? plugin.shop_name : id,
-                plugin_type: plugin.plugin_type,
-                package_name: plugin.package_name,
-                git_url: plugin.git_url,
-                description: plugin.description,
-                repository: plugin.repository,
-                documentation: plugin.documentation,
-                author_name: plugin.author_name,
-                author_url: plugin.author_url,
-                avatar_url: plugin.avatar_url,
-                showCopyBox: false,
-                copyStatus: "default",
-            })
-        ),
-        ...Object.entries(pluginsWithAuthors.crates_io).map(
-            ([id, plugin]): Plugin => ({
-                id,
-                type: plugin.type,
-                shop_name: plugin.shop_name ? plugin.shop_name : id,
-                plugin_type: plugin.plugin_type,
-                package_name: plugin.package_name,
+    // 1. 移动端检测
+    const checkMobile = () => (isMobile.value = window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
 
-                description: plugin.description,
-                repository: plugin.repository,
-                documentation: plugin.documentation,
-                author_name: plugin.author_name,
-                author_url: plugin.author_url,
-                avatar_url: plugin.avatar_url,
-                showCopyBox: false,
-                copyStatus: "default",
-            })
-        ),
-    ];
+    // 2. 轮播 Loading 文字
+    let textIndex = 0;
+    const textInterval = setInterval(() => {
+        textIndex = (textIndex + 1) % loadingTexts.length;
+        currentLoadingText.value = loadingTexts[textIndex];
+    }, 2000);
 
-    //官方
-    const officialPlugins = pluginArray.filter((plugin) =>
-        authorIsAuthor(plugin.author_name)
-    );
-    //非官方
-    const nonOfficialPlugins = pluginArray.filter(
-        (plugin) => !authorIsAuthor(plugin.author_name)
-    );
+    // 3. 加载基础数据
+    const loadedPlugins = await loadTomlfile();
 
-    // 随机打乱
-    for (let i = officialPlugins.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [officialPlugins[i], officialPlugins[j]] = [
-            officialPlugins[j],
-            officialPlugins[i],
-        ];
-    }
+    // 4. 随机打乱 (仅在初始化时打乱一次，保证后续分页/搜索顺序稳定)
+    // 分离官方和非官方，分别打乱后再合并，保证官方尽量靠前（可选策略，这里沿用原逻辑）
+    const official = loadedPlugins.filter((p) => isOfficial(p.author_name));
+    const other = loadedPlugins.filter((p) => !isOfficial(p.author_name));
 
-    // 随机打乱
-    for (let i = nonOfficialPlugins.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [nonOfficialPlugins[i], nonOfficialPlugins[j]] = [
-            nonOfficialPlugins[j],
-            nonOfficialPlugins[i],
-        ];
-    }
+    const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+    plugins.value = [...shuffle(official), ...shuffle(other)];
 
-    // 合并
-    plugins.value = [...officialPlugins, ...nonOfficialPlugins];
-
-    //清理时间计时器;
-    if (loadingInterval) {
-        clearInterval(loadingInterval);
-    }
-    //停止加载画面
     loading.value = false;
+    clearInterval(textInterval);
+
+    // 5. 后台静默加载详细信息
+    fetchMetadataAsync(plugins.value);
+
+    // 清理
+    onUnmounted(() => {
+        window.removeEventListener("resize", checkMobile);
+        clearInterval(textInterval);
+    });
 };
 
-const fetchPluginAuthor = async (
-    pluginName: string
-): Promise<{
-    name: string | undefined;
-    url: string | undefined;
-    avatar: string | undefined;
-}> => {
-    try {
-        const response = await axios.get(
-            `https://crates.io/api/v1/crates/${pluginName}/owner_user`
-        );
+onMounted(init);
 
-        return {
-            name: response.data.users[0]?.name || undefined,
-            url: response.data.users[0]?.url || undefined,
-            avatar: response.data.users[0]?.avatar || undefined,
-        };
-    } catch (error) {
-        console.error(`Failed to fetch author for ${pluginName}:`, error);
-        return { name: undefined, url: undefined, avatar: undefined };
-    }
-};
+// --- 交互功能 ---
 
-const formatPluginName = (name: string): string => {
-    return name.replace(/^kovi-plugin-/, "");
-};
+const formatPluginName = (name: string) => name.replace(/^kovi-plugin-/, "");
 
-const formatTextLen = (description: string, len: number): string => {
-    return description.length > len
-        ? description.slice(0, len) + "..."
-        : description;
-};
-
-const formatDate = (dateString: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-};
-
-const authorIsAuthor = (name: string | undefined): boolean => {
-    if (name === undefined) {
-        return false;
-    }
-
-    const names = ["三瓶可乐不过岗", "threkork", "thricecola"];
-
-    return names.includes(name);
-};
-
-const copyToClipboard = (plugin: Plugin): void => {
-    let cmd: string;
-
-    if (plugin.type === "git") {
+const copyToClipboard = (plugin: Plugin) => {
+    let cmd = "";
+    if (plugin.type === "git" && plugin.git_url) {
         cmd = `cargo add --git ${plugin.git_url} ${plugin.package_name}`;
     } else if (plugin.type === "crates.io" && plugin.plugin_type === "expand") {
-        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)} -p `;
+        cmd = `cargo kovi add ${formatPluginName(plugin.package_name)} -p`;
     } else {
         cmd = `cargo kovi add ${formatPluginName(plugin.package_name)}`;
     }
 
     navigator.clipboard.writeText(cmd).then(() => {
         plugin.copyStatus = "copied";
-
-        if (plugin.copyTimeout) {
-            clearTimeout(plugin.copyTimeout);
-        }
+        if (plugin.copyTimeout) clearTimeout(plugin.copyTimeout);
         plugin.copyTimeout = window.setTimeout(() => {
             plugin.copyStatus = "default";
-        }, 3000);
+        }, 2000);
     });
 };
 
-const goCratesIoToLink = (plugin: Plugin): void => {
-    if (plugin.package_name) {
-        const link = `https://crates.io/crates/${plugin.package_name}`;
-        window.open(link, "_blank");
-    }
+const openLink = (url?: string) => {
+    if (url) window.open(url, "_blank");
 };
 
-const goToLink = (url: any): void => {
-    if (!url) {
-        return;
-    }
-    window.open(url, "_blank");
+const goCratesIo = (plugin: Plugin) => {
+    openLink(`https://crates.io/crates/${plugin.package_name}`);
 };
 
-onMounted(init);
+const toggleCard = (plugin: Plugin) => {
+    if (isMobile.value) {
+        plugin.showCopyBox = !plugin.showCopyBox;
+    }
+};
 </script>
 
 <template>
-    <div class="plugins-main">
-        <div v-if="loading" class="loading-container">
-            <Transition>
-                <h3>{{ currentLoadingText }}</h3>
-            </Transition>
+    <div class="market-container">
+        <!-- 头部搜索与过滤区 -->
+        <div class="filter-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="搜索插件、作者或描述..."
+                    class="search-input"
+                />
+                <button
+                    v-if="searchQuery"
+                    @click="searchQuery = ''"
+                    class="clear-btn"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div class="category-tabs">
+                <button
+                    v-for="cat in categories"
+                    :key="cat.key"
+                    :class="[
+                        'tab-btn',
+                        { active: currentCategory === cat.key },
+                    ]"
+                    @click="currentCategory = cat.key"
+                >
+                    {{ cat.label }}
+                </button>
+            </div>
         </div>
-        <div v-else class="plugin-list">
-            <div v-for="plugin in plugins" :key="plugin.id" class="plugin-card brackground"
-                @mouseover="!isMobile && (plugin.showCopyBox = true)"
-                @mouseleave="!isMobile && (plugin.showCopyBox = false)" @click="toggleCopyBox(plugin)">
-                <div>
-                    <div class="plugin-card-box">
-                        <div class="plugin-header">
-                            <div class="plugins-h2">
-                                {{ plugin.shop_name }}
+
+        <!-- 加载状态 -->
+        <div v-if="loading" class="loading-state">
+            <div class="spinner"></div>
+            <p>{{ currentLoadingText }}</p>
+        </div>
+
+        <!-- 主列表区 -->
+        <div v-else class="content-area" ref="listTopRef">
+            <!-- 列表为空 -->
+            <div v-if="filteredPlugins.length === 0" class="empty-state">
+                <p>没有找到相关插件 🍃</p>
+                <button
+                    @click="
+                        searchQuery = '';
+                        currentCategory = 'all';
+                    "
+                    class="reset-btn"
+                >
+                    重置筛选
+                </button>
+            </div>
+
+            <!-- 插件网格 -->
+            <div v-else>
+                <!-- 顶部简易分页 (仅当页数多时显示) -->
+                <div v-if="totalPages > 1" class="pagination-mini">
+                    <span
+                        >第 {{ currentPage }} / {{ totalPages }} 页 (共
+                        {{ filteredPlugins.length }} 个)</span
+                    >
+                </div>
+
+                <div class="plugin-grid">
+                    <div
+                        v-for="plugin in paginatedPlugins"
+                        :key="plugin.id"
+                        class="plugin-card"
+                        :class="{ 'show-overlay': plugin.showCopyBox }"
+                        @mouseenter="!isMobile && (plugin.showCopyBox = true)"
+                        @mouseleave="!isMobile && (plugin.showCopyBox = false)"
+                        @click="toggleCard(plugin)"
+                    >
+                        <!-- 卡片内容正面 -->
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3 class="plugin-name">
+                                    {{ plugin.shop_name }}
+                                </h3>
+                                <div class="badges">
+                                    <span
+                                        v-if="isOfficial(plugin.author_name)"
+                                        class="badge official"
+                                        >官方</span
+                                    >
+                                    <span
+                                        v-if="plugin.plugin_type === 'expand'"
+                                        class="badge expand"
+                                        >拓展</span
+                                    >
+                                    <span class="badge type">{{
+                                        plugin.type === "git" ? "Git" : "Crate"
+                                    }}</span>
+                                </div>
+                            </div>
+
+                            <p class="plugin-desc" :title="plugin.description">
+                                {{ plugin.description }}
+                            </p>
+
+                            <div class="card-footer">
+                                <div class="author-info">
+                                    <img
+                                        :src="
+                                            plugin.avatar_url ||
+                                            'https://ga.viki.moe/avatar/?d=mp'
+                                        "
+                                        class="avatar"
+                                        loading="lazy"
+                                    />
+                                    <span class="author-name">{{
+                                        plugin.author_name || "加载中..."
+                                    }}</span>
+                                </div>
                             </div>
                         </div>
-                        <p class="description">
-                            {{ formatTextLen(plugin.description, 50) }}
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="label">
-                            <span class="badge" v-if="authorIsAuthor(plugin.author_name)">官方</span>
-                            <span class="plugin-type">{{ plugin.type }}</span>
-                        </div>
 
-                        <div style="display: flex; align-items: center">
-                            <img v-if="plugin.avatar_url" :src="plugin.avatar_url" class="avatar" />
-                            <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
-                            <p class="author" v-if="plugin.author_name">
-                                {{ plugin.author_name }}
-                            </p>
-                            <p class="author" v-else>Unknown Author</p>
+                        <!-- 交互遮罩层 (悬浮/点击显示) -->
+                        <div class="card-overlay">
+                            <h3 class="overlay-title">
+                                {{ plugin.shop_name }}
+                            </h3>
+
+                            <div class="action-buttons">
+                                <button
+                                    class="action-btn primary"
+                                    :class="{
+                                        success: plugin.copyStatus === 'copied',
+                                    }"
+                                    @click.stop="copyToClipboard(plugin)"
+                                >
+                                    <span class="icon">{{
+                                        plugin.copyStatus === "copied"
+                                            ? "✓"
+                                            : "📋"
+                                    }}</span>
+                                    {{
+                                        plugin.copyStatus === "copied"
+                                            ? "命令已复制"
+                                            : "复制安装命令"
+                                    }}
+                                </button>
+
+                                <div class="secondary-actions">
+                                    <button
+                                        v-if="plugin.type === 'crates.io'"
+                                        @click.stop="goCratesIo(plugin)"
+                                        class="icon-btn"
+                                        title="Crates.io"
+                                    >
+                                        📦
+                                    </button>
+                                    <button
+                                        v-if="plugin.repository"
+                                        @click.stop="
+                                            openLink(plugin.repository)
+                                        "
+                                        class="icon-btn"
+                                        title="代码仓库"
+                                    >
+                                        🐱
+                                    </button>
+                                    <button
+                                        v-if="plugin.documentation"
+                                        @click.stop="
+                                            openLink(plugin.documentation)
+                                        "
+                                        class="icon-btn"
+                                        title="文档"
+                                    >
+                                        📖
+                                    </button>
+                                    <button
+                                        v-if="plugin.author_url"
+                                        @click.stop="
+                                            openLink(plugin.author_url)
+                                        "
+                                        class="icon-btn"
+                                        title="作者主页"
+                                    >
+                                        👤
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div v-if="isMobile" class="mobile-hint">
+                                点击任意处关闭
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- @click="goToLink(plugin)" -->
-                <Transition name="copy-box" @click="isMobile && toggleCopyBox(plugin)">
-                    <div v-show="plugin.showCopyBox" class="copy-box" @click.stop>
-                        <div class="plugin-header">
-                            <div class="plugins-h2">
-                                {{ plugin.shop_name }}
-                            </div>
-                        </div>
-                        <div class="link-button">
-                            <button class="brackground" @click.stop="copyToClipboard(plugin)">
-                                {{
-                                    plugin.copyStatus === "copied"
-                                        ? "已复制"
-                                        : "复制添加命令"
-                                }}
-                            </button>
-                            <button v-if="plugin.type === 'crates.io'" @click.stop="goCratesIoToLink(plugin)">
-                                <img src="https://crates.io/assets/cargo.png" alt="crates.io" />
-                                <p>crates.io</p>
-                            </button>
+                <!-- 底部完整分页 -->
+                <div class="pagination-container">
+                    <button
+                        class="page-nav"
+                        :disabled="currentPage === 1"
+                        @click="changePage(currentPage - 1)"
+                    >
+                        上一页
+                    </button>
 
-                            <button v-if="plugin.repository" @click.stop="goToLink(plugin.repository)">
-                                <img src="https://git-scm.com/images/logos/downloads/Git-Icon-1788C.png" alt="git" />
-                                <p>仓库</p>
-                            </button>
-
-                            <button v-if="plugin.documentation" @click.stop="goToLink(plugin.documentation)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
-                                    <path fill="#dce2e2"
-                                        d="M433.694 507.594H78.306c-11.929 0-21.6-9.671-21.6-21.6V25.317c0-11.929 9.671-21.6 21.6-21.6h263.026l113.961 112.739v369.538c.001 11.929-9.67 21.6-21.599 21.6" />
-                                    <path fill="#96a9b2"
-                                        d="M298.976 79.728h-74.642a7.904 7.904 0 0 1 0-15.808h74.642a7.904 7.904 0 0 1 0 15.808m-20.594 46.49a7.904 7.904 0 0 0-7.904-7.904h-46.144a7.904 7.904 0 0 0 0 15.808h46.144a7.904 7.904 0 0 0 7.904-7.904m116.577 54.394a7.904 7.904 0 0 0-7.904-7.904H224.333a7.904 7.904 0 0 0 0 15.808h162.721a7.905 7.905 0 0 0 7.905-7.904m-17.603 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h262.896a7.903 7.903 0 0 0 7.903-7.904M271.69 289.399a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h157.229a7.903 7.903 0 0 0 7.904-7.904m123.269 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.394a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904m0 54.393a7.904 7.904 0 0 0-7.904-7.904H106.557a7.904 7.904 0 0 0 0 15.808h280.498a7.904 7.904 0 0 0 7.904-7.904" />
-                                    <path fill="#b9c5c6"
-                                        d="m341.333 3.717l112.739 112.739h-88.776c-13.235 0-23.963-10.729-23.963-23.963z" />
-                                    <path fill="#00b1ff"
-                                        d="M106.207 64.821h84.582a8.13 8.13 0 0 1 8.127 8.127v106.54a8.13 8.13 0 0 1-8.127 8.127h-84.582a8.13 8.13 0 0 1-8.127-8.127V72.948a8.13 8.13 0 0 1 8.127-8.127" />
-                                </svg>
-                                <p>文档</p>
-                            </button>
-
-                            <button v-if="plugin.author_url" @click.stop="goToLink(plugin.author_url)">
-                                <img v-if="plugin.avatar_url" :src="plugin.avatar_url" class="avatar" />
-                                <img v-else src="https://ga.viki.moe/avatar/?d=mp" class="avatar" />
-                                <p v-if="plugin.author_name">
-                                    {{ plugin.author_name }}
-                                </p>
-                                <p v-else>Unknown Author</p>
-                            </button>
-                        </div>
-
-                        <!-- <div class="copy-box-footer"></div> -->
+                    <div class="page-numbers">
+                        <button
+                            v-for="p in totalPages"
+                            :key="p"
+                            class="page-num"
+                            :class="{ active: p === currentPage }"
+                            @click="changePage(p)"
+                            v-show="
+                                p === 1 ||
+                                p === totalPages ||
+                                (p >= currentPage - 1 && p <= currentPage + 1)
+                            "
+                        >
+                            {{ p }}
+                        </button>
                     </div>
-                </Transition>
+
+                    <button
+                        class="page-nav"
+                        :disabled="currentPage === totalPages"
+                        @click="changePage(currentPage + 1)"
+                    >
+                        下一页
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
-<style>
-.loading-container {
-    text-align: center;
-    padding: 20px;
+<style scoped>
+/* 容器 */
+.market-container {
+    padding: 20px 0;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.loading-container h3 {
-    transition: opacity 0.3s ease;
+/* 搜索与过滤区 */
+.filter-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
-.copy-box-enter-active,
-.copy-box-leave-active {
-    transition: opacity 0.3s ease;
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
 }
 
-.copy-box-enter-from,
-.copy-box-leave-to {
-    opacity: 0;
+.search-input {
+    width: 100%;
+    padding: 12px 40px;
+    border-radius: 24px;
+    border: 1px solid var(--vp-c-divider);
+    background-color: var(--vp-c-bg-alt);
+    color: var(--vp-c-text-1);
+    font-size: 16px;
+    transition: all 0.3s;
 }
 
-.plugins-h2 {
-    font-weight: 700;
-    font-size: 24px;
+.search-input:focus {
+    border-color: var(--vp-c-brand-1);
+    box-shadow: 0 0 0 4px var(--vp-c-brand-soft);
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.5;
+}
+
+.clear-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--vp-c-text-2);
+}
+
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.tab-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background-color: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-2);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background-color: var(--vp-c-bg-mute);
     color: var(--vp-c-text-1);
 }
 
-.plugins-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.tab-btn.active {
+    background-color: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-1);
+    border-color: var(--vp-c-brand-1);
+    font-weight: 600;
 }
 
-.plugin-list {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    gap: 16px;
+/* 加载动画 */
+.loading-state {
+    text-align: center;
+    padding: 60px 0;
 }
 
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--vp-c-bg-soft);
+    border-top-color: var(--vp-c-brand-1);
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: var(--vp-c-text-2);
+}
+
+.reset-btn {
+    margin-top: 16px;
+    padding: 8px 16px;
+    background-color: var(--vp-c-brand-1);
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+/* 插件网格 */
+.plugin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+/* 插件卡片 */
 .plugin-card {
     position: relative;
-    border-radius: 12px;
-    box-sizing: border-box;
+    height: 180px;
+    background-color: var(--vp-c-bg-soft);
     border: 1px solid var(--vp-c-divider);
-    height: 165px;
-    width: 330px;
-    transition: all 0.3s;
-    word-break: break-all;
+    border-radius: 12px;
+    overflow: hidden;
+    transition:
+        transform 0.3s,
+        box-shadow 0.3s;
+    cursor: default;
 }
 
 .plugin-card:hover {
-    border: 1px solid var(--vp-c-brand-1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    border-color: var(--vp-c-brand-1);
 }
 
-.plugin-card p {
-    margin: 0;
-    font-weight: 500;
-    font-size: 16px;
-    color: var(--vp-c-text-1);
-}
-
-.plugin-card-box {
+.card-content {
     padding: 16px;
-    width: 100%;
     height: 100%;
-    position: relative;
     display: flex;
     flex-direction: column;
-    cursor: pointer;
 }
 
-.plugin-header {
-    padding: 0;
-    width: 100%;
+.card-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 8px;
-    word-break: break-all;
 }
 
-.label {
-    position: static;
-    /* 改为static而不是absolute */
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    min-width: 0;
-    /* 移除最小宽度限制 */
-    text-align: left;
-    /* 左对齐文本 */
-    font-size: 14px;
+.plugin-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
     color: var(--vp-c-text-1);
+    line-height: 1.3;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    overflow: hidden;
+}
+
+.badges {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: 8px;
 }
 
 .badge {
-    display: inline-flex;
-    align-items: center;
-    background-color: #ffcfcf;
+    font-size: 10px;
+    padding: 2px 6px;
     border-radius: 4px;
-    padding: 2px 8px;
-    margin-right: 4px;
-    max-height: 26px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-:root.dark .badge {
-    background-color: #383d53;
-    color: var(--vp-code-color);
+.badge.official {
+    background-color: rgba(255, 71, 87, 0.15);
+    color: #ff4757;
 }
 
-.plugin-type {
-    display: inline-flex;
-    align-items: center;
-    background-color: #eff0f3;
-    border-radius: 4px;
-    padding: 2px 8px;
-    max-height: 26px;
+.badge.expand {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
 }
 
-:root.dark .plugin-type {
-    background-color: #272a2f;
-    color: var(--vp-code-color);
+.badge.type {
+    background-color: var(--vp-c-bg-mute);
+    color: var(--vp-c-text-2);
 }
 
-.description {
-    min-height: 100px;
+.plugin-desc {
+    font-size: 14px;
+    color: var(--vp-c-text-2);
     margin: 0;
-    color: #515151;
+    flex-grow: 1;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-footer {
-    margin: 0 16px 6px 16px;
-    color: #858585;
-    position: absolute;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    /* 这确保了子元素之间的最大间距 */
-    align-items: center;
-    bottom: 0;
-    width: calc(100% - 32px);
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--vp-c-divider);
 }
 
-.card-footer>div:last-child {
+.author-info {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    /* 确保右对齐 */
-}
-
-.description {
-    min-height: 100px;
-    margin: 0;
-    color: #515151;
-}
-
-.card-footer {
-    margin: 0 16px 6px 16px;
-    color: #858585;
-    position: absolute;
-    font-size: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    bottom: 0;
-    width: calc(100% - 32px);
+    gap: 8px;
 }
 
 .avatar {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    margin: 0 8px 0 8px;
+    object-fit: cover;
 }
 
-.author {
-    max-width: 190px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #858585;
+.author-name {
+    font-size: 12px;
+    color: var(--vp-c-text-2);
 }
 
-.copy-box {
+/* 遮罩层 */
+.card-overlay {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: rgb(255, 255, 255);
-
-    color: var(--vp-c-text-1);
-    padding: 16px;
-    border-radius: 12px;
-    height: 100%;
     width: 100%;
-
+    height: 100%;
+    background-color: var(--vp-c-bg); /* 实色背景，覆盖下层 */
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    /* 隐藏溢出内容 */
-}
-
-/*
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-*/
-
-:root.dark .copy-box {
-    background-color: rgb(27, 27, 31);
-    color: #ffffff;
-}
-
-.copy-box-footer {
-    position: absolute;
-    bottom: 12px;
-    width: calc(100% - 32px);
-    display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 10;
 }
 
-.copy-box-footer button {
+/* 激活遮罩层 */
+.plugin-card.show-overlay .card-overlay {
+    opacity: 1;
     pointer-events: auto;
 }
 
-.copy-box p {
-    margin: 0;
-    font-weight: 500;
+.overlay-title {
     font-size: 16px;
-    color: #515151;
-    line-height: 20px;
-    word-break: keep-all;
-}
-
-:root.dark .copy-box p {
+    font-weight: 600;
+    margin-bottom: 20px;
     color: var(--vp-c-text-1);
 }
 
-.copy-box button {
-    border: none;
-    padding: 4px 8px;
-    border: 1px solid #eeeeee;
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+}
+
+.action-btn.primary {
+    width: 100%;
+    padding: 10px;
     border-radius: 8px;
-    cursor: pointer;
+    border: 1px solid var(--vp-c-brand-1);
+    background-color: transparent;
     color: var(--vp-c-brand-1);
     font-weight: 500;
-    font-size: 14px;
-    width: 70px;
-}
-
-.copy-box button:hover {
-    border: 1px solid var(--vp-c-brand-1);
-    transition: all 0.3s;
-}
-
-.link-button {
-    padding: 0px 8px 0px 8px;
-    transform: translateY(8px);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    row-gap: 8px;
-    justify-content: space-between;
-
-    overflow-y: auto;
-    max-height: calc(100% - 30px);
-    padding-right: 12px;
-}
-
-.link-button button {
-    width: 130px;
-    height: 40px;
+    cursor: pointer;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 0 12px;
+    gap: 6px;
 }
 
-.link-button button img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    margin: 0;
+.action-btn.primary:hover {
+    background-color: var(--vp-c-brand-1);
+    color: white;
 }
 
-.link-button button svg {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    margin: 0;
+.action-btn.success {
+    background-color: var(--vp-c-green-soft, #e0f2f1);
+    color: var(--vp-c-green-1, #009688);
+    border-color: var(--vp-c-green-1, #009688);
 }
 
-.link-button button p {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    transform: translateY(-1px);
-    width: 60px;
-    text-align: left;
-    color: var(--vp-c-brand-1);
-    font-weight: 500;
-    font-size: 14px;
+.secondary-actions {
+    display: flex;
+    gap: 12px;
 }
 
-:root.dark .link-button button {
+.icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--vp-c-divider);
+    background-color: var(--vp-c-bg-mute);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: var(--vp-c-brand-soft);
+    border-color: var(--vp-c-brand-1);
+    transform: scale(1.1);
+}
+
+.mobile-hint {
+    font-size: 12px;
+    color: var(--vp-c-text-3);
+    margin-top: 10px;
+}
+
+/* 分页控件 */
+.pagination-mini {
+    text-align: right;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--vp-c-text-2);
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.page-nav {
+    padding: 8px 16px;
+    border-radius: 6px;
+    background-color: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
     color: var(--vp-c-text-1);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-:root.dark .copy-box button {
-    border: 1px solid #2e2e32;
+.page-nav:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-:root.dark .copy-box button:hover {
-    border: 1px solid var(--vp-c-brand-1);
-    transition: all 0.3s;
+.page-nav:not(:disabled):hover {
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
 }
 
-:root.dark .brackground {
-    background-color: #1b1b1f;
+.page-numbers {
+    display: flex;
+    gap: 8px;
 }
 
-.brackground {
-    background-color: #fff;
+.page-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--vp-c-text-2);
+    cursor: pointer;
+}
+
+.page-num.active {
+    background-color: var(--vp-c-brand-1);
+    color: white;
+    font-weight: bold;
 }
 </style>

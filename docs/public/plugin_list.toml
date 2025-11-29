@@ -221,6 +221,17 @@ author_name = "araea"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
+[mimicry]
+type = "crates.io"
+shop_name = "mimicry"
+package_name = "kovi-plugin-mimicry"
+description = "Kovi 的拟人化潜伏智能体插件，具备长期记忆、生物节律与主动社交能力。"
+repository = "https://github.com/araea/kovi-plugin-mimicry"
+documentation = "https://github.com/araea/kovi-plugin-mimicry"
+author_name = "nawyjx"
+author_url = "https://github.com/araea"
+avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
+
 [getpic]
 type = "git"
 shop_name = "来点图片"

@@ -134,17 +134,6 @@ author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 
-[sticker-saver]
-type = "crates.io"
-shop_name = "sticker-saver"
-package_name = "kovi-plugin-sticker-saver"
-description = "Kovi 的表情包提取插件，支持引用表情包转图片保存。"
-repository = "https://github.com/araea/kovi-plugin-sticker-saver"
-documentation = "https://github.com/araea/kovi-plugin-sticker-saver"
-author_name = "nawyjx"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
 [image-splitter]
 type = "crates.io"
 shop_name = "image-splitter"
@@ -164,61 +153,6 @@ description = "Kovi 的 GIF 处理插件，支持合成、拆分、变速、倒�
 repository = "https://github.com/araea/kovi-plugin-gif-lab"
 documentation = "https://github.com/araea/kovi-plugin-gif-lab"
 author_name = "araea"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
-[card-reader]
-type = "crates.io"
-shop_name = "card-reader"
-package_name = "kovi-plugin-card-reader"
-description = "Kovi 的 SillyTavern 角色卡解析插件，支持 V2/V3 格式 PNG 解析与数据导出。"
-repository = "https://github.com/araea/kovi-plugin-card-reader"
-documentation = "https://github.com/araea/kovi-plugin-card-reader"
-author_name = "nawyjx"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
-[media-transfer]
-type = "crates.io"
-shop_name = "media-transfer"
-package_name = "kovi-plugin-media-transfer"
-description = "Kovi 的媒体链接互转插件，支持提取图片/视频直链，以及将 URL 转换为媒体消息发送。"
-repository = "https://github.com/araea/kovi-plugin-media-transfer"
-documentation = "https://github.com/araea/kovi-plugin-media-transfer"
-author_name = "nawyjx"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
-[msg-logger]
-type = "crates.io"
-shop_name = "msg-logger"
-package_name = "kovi-plugin-msg-logger"
-description = "Kovi 的全量消息记录与分析插件，支持 Jieba 分词与多维度数据查询。"
-repository = "https://github.com/araea/kovi-plugin-msg-logger"
-documentation = "https://github.com/araea/kovi-plugin-msg-logger"
-author_name = "nawyjx"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
-[insight]
-type = "crates.io"
-shop_name = "insight"
-package_name = "kovi-plugin-insight"
-description = "Kovi 的群组数据可视化插件，提供词云、热力图、趋势图等洞察报表。"
-repository = "https://github.com/araea/kovi-plugin-insight"
-documentation = "https://github.com/araea/kovi-plugin-insight"
-author_name = "nawyjx"
-author_url = "https://github.com/araea"
-avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
-
-[help-center]
-type = "crates.io"
-shop_name = "help-center"
-package_name = "kovi-plugin-help-center"
-description = "Kovi 的高颜值帮助菜单插件，支持分类管理与指令搜索。"
-repository = "https://github.com/araea/kovi-plugin-help-center"
-documentation = "https://github.com/araea/kovi-plugin-help-center"
-author_name = "nawyjx"
 author_url = "https://github.com/araea"
 avatar_url = "https://avatars.githubusercontent.com/u/120614554?v=4"
 

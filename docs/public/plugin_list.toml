@@ -311,3 +311,16 @@ documentation = "https://github.com/yiranxiaohui/kovi-plugin-meme/blob/main/READ
 author_name = "yiranxiaohui"
 author_url = "https://github.com/yiranxiaohui"
 avatar_url = "https://avatars.githubusercontent.com/u/100197557?v=4"
+
+[acl]
+type = "git"
+shop_name = "ACL 访问控制"
+plugin_type = "normal"
+package_name = "kovi-plugin-acl"
+description = "Kovi 的动态访问控制列表插件，支持 QQ 指令与 WebUI 管理，JWT 认证，密码重置，白名单/黑名单模式切换。"
+git_url = "https://github.com/Hogw4rts/kovi-plugin-acl.git"
+repository = "https://github.com/Hogw4rts/kovi-plugin-acl"
+documentation = "https://github.com/Hogw4rts/kovi-plugin-acl"
+author_name = "Southseast"
+author_url = "https://github.com/Hogw4rts"
+avatar_url = "https://avatars.githubusercontent.com/u/74965592?v=4"

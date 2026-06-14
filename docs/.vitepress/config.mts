@@ -70,8 +70,8 @@ export default defineConfig({
           { text: "注意事项", link: "/plugin/take_care" },
           {
             text: "Event 事件", items: [
-              { text: "监听 Event", link: "/plugin/on_event" },
-              { text: "基础 Event", link: "/plugin/event_list" },
+              { text: "Event 监听", link: "/plugin/on_event" },
+              { text: "Event 导航", link: "/plugin/event" },
             ]
           },
 
@@ -120,6 +120,9 @@ export default defineConfig({
 
         items: [
           { text: "OneBot Api", link: "/api/onebot_api" },
+          { text: "OneBot Event", link: "/api/onebot_event" },
+          { text: "Milky Api", link: "/api/milky_api" },
+          { text: "Milky Event", link: "/api/milky_event" },
           { text: "Kovi Api", link: "/api/kovi_api" },
         ],
       },

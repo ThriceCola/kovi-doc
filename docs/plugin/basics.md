@@ -3,100 +3,98 @@
 > [!NOTE] 小提示
 > 如果没有看快速上手的话，还是建议看一下的。
 
-## 创建 Bot 实例
+## Bot 实例
 
-推荐的方式是使用 `build_bot!()` 宏。`build_bot!()` 会帮你解决大部分无需在意的事情。如果是第一次运行，它会要求在控制台输入相关的信息，以便可以创建 Bot 实例。并且会将信息储存在文件 `kovi.conf.json` 里面。
+### 驱动器
 
-通过在 `build_bot!()` 传入插件的 crate 名称，`build_bot!()` 会帮助你挂载插件。
+Kovi 通过驱动器去适配不一样的服务端, 现在先直接用就好了，不要给自己带来太多学习负担，普通的插件开发者其实也不需要了解这一部分就可以直接愉快的使用 Kovi ，所以这一部分等到文档后面再讲。
+
+### Bot 实例
+
+推荐的方式是使用 `build_bot!()` 宏。它会帮你解决大部分无需在意的事情。如果是第一次运行，它会要求在控制台输入相关的信息，以便可以创建 Bot 实例。并且会将信息储存在文件 `kovi.conf.json` 里面。
+
+通过在 `build_bot!()` 传入插件的 crate 名称，它会帮助你挂载插件。
 
 `build_bot!()` 返回一个 Bot 实例。
 
 ```rust
-use kovi::build_bot;
+use kovi::tokio;
 
-fn main() {
-    let bot = build_bot!(hi, hi2, plugin123);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let driver_config = kovi_onebot::load_local_conf()?;
+    let driver = kovi_onebot::OneBotDriver::new(driver_config);
+
+    let bot = kovi::build_bot!(driver; kovi_plugin_cmd);
+
+    bot.run().await;
+    Ok(())
 }
 ```
 
 可以选择不传入任何插件。这时 Kovi 不会有任何功能。
 
-
-当然，也可以自己创建 Bot 实例，但是这需要你手动做很多事情。
+当然，也可以自己创建 Bot 实例，**Kovi 的理念倡导减少各种宏带来的理解负担**，但是这需要你手动做很多事情。
 
 ```rust
-use kovi::bot::{KoviConf, Server};
-use std::{
-    net::{IpAddr, Ipv4Addr},
-    sync::Arc,
-};
+use kovi::tokio;
 
-fn main() {
-    let conf_a: KoviConf = kovi::bot::Bot::load_local_conf();
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let driver_config = kovi_onebot::load_local_conf()?;
+    let driver = kovi_onebot::OneBotDriver::new(driver_config);
 
-    let conf_b: KoviConf = KoviConf::new(
-        10000,
-        None,
-        Server {
-            host: IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)),
-            port: 8081,
-            access_token: "".to_string(),
-        },
-        false,
-    );
+    let kovi_config = kovi::load_local_conf().expect("Failed to load kovi config");
 
-    kovi::logger::try_set_logger();
+    kovi::logger::try_set_logger_use_env();
 
-    let mut bot = kovi::Bot::build(conf_b);
+    let mut bot = kovi::Bot::build(kovi_config, driver);
 
-    let (plugin_name, plugin_version) = my_plugin::__kovi_get_plugin_info();
+    let plugin_set = {
+        let mut set = kovi::plugin::plugin_set::PluginSet::new();
+        let plugin = kovi_plugin_cmd::get_plugin();
+        set.push(plugin);
+        set
+    };
 
-    bot.mount_main(
-        plugin_name,
-        plugin_version,
-        Arc::new(testkovi::__kovi_run_async_plugin),
-    );
+    bot.mount_plugin_set(plugin_set);
 
     bot.set_plugin_startup_use_file_ref();
 
-    bot.run();
+    bot.run().await;
+    Ok(())
 }
 ```
 
-<!-- ::: tip 你可能想要知道的
+这里 Kovi 还提供一个简单的宏 `plugins!()`, 下面代码两个插件集是等价的。
 
-### `build_bot!()` 帮你做了什么呢？
+```rust
+let set_a = {
+    let mut set = kovi::plugin::plugin_set::PluginSet::new();
+    let plugin = kovi_plugin_cmd::get_plugin();
+    let hi = hi::get_plugin();
+    set.push(plugin);
+    set.push(hi);
+    set
+};
 
-1. 生成 `kovi.conf.json` 。
-2. 使用 `env_logger` 库初始化了 `logger` （需启用 `logger` 特性，`logger` 目前默认启用）。
-3. 根据传入的 crate 名称，展开挂载 crate 的 `main` 函数。
-4. 传出一个 Bot 实例
+let set_b = plugins!(kovi_plugin_cmd, hi);
 
-::: -->
+assert_eq!(set_a, set_b);
+```
 
-## 运行 Bot
+### 运行 Bot
 
 运行 Bot 很简单 ，就是拥有了一个 Bot 实例后，直接 `bot.run()` 即可。
 
-`bot.run()` 是阻塞的。
-
 ```rust
-use kovi::build_bot;
-
-fn main() {
-    let bot = build_bot!(hi, hi2, plugin123);
-    bot.run()
-}
+bot.run().await;
 ```
 
-> [!CAUTION]
-> 0.11 以下版本的 Kovi 在同一个程序里不要多次使用 `bot.run()` 。
->
-> 如果手痒痒的话，首先遇到的第一个 bug 就是无法退出程序，因为 Kovi 使用了 tokio运行时 监听了几乎所有退出信号。多次 `.run()` 会导致多次监听，导致程序出错。
 
 ## 插件
 
-拥有结构管理是非常好的习惯，所以推荐的插件开发方法是创建新目录 `plugins` 储存插件。
+拥有结构管理是非常好的习惯，所以推荐的插件开发方法是创建新目录 `./plugins` 储存插件。
 
 通过 `kovi-cli` 或者 `cargo` 可以很好的去构建插件， cargo 的工作区可以使插件开发更加便捷。具体可看[快速上手#插件开发](/start/fast#_3-插件开发)。
 
@@ -106,6 +104,7 @@ fn main() {
 
 ```rust
 use kovi::PluginBuilder as plugin;
+use kovi_onebot::*;
 
 #[kovi::plugin]
 async fn my_plugin_main() {
@@ -123,6 +122,7 @@ async fn my_plugin_main() {
 >
 > ```rust
 > use kovi::{log::info, PluginBuilder as plugin};
+> use kovi_onebot::*;
 >
 > #[kovi::plugin]
 > async fn main() {

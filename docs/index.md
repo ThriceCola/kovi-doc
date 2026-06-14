@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "Kovi"
-  tagline: "Rust OneBot 插件开发框架"
+  tagline: "Rust Milky / OneBot 插件开发框架"
   actions:
     - theme: brand
       text: 开始 Kovi 之旅
@@ -14,7 +14,7 @@ hero:
       link: /about
 features:
   - title: "简单"
-    details: "目标是 Rust 最简单 OneBot 框架！"
+    details: "目标是 Rust 最简单 Milky / OneBot 框架！"
     icon: "🥁"
   - title: "友好"
     details: "CLI 工具提供开发者所需的便利"

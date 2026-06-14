@@ -26,7 +26,7 @@ Kovi 的口号是 “目标是 Rust 最简单 OneBot 框架！”，这里面意
 
 > [!TIP] 提示
 > Kovi 官方目前支持:
-> - [Milky 协议](milky.ntqqrev.org)
+> - [Milky 协议](https://milky.ntqqrev.org)
 > - [OneBot V11 正向 WebSocket 协议](https://github.com/botuniverse/onebot-11)
 > 
 > 当然 Kovi 本身允许支持其它协议, 只不过目前官方仅将目光聚焦在这,

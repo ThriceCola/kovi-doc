@@ -158,7 +158,6 @@ async fn main() {
 
 添加消息监听函数, 包括好友私聊、群消息以及讨论组消息
 
-关于 [MsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -177,8 +176,6 @@ async fn main() {
 添加管理员消息监听函数, 包括好友私聊、群消息以及讨论组消息，`Kovi` 会帮你筛选消息。
 
 
-关于 [AdminMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
-
 ```rust
 #[kovi::plugin]
 async fn main() {
@@ -192,8 +189,6 @@ async fn main() {
 
 添加好友私聊消息监听函数。
 
-
-关于 [PrivateMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
@@ -209,8 +204,6 @@ async fn main() {
 添加群消息监听函数。
 
 
-关于 [GroupMsgEvent](/plugin/event_list#msgevent) ，点击前往查看
-
 ```rust
 #[kovi::plugin]
 async fn main() {
@@ -224,9 +217,6 @@ async fn main() {
 
 添加 OneBot 的 `通知事件` 监听函数。
 
-
-关于 [NotionEvent](/plugin/event_list#notionevent)，点击前往查看
-
 ```rust
 #[kovi::plugin]
 async fn main() {
@@ -239,9 +229,6 @@ async fn main() {
 ### on_request() 请求事件监听 <Badge text="由驱动器提供" /> <Badge text="仅 OneBot" />
 
 添加 OneBot 的 `请求事件` 监听函数。
-
-
-关于 [RequestEvent](/plugin/event_list#requestevent) ，点击前往查看
 
 ```rust
 #[kovi::plugin]
